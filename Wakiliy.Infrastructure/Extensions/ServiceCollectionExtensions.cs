@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Wakiliy.Application.Common.Settings;
+using Wakiliy.Application.Interfaces.Services;
+using Wakiliy.Infrastructure.Authentication;
 using Wakiliy.Infrastructure.Data;
 using Wakiliy.Infrastructure.Services;
 
@@ -26,6 +28,7 @@ public static class ServiceCollectionExtensions
 
         // Register Services
         services.AddScoped<IEmailSender, EmailService>();
+        services.AddScoped<IJwtProvider, JwtProvider>();
 
 
         services.Configure<MailSettings>(configuration.GetSection(nameof(MailSettings)));

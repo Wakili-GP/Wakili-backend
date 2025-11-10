@@ -10,7 +10,5 @@ public record AuthResponse(
     string Email,
     string FullName,
     string Token,
-    int ExpiresIn,
-    string RefreshToken,
-    DateTime RefreshTokenExpiration
+    int ExpiresIn
 );
