@@ -1,7 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Wakiliy.Application.Common.Settings;
 using Wakiliy.Infrastructure.Data;
+using Wakiliy.Infrastructure.Services;
 
 namespace Wakiliy.Infrastructure.Extensions;
 public static class ServiceCollectionExtensions
@@ -21,6 +24,12 @@ public static class ServiceCollectionExtensions
         //services.AddScoped<IRestaurantRepository, RestaurantRepository>();
         //services.AddScoped<IDishRepository, DishRepository>();
 
+        // Register Services
+        services.AddScoped<IEmailSender, EmailService>();
+
+
+        services.Configure<MailSettings>(configuration.GetSection(nameof(MailSettings)));
+        services.AddHttpContextAccessor();
 
         return services;
     }
