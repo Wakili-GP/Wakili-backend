@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using System.Text;
+using Wakiliy.Domain.Constants;
 using Wakiliy.Domain.Entities;
 using Wakiliy.Domain.Errors;
 using Wakiliy.Domain.Responses;
@@ -39,8 +40,6 @@ public class ConfirmEmailCommandHandler(UserManager<AppUser> userManager,ILogger
             var error = string.Join(',', result.Errors.Select(e => e.Description));
             return Result.Failure(new Error("User.InvalidCode", error, StatusCodes.Status400BadRequest));
         }
-
-        //await userManager.AddToRoleAsync(user, DefaultRoles.Member);
 
         return Result.Success();
     }

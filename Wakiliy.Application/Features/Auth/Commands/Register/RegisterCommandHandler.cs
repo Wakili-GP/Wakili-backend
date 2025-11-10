@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System.Text;
 using Wakiliy.Application.Features.Auth.DTOs;
 using Wakiliy.Application.Helpers;
+using Wakiliy.Domain.Constants;
 using Wakiliy.Domain.Entities;
 using Wakiliy.Domain.Errors;
 using Wakiliy.Domain.Responses;
@@ -35,6 +36,16 @@ public class RegisterCommandHandler(UserManager<AppUser> userManager,
             var error = string.Join(',', result.Errors.Select(e => e.Description));
             return Result.Failure<AuthResponse>(new Error("User.InvalidPassword", error, StatusCodes.Status400BadRequest));
         }
+
+        // Assign role to user
+        var role = request.UserType switch
+        {
+            UserType.Lawyer => DefaultRoles.Lawyer,
+            UserType.Client => DefaultRoles.Client,
+            _ => throw new Exception("Invalid user type")
+        };
+
+        await userManager.AddToRoleAsync(user, role);
 
 
         // Send confirmation email to user
