@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 using Wakiliy.API.Middlewares;
 using Wakiliy.Domain.Entities;
@@ -14,7 +15,32 @@ public static class WebApplicationBuilderExtensions
     public static IServiceCollection AddPresentaion(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddControllers();
-        services.AddSwaggerGen();
+
+        services.AddSwaggerGen(c =>
+        {
+            // Add JWT button to Swagger
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+            });
+
+            // Apply Bearer token to all operations
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        []
+                    }
+                });
+        });
 
 
         // Register services

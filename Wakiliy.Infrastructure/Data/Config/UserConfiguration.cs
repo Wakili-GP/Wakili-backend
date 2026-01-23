@@ -13,18 +13,16 @@ internal class UserConfiguration : IEntityTypeConfiguration<AppUser>
             .IsRequired();
 
         builder.Property(b => b.Gender)
-            .HasMaxLength(20)
-            .IsRequired();
+            .HasMaxLength(20);
 
 
         builder.Property(b => b.Address)
-            .HasMaxLength(250)
-            .IsRequired();
+            .HasMaxLength(250);
+
 
 
         builder.Property(b => b.ImageUrl)
-            .HasMaxLength(500)
-            .IsRequired();
+            .HasMaxLength(500);
 
 
         builder.UseTptMappingStrategy();

@@ -65,7 +65,7 @@ public class DbSeeder
 
         if (adminUser == null)
         {
-            adminUser = new AppUser { UserName = adminUserName, Email = adminEmail };
+            adminUser = new AppUser { UserName = adminUserName, Email = adminEmail,EmailConfirmed = true };
             try
             {
                 var result = await userManager.CreateAsync(adminUser, adminPassword);
@@ -102,7 +102,7 @@ public class DbSeeder
 
         if (lawyerUser == null)
         {
-            lawyerUser = new AppUser { UserName = lawyerUserName, Email = lawyerEmail };
+            lawyerUser = new AppUser { UserName = lawyerUserName, Email = lawyerEmail ,EmailConfirmed = true };
             try
             {
                 var result = await userManager.CreateAsync(lawyerUser, lawyerPassword);
