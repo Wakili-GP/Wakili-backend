@@ -7,9 +7,9 @@ public class Lawyer : AppUser
     public string Specialization { get; set; } = string.Empty;
     public DateTime JoinedDate { get; set; }
     public string? Bio { get; set; }
-    public decimal? HourlyRate { get; set; }
     public int? YearsOfExperience { get; set; }
     public VerificationStatus? VerificationStatus { get; set; }
     public SessionType? SessionType { get; set; }
     public double? AverageRating { get; set; }
+    public bool IsActive { get; set; }
 }

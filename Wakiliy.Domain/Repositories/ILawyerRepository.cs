@@ -10,5 +10,6 @@ namespace Wakiliy.Domain.Repositories
     public interface ILawyerRepository
     {
         Task<int> CreateAsync(Lawyer lawyer, CancellationToken cancellationToken = default);
+        Task<int> UpdateAsync(Lawyer lawyer, CancellationToken cancellationToken = default);
     }
 }

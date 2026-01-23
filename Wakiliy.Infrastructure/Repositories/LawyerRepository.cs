@@ -16,5 +16,11 @@ namespace Wakiliy.Infrastructure.Repositories
             await dbContext.Lawyers.AddAsync(lawyer);
             return await dbContext.SaveChangesAsync(cancellationToken);
         }
+
+        public async Task<int> UpdateAsync(Lawyer lawyer, CancellationToken cancellationToken)
+        {
+            dbContext.Lawyers.Update(lawyer);
+            return await dbContext.SaveChangesAsync(cancellationToken);
+        }
     }
 }
