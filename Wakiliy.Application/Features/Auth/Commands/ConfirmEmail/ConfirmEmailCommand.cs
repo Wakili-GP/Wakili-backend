@@ -4,6 +4,6 @@ using Wakiliy.Domain.Responses;
 namespace Wakiliy.Application.Features.Auth.Commands.ConfirmEmail;
 public class ConfirmEmailCommand : IRequest<Result>
 {
-    public string UserId { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
     public string Code { get; set; } = string.Empty;
 }

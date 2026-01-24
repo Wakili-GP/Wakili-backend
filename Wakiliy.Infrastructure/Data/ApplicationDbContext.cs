@@ -9,6 +9,7 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
     // DbSets
     public DbSet<Lawyer> Lawyers { get; set; }
     public DbSet<Client> Clients { get; set; }
+    public DbSet<EmailOtp> EmailOtps { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 

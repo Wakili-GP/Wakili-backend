@@ -25,6 +25,7 @@ public static class ServiceCollectionExtensions
         // register repositories and seeders
 
         services.AddScoped<ILawyerRepository, LawyerRepository>();
+        services.AddScoped<IEmailOtpRepository, EmailOtpRepository>();
         //services.AddScoped<IRestaurantRepository, RestaurantRepository>();
         //services.AddScoped<IDishRepository, DishRepository>();
 

@@ -6,16 +6,20 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Security.Cryptography;
 using System.Text;
 using Wakiliy.Application.Features.Auth.DTOs;
 using Wakiliy.Application.Helpers;
 using Wakiliy.Domain.Constants;
 using Wakiliy.Domain.Entities;
 using Wakiliy.Domain.Errors;
+using Wakiliy.Domain.Repositories;
 using Wakiliy.Domain.Responses;
+using static System.Net.WebRequestMethods;
 
 namespace Wakiliy.Application.Features.Auth.Commands.Register;
 public class RegisterCommandHandler(UserManager<AppUser> userManager,
+    IEmailOtpRepository emailOtpRepository,
     ILogger<RegisterCommandHandler> logger,
     IHttpContextAccessor httpContextAccessor,
     IEmailSender emailSender) : IRequestHandler<RegisterCommand,Result>
@@ -49,31 +53,62 @@ public class RegisterCommandHandler(UserManager<AppUser> userManager,
 
 
         // Send confirmation email to user
-        var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
-        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+        var code = GenerateRandomNumber();
 
         logger.LogInformation("ConfirmationCode: {Code}", code);
 
-        await SendConfirmationEmail(user, code);
+        await SendOtpEmail(user, code);
 
         return Result.Success();
 
     }
+    private string GenerateRandomNumber()
+    {
+        Random random = new Random();
+        return random.Next(100000, 999999).ToString();
+    }
+    private async Task SendOtpEmail(AppUser user, string code)
+    {
+        var emailOtp = new EmailOtp
+        {
+            Email = user.Email!,
+            Code = HashOtp(code),
+            ExpireAt = DateTime.UtcNow.AddMinutes(5),
+            IsUsed = false
+        };
 
-    private async Task SendConfirmationEmail(AppUser user, string code)
+        await emailOtpRepository.AddAsync(emailOtp);
+        await emailOtpRepository.SaveChangesAsync();
+
+        await SendConfirmationEmail(user, code);
+    }
+    private async Task SendConfirmationEmail(AppUser user, string otp)
     {
         var origin = httpContextAccessor.HttpContext?.Request.Headers.Origin;
 
-        var emailBody = EmailBodyBuilder.GenerateEmailBody("EmailConfirmation",
-            new Dictionary<string, string>
-            {
-                { "{{name}}", user.FullName },
-                { "{{action_url}}", $"{origin}/auth/emailConfirmation?userId={user.Id}&code={code}" }
-            });
+        var tokens = new Dictionary<string, string>
+        {
+            { "{{name}}", user.FullName },
+            { "{{otp_1}}", otp[0].ToString() },
+            { "{{otp_2}}", otp[1].ToString() },
+            { "{{otp_3}}", otp[2].ToString() },
+            { "{{otp_4}}", otp[3].ToString() },
+            { "{{otp_5}}", otp[4].ToString() },
+            { "{{otp_6}}", otp[5].ToString() }
+        };
 
-        await emailSender.SendEmailAsync(user.Email!, "Confirm your email", emailBody);
+        var emailBody = EmailBodyBuilder.GenerateEmailBody("EmailConfirmation",tokens);
+
+        await emailSender.SendEmailAsync(user.Email!, "Your verification code", emailBody);
         //BackgroundJob.Enqueue(() => emailSender.SendEmailAsync(user.Email!, "Confirm your email", emailBody));
 
         await Task.CompletedTask;
+    }
+
+    private string HashOtp(string otp)
+    {
+        using var sha = SHA256.Create();
+        var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(otp));
+        return Convert.ToBase64String(bytes);
     }
 }
