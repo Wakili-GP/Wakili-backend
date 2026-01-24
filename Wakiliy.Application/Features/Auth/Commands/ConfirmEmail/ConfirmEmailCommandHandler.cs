@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Wakiliy.Domain.Constants;
 using Wakiliy.Domain.Entities;
+using Wakiliy.Domain.Enums;
 using Wakiliy.Domain.Errors;
 using Wakiliy.Domain.Repositories;
 using Wakiliy.Domain.Responses;
@@ -27,7 +28,7 @@ public class ConfirmEmailCommandHandler(UserManager<AppUser> userManager,ILogger
         var hashedOtp = HashOtp(request.Code);
 
         var otpEntity = await emailOtpRepository
-            .GetValidOtpAsync(request.Email, hashedOtp);
+            .GetValidOtpAsync(request.Email, hashedOtp,OtpPurpose.EmailVerification);
 
         if (otpEntity is null)
             return Result.Failure(AuthErrors.InvalidOtp);

@@ -12,6 +12,7 @@ using Wakiliy.Application.Features.Auth.DTOs;
 using Wakiliy.Application.Helpers;
 using Wakiliy.Domain.Constants;
 using Wakiliy.Domain.Entities;
+using Wakiliy.Domain.Enums;
 using Wakiliy.Domain.Errors;
 using Wakiliy.Domain.Repositories;
 using Wakiliy.Domain.Responses;
@@ -57,7 +58,20 @@ public class RegisterCommandHandler(UserManager<AppUser> userManager,
 
         logger.LogInformation("ConfirmationCode: {Code}", code);
 
-        await SendOtpEmail(user, code);
+        var emailOtp = new EmailOtp
+        {
+            Email = user.Email!,
+            Code = HashOtp(code),
+            ExpireAt = DateTime.UtcNow.AddMinutes(5),
+            IsUsed = false,
+            Purpose = OtpPurpose.EmailVerification
+        };
+
+        await emailOtpRepository.AddAsync(emailOtp);
+        await emailOtpRepository.SaveChangesAsync();
+
+
+        await SendConfirmationEmail(user, code);
 
         return Result.Success();
 
@@ -67,21 +81,7 @@ public class RegisterCommandHandler(UserManager<AppUser> userManager,
         Random random = new Random();
         return random.Next(100000, 999999).ToString();
     }
-    private async Task SendOtpEmail(AppUser user, string code)
-    {
-        var emailOtp = new EmailOtp
-        {
-            Email = user.Email!,
-            Code = HashOtp(code),
-            ExpireAt = DateTime.UtcNow.AddMinutes(5),
-            IsUsed = false
-        };
 
-        await emailOtpRepository.AddAsync(emailOtp);
-        await emailOtpRepository.SaveChangesAsync();
-
-        await SendConfirmationEmail(user, code);
-    }
     private async Task SendConfirmationEmail(AppUser user, string otp)
     {
         var origin = httpContextAccessor.HttpContext?.Request.Headers.Origin;
@@ -89,12 +89,7 @@ public class RegisterCommandHandler(UserManager<AppUser> userManager,
         var tokens = new Dictionary<string, string>
         {
             { "{{name}}", user.FullName },
-            { "{{otp_1}}", otp[0].ToString() },
-            { "{{otp_2}}", otp[1].ToString() },
-            { "{{otp_3}}", otp[2].ToString() },
-            { "{{otp_4}}", otp[3].ToString() },
-            { "{{otp_5}}", otp[4].ToString() },
-            { "{{otp_6}}", otp[5].ToString() }
+            { "{{otp}}", otp },
         };
 
         var emailBody = EmailBodyBuilder.GenerateEmailBody("EmailConfirmation",tokens);

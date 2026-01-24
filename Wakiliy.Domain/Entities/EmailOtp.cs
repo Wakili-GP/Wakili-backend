@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Wakiliy.Domain.Enums;
 
 namespace Wakiliy.Domain.Entities
 {
@@ -13,5 +14,6 @@ namespace Wakiliy.Domain.Entities
         public string Code { get; set; } = string.Empty;
         public DateTime ExpireAt { get; set; }
         public bool IsUsed { get; set; }
+        public OtpPurpose Purpose { get; set; }
     }
 }

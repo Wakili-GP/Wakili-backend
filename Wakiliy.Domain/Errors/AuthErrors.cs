@@ -18,5 +18,8 @@ namespace Wakiliy.Domain.Errors
 
         public static Error EmailAlreadyVerified =>
             new("Auth.EmailAlreadyVerified", "Email already verified", StatusCodes.Status400BadRequest);
+
+        public static Error ResendTooSoon =>
+            new("Auth.ResendTooSoon","Please wait a moment before requesting another verification code.",StatusCodes.Status429TooManyRequests);
     }
 }
