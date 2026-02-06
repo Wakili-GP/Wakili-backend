@@ -73,13 +73,8 @@ namespace Wakiliy.Application.Features.Auth.Commands.ResendConfirmEmail
 
             var tokens = new Dictionary<string, string>
         {
-            { "{{name}}", user.FullName },
-            { "{{otp_1}}", otp[0].ToString() },
-            { "{{otp_2}}", otp[1].ToString() },
-            { "{{otp_3}}", otp[2].ToString() },
-            { "{{otp_4}}", otp[3].ToString() },
-            { "{{otp_5}}", otp[4].ToString() },
-            { "{{otp_6}}", otp[5].ToString() }
+            { "{{name}}", $"{user.FirstName} {user.LastName}" },
+            { "{{otp}}", otp },
         };
 
             var emailBody = EmailBodyBuilder.GenerateEmailBody("EmailConfirmation", tokens);

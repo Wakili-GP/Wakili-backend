@@ -14,13 +14,13 @@ namespace Wakiliy.Application.Features.Auth.Commands.ForgotPassword
     public class ForgotPasswordCommandHandler(
         UserManager<AppUser> userManager,
         IEmailSender emailSender,
-        IEmailOtpRepository emailOtpRepository) : IRequestHandler<ForgetPasswordCommand, Result>
+        IEmailOtpRepository emailOtpRepository) : IRequestHandler<ForgetPasswordCommand, Result<string>>
     {
-        public async Task<Result> Handle(ForgetPasswordCommand request, CancellationToken cancellationToken)
+        public async Task<Result<string>> Handle(ForgetPasswordCommand request, CancellationToken cancellationToken)
         {
             var user = await userManager.FindByEmailAsync(request.Email);
             if (user is null)
-                return Result.Success();
+                return Result.Success("Password reset code sent to your email");
 
             await emailOtpRepository.InvalidatePreviousAsync(user.Email!);
 
@@ -40,7 +40,7 @@ namespace Wakiliy.Application.Features.Auth.Commands.ForgotPassword
 
             await SendResetPasswordOtpEmail(user, otp,emailSender);
 
-            return Result.Success();
+            return Result.Success("Password reset code sent to your email");
         }
 
         private static string HashOtp(string otp)
@@ -54,7 +54,7 @@ namespace Wakiliy.Application.Features.Auth.Commands.ForgotPassword
         {
             var tokens = new Dictionary<string, string>
             {
-                { "{{name}}", user.FullName },
+                { "{{name}}", $"{user.FirstName} {user.LastName}" },
                 { "{{otp}}", otp },
             };
 

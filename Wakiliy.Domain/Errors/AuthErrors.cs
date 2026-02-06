@@ -21,5 +21,8 @@ namespace Wakiliy.Domain.Errors
 
         public static Error ResendTooSoon =>
             new("Auth.ResendTooSoon","Please wait a moment before requesting another verification code.",StatusCodes.Status429TooManyRequests);
+
+        public static Error InvalidUserType =>
+            new("Auth.InvalidUserType", "Invalid user type. Allowed values are 'Lawyer' or 'Client'.", StatusCodes.Status400BadRequest);
     }
 }

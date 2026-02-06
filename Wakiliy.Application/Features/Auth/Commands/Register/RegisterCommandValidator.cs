@@ -1,31 +1,38 @@
 ﻿using FluentValidation;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Wakiliy.Domain.Constants;
 
 namespace Wakiliy.Application.Features.Auth.Commands.Register;
+
 public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
 {
     public RegisterCommandValidator()
     {
-        RuleFor(x => x.FullName)
-            .NotEmpty()
-            .MaximumLength(200);
+        RuleFor(x => x.FirstName)
+            .NotEmpty();
 
-        RuleFor(x => x.UserName)
-            .NotEmpty()
-            .MaximumLength(50);
+        RuleFor(x => x.LastName)
+            .NotEmpty();
 
         RuleFor(x => x.Email)
-            .NotEmpty()
-            .EmailAddress();
+            .NotEmpty().EmailAddress();
+
+        RuleFor(x => x.PhoneNumber)
+            .NotEmpty();
 
         RuleFor(x => x.Password)
+            .NotEmpty().MinimumLength(6);
+
+        RuleFor(x => x.AcceptTerms)
+            .Equal(true).WithMessage("You must accept the terms and conditions.");
+
+        RuleFor(x => x.UserType)
             .NotEmpty()
-            .Matches(RegexPatterns.Password)
-                .WithMessage("Password must be at least 6 characters long and contain at least one uppercase letter, one lowercase letter, one digit and one special character.");
+            .Must(BeAValidUserType).WithMessage("Invalid user type. Must be 'Client' or 'Lawyer'.");
+    }
+
+    private bool BeAValidUserType(string userType)
+    {
+        return Enum.TryParse<UserType>(userType, true, out _);
     }
 }

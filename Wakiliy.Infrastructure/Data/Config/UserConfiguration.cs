@@ -8,8 +8,12 @@ internal class UserConfiguration : IEntityTypeConfiguration<AppUser>
     public void Configure(EntityTypeBuilder<AppUser> builder)
     {
 
-        builder.Property(b => b.FullName)
-            .HasMaxLength(200)
+        builder.Property(b => b.FirstName)
+            .HasMaxLength(50)
+            .IsRequired();
+
+        builder.Property(b => b.LastName)
+            .HasMaxLength(50)
             .IsRequired();
 
         builder.Property(b => b.Gender)
@@ -18,8 +22,6 @@ internal class UserConfiguration : IEntityTypeConfiguration<AppUser>
 
         builder.Property(b => b.Address)
             .HasMaxLength(250);
-
-
 
         builder.Property(b => b.ImageUrl)
             .HasMaxLength(500);

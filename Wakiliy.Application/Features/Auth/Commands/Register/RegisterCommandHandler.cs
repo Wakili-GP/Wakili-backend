@@ -27,12 +27,19 @@ public class RegisterCommandHandler(UserManager<AppUser> userManager,
 {
     public async Task<Result> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
+        if (!Enum.TryParse<UserType>(request.UserType, true, out var userTypeEnum))
+        {
+            return Result.Failure(AuthErrors.InvalidUserType);
+        }
+
         var emailExists =await userManager.Users.AnyAsync(u=>u.Email==request.Email);
 
         if (emailExists)
             return Result.Failure<AuthResponse>(UserErrors.DuplicatedEmail);
 
         var user = request.Adapt<AppUser>();
+        user.UserName = request.Email;
+        user.NormalizedUserName = request.Email.ToUpper();
 
         var result = await userManager.CreateAsync(user, request.Password);
 
@@ -43,12 +50,7 @@ public class RegisterCommandHandler(UserManager<AppUser> userManager,
         }
 
         // Assign role to user
-        var role = request.UserType switch
-        {
-            UserType.Lawyer => DefaultRoles.Lawyer,
-            UserType.Client => DefaultRoles.Client,
-            _ => throw new Exception("Invalid user type")
-        };
+        var role = userTypeEnum == UserType.Lawyer ? DefaultRoles.Lawyer : DefaultRoles.Client;
 
         await userManager.AddToRoleAsync(user, role);
 
@@ -88,7 +90,7 @@ public class RegisterCommandHandler(UserManager<AppUser> userManager,
 
         var tokens = new Dictionary<string, string>
         {
-            { "{{name}}", user.FullName },
+            { "{{name}}", $"{user.FirstName} {user.LastName}" },
             { "{{otp}}", otp },
         };
 

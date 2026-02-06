@@ -14,19 +14,6 @@ namespace Wakiliy.API.Controllers
     [Authorize]
     public class AccountController(IMediator mediator) : ControllerBase
     {
-        /// <summary>
-        /// Get information about the current logged-in user.
-        /// </summary>
-        /// <returns>User profile info.</returns>
-        [HttpGet("info")]
-        [ProducesResponseType(typeof(UserInfoResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetInfo(CancellationToken cancellationToken)
-        {
-            var result = await mediator.Send(new GetAccountInfoQuery(User.GetUserId()), cancellationToken);
-
-            return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
-        }
 
         /// <summary>
         /// Update the current user's profile.

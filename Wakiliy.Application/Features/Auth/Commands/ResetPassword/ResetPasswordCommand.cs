@@ -12,6 +12,6 @@ namespace Wakiliy.Application.Features.Auth.Commands.ResetPassword
         string Email,
         string Code,
         string NewPassword
-    ) : IRequest<Result>;
+    ) : IRequest<Result<string>>;
 
 }

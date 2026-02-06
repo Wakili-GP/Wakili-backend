@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Wakiliy.Application.Features.Account.DTOs;
+using Wakiliy.Domain.Constants;
 using Wakiliy.Domain.Entities;
 using Wakiliy.Domain.Responses;
 
@@ -18,7 +19,14 @@ namespace Wakiliy.Application.Features.Account.Queries.GetInfo
             if (user is null)
                 return Result.Failure<UserInfoResponse>(new Error("User.NotFound", "User not found",StatusCodes.Status404NotFound));
 
-            return Result.Success(user.Adapt<UserInfoResponse>());
+            var roles = await userManager.GetRolesAsync(user);
+            var userType = roles.Contains(DefaultRoles.Lawyer) ? "Lawyer" : "Client";
+
+            var response = user.Adapt<UserInfoResponse>();
+            response.UserType = userType;
+            response.IsEmailVerified = user.EmailConfirmed;
+
+            return Result.Success(response);
         }
     }
 }

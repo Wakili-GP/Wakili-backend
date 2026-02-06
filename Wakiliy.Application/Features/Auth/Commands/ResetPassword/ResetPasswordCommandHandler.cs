@@ -18,24 +18,24 @@ namespace Wakiliy.Application.Features.Auth.Commands.ResetPassword
     public class ResetPasswordHandler(
         UserManager<AppUser> userManager,
         IEmailOtpRepository emailOtpRepository
-    ) : IRequestHandler<ResetPasswordCommand, Result>
+    ) : IRequestHandler<ResetPasswordCommand, Result<string>>
     {
-        public async Task<Result> Handle(ResetPasswordCommand request, CancellationToken ct)
+        public async Task<Result<string>> Handle(ResetPasswordCommand request, CancellationToken ct)
         {
             var user = await userManager.FindByEmailAsync(request.Email);
 
             if (user is null)
-                return Result.Failure(UserErrors.UserNotFound);
+                return Result.Failure<string>(UserErrors.UserNotFound);
 
             var hashedOtp = HashOtp(request.Code);
 
             var otpEntity = await emailOtpRepository.GetValidOtpAsync(request.Email,hashedOtp,OtpPurpose.PasswordReset);
 
             if (otpEntity is null)
-                return Result.Failure(AuthErrors.InvalidOtp);
+                return Result.Failure<string>(AuthErrors.InvalidOtp);
 
             if (otpEntity.ExpireAt < DateTime.UtcNow)
-                return Result.Failure(AuthErrors.ExpiredOtp);
+                return Result.Failure<string>(AuthErrors.ExpiredOtp);
 
             // reset password using Identity
             var resetToken = await userManager.GeneratePasswordResetTokenAsync(user);
@@ -44,13 +44,13 @@ namespace Wakiliy.Application.Features.Auth.Commands.ResetPassword
             if (!result.Succeeded)
             {
                 var error = result.Errors.First();
-                return Result.Failure(new Error(error.Code,error.Description,StatusCodes.Status400BadRequest));
+                return Result.Failure<string>(new Error(error.Code,error.Description,StatusCodes.Status400BadRequest));
             }
 
             otpEntity.IsUsed = true;
             await emailOtpRepository.SaveChangesAsync();
 
-            return Result.Success();
+            return Result.Success("Password reset successfully");
         }
 
         private static string HashOtp(string otp)
