@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Wakiliy.Domain.Enums
+namespace Wakiliy.Domain.Enums;
+
+public enum VerificationStatus
 {
-    public enum VerificationStatus
-    {
-        Pending,
-        Approved,
-        Rejected
-    }
+    Pending = 0,
+    UnderReview = 1,
+    Approved = 2,
+    Rejected = 3
 }

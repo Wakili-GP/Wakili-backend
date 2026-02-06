@@ -30,9 +30,8 @@ namespace Wakiliy.Application.Features.Lawyers.Commands.Create
                 .NotEmpty()
                 .MaximumLength(100);
 
-            RuleFor(x => x.Specialization)
-                .NotEmpty()
-                .MaximumLength(200);
+            RuleFor(x => x.SpecializationIds)
+                .NotEmpty();
 
             RuleFor(x => x.YearsOfExperience)
                 .GreaterThanOrEqualTo(0);

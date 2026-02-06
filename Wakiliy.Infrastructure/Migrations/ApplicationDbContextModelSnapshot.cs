@@ -22,6 +22,21 @@ namespace Wakiliy.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("LawyerSpecializations", b =>
+                {
+                    b.Property<string>("LawyerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("SpecializationId")
+                        .HasColumnType("int");
+
+                    b.HasKey("LawyerId", "SpecializationId");
+
+                    b.HasIndex("SpecializationId");
+
+                    b.ToTable("LawyerSpecializations", (string)null);
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -155,6 +170,38 @@ namespace Wakiliy.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Wakiliy.Domain.Entities.AcademicQualification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("DegreeType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FieldOfStudy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("GraduationYear")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LawyerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UniversityName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LawyerId");
+
+                    b.ToTable("AcademicQualifications");
+                });
+
             modelBuilder.Entity("Wakiliy.Domain.Entities.AppUser", b =>
                 {
                     b.Property<string>("Id")
@@ -194,7 +241,6 @@ namespace Wakiliy.Infrastructure.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("ImageUrl")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -284,6 +330,141 @@ namespace Wakiliy.Infrastructure.Migrations
                     b.ToTable("EmailOtps");
                 });
 
+            modelBuilder.Entity("Wakiliy.Domain.Entities.ProfessionalCertification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CertificateName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DocumentPath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IssuingOrganization")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LawyerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("YearObtained")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LawyerId");
+
+                    b.ToTable("ProfessionalCertifications");
+                });
+
+            modelBuilder.Entity("Wakiliy.Domain.Entities.Specialization", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreatedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("UpdatedById")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.HasIndex("UpdatedById");
+
+                    b.ToTable("Specializations");
+                });
+
+            modelBuilder.Entity("Wakiliy.Domain.Entities.VerificationDocuments", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("LawyerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LawyerId")
+                        .IsUnique();
+
+                    b.ToTable("VerificationDocuments");
+                });
+
+            modelBuilder.Entity("Wakiliy.Domain.Entities.WorkExperience", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("EndYear")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsCurrentJob")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("JobTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LawyerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("OrganizationName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StartYear")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LawyerId");
+
+                    b.ToTable("WorkExperiences");
+                });
+
             modelBuilder.Entity("Wakiliy.Domain.Entities.Client", b =>
                 {
                     b.HasBaseType("Wakiliy.Domain.Entities.AppUser");
@@ -303,7 +484,25 @@ namespace Wakiliy.Infrastructure.Migrations
                         .HasColumnType("float");
 
                     b.Property<string>("Bio")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("CompletedOnboardingSteps")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("CurrentOnboardingStep")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -311,24 +510,39 @@ namespace Wakiliy.Infrastructure.Migrations
                     b.Property<DateTime>("JoinedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("LastOnboardingUpdate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("LicenseNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SessionType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Specialization")
+                    b.Property<string>("SessionTypes")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("VerificationStatus")
+                    b.Property<int>("VerificationStatus")
                         .HasColumnType("int");
 
                     b.Property<int?>("YearsOfExperience")
                         .HasColumnType("int");
 
                     b.ToTable("Lawyers");
+                });
+
+            modelBuilder.Entity("LawyerSpecializations", b =>
+                {
+                    b.HasOne("Wakiliy.Domain.Entities.Lawyer", null)
+                        .WithMany()
+                        .HasForeignKey("LawyerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Wakiliy.Domain.Entities.Specialization", null)
+                        .WithMany()
+                        .HasForeignKey("SpecializationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -382,6 +596,240 @@ namespace Wakiliy.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Wakiliy.Domain.Entities.AcademicQualification", b =>
+                {
+                    b.HasOne("Wakiliy.Domain.Entities.Lawyer", "Lawyer")
+                        .WithMany("AcademicQualifications")
+                        .HasForeignKey("LawyerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Lawyer");
+                });
+
+            modelBuilder.Entity("Wakiliy.Domain.Entities.ProfessionalCertification", b =>
+                {
+                    b.HasOne("Wakiliy.Domain.Entities.Lawyer", "Lawyer")
+                        .WithMany("ProfessionalCertifications")
+                        .HasForeignKey("LawyerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Lawyer");
+                });
+
+            modelBuilder.Entity("Wakiliy.Domain.Entities.Specialization", b =>
+                {
+                    b.HasOne("Wakiliy.Domain.Entities.AppUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Wakiliy.Domain.Entities.AppUser", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("UpdatedBy");
+                });
+
+            modelBuilder.Entity("Wakiliy.Domain.Entities.VerificationDocuments", b =>
+                {
+                    b.HasOne("Wakiliy.Domain.Entities.Lawyer", "Lawyer")
+                        .WithOne("VerificationDocuments")
+                        .HasForeignKey("Wakiliy.Domain.Entities.VerificationDocuments", "LawyerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.OwnsMany("Wakiliy.Domain.Entities.UploadedDocument", "EducationalCertificates", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("FileName")
+                                .IsRequired()
+                                .HasMaxLength(250)
+                                .HasColumnType("nvarchar(250)");
+
+                            b1.Property<string>("FilePath")
+                                .IsRequired()
+                                .HasMaxLength(500)
+                                .HasColumnType("nvarchar(500)");
+
+                            b1.Property<int>("Status")
+                                .HasColumnType("int");
+
+                            b1.Property<Guid>("VerificationDocumentsId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("VerificationDocumentsId");
+
+                            b1.ToTable("VerificationEducationalCertificates", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("VerificationDocumentsId");
+                        });
+
+                    b.OwnsOne("Wakiliy.Domain.Entities.UploadedDocument", "LawyerLicense", b1 =>
+                        {
+                            b1.Property<Guid>("VerificationDocumentsId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("FileName")
+                                .IsRequired()
+                                .HasMaxLength(250)
+                                .HasColumnType("nvarchar(250)")
+                                .HasColumnName("LawyerLicenseFileName");
+
+                            b1.Property<string>("FilePath")
+                                .IsRequired()
+                                .HasMaxLength(500)
+                                .HasColumnType("nvarchar(500)")
+                                .HasColumnName("LawyerLicensePath");
+
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<int>("Status")
+                                .HasColumnType("int")
+                                .HasColumnName("LawyerLicenseStatus");
+
+                            b1.HasKey("VerificationDocumentsId");
+
+                            b1.ToTable("VerificationDocuments");
+
+                            b1.WithOwner()
+                                .HasForeignKey("VerificationDocumentsId");
+                        });
+
+                    b.OwnsOne("Wakiliy.Domain.Entities.UploadedDocument", "NationalIdBack", b1 =>
+                        {
+                            b1.Property<Guid>("VerificationDocumentsId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("FileName")
+                                .IsRequired()
+                                .HasMaxLength(250)
+                                .HasColumnType("nvarchar(250)")
+                                .HasColumnName("NationalIdBackFileName");
+
+                            b1.Property<string>("FilePath")
+                                .IsRequired()
+                                .HasMaxLength(500)
+                                .HasColumnType("nvarchar(500)")
+                                .HasColumnName("NationalIdBackPath");
+
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<int>("Status")
+                                .HasColumnType("int")
+                                .HasColumnName("NationalIdBackStatus");
+
+                            b1.HasKey("VerificationDocumentsId");
+
+                            b1.ToTable("VerificationDocuments");
+
+                            b1.WithOwner()
+                                .HasForeignKey("VerificationDocumentsId");
+                        });
+
+                    b.OwnsOne("Wakiliy.Domain.Entities.UploadedDocument", "NationalIdFront", b1 =>
+                        {
+                            b1.Property<Guid>("VerificationDocumentsId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("FileName")
+                                .IsRequired()
+                                .HasMaxLength(250)
+                                .HasColumnType("nvarchar(250)")
+                                .HasColumnName("NationalIdFrontFileName");
+
+                            b1.Property<string>("FilePath")
+                                .IsRequired()
+                                .HasMaxLength(500)
+                                .HasColumnType("nvarchar(500)")
+                                .HasColumnName("NationalIdFrontPath");
+
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<int>("Status")
+                                .HasColumnType("int")
+                                .HasColumnName("NationalIdFrontStatus");
+
+                            b1.HasKey("VerificationDocumentsId");
+
+                            b1.ToTable("VerificationDocuments");
+
+                            b1.WithOwner()
+                                .HasForeignKey("VerificationDocumentsId");
+                        });
+
+                    b.OwnsMany("Wakiliy.Domain.Entities.UploadedDocument", "ProfessionalCertificates", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("FileName")
+                                .IsRequired()
+                                .HasMaxLength(250)
+                                .HasColumnType("nvarchar(250)");
+
+                            b1.Property<string>("FilePath")
+                                .IsRequired()
+                                .HasMaxLength(500)
+                                .HasColumnType("nvarchar(500)");
+
+                            b1.Property<int>("Status")
+                                .HasColumnType("int");
+
+                            b1.Property<Guid>("VerificationDocumentsId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("VerificationDocumentsId");
+
+                            b1.ToTable("VerificationProfessionalCertificates", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("VerificationDocumentsId");
+                        });
+
+                    b.Navigation("EducationalCertificates");
+
+                    b.Navigation("Lawyer");
+
+                    b.Navigation("LawyerLicense")
+                        .IsRequired();
+
+                    b.Navigation("NationalIdBack")
+                        .IsRequired();
+
+                    b.Navigation("NationalIdFront")
+                        .IsRequired();
+
+                    b.Navigation("ProfessionalCertificates");
+                });
+
+            modelBuilder.Entity("Wakiliy.Domain.Entities.WorkExperience", b =>
+                {
+                    b.HasOne("Wakiliy.Domain.Entities.Lawyer", "Lawyer")
+                        .WithMany("WorkExperiences")
+                        .HasForeignKey("LawyerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Lawyer");
+                });
+
             modelBuilder.Entity("Wakiliy.Domain.Entities.Client", b =>
                 {
                     b.HasOne("Wakiliy.Domain.Entities.AppUser", null)
@@ -398,6 +846,17 @@ namespace Wakiliy.Infrastructure.Migrations
                         .HasForeignKey("Wakiliy.Domain.Entities.Lawyer", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Wakiliy.Domain.Entities.Lawyer", b =>
+                {
+                    b.Navigation("AcademicQualifications");
+
+                    b.Navigation("ProfessionalCertifications");
+
+                    b.Navigation("VerificationDocuments");
+
+                    b.Navigation("WorkExperiences");
                 });
 #pragma warning restore 612, 618
         }

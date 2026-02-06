@@ -11,5 +11,9 @@ namespace Wakiliy.Domain.Repositories
     {
         Task<int> CreateAsync(Lawyer lawyer, CancellationToken cancellationToken = default);
         Task<int> UpdateAsync(Lawyer lawyer, CancellationToken cancellationToken = default);
+        Task<Lawyer?> GetByIdAsync(string id, CancellationToken cancellationToken=default);
+        Task<Lawyer?> GetByIdWithQualificationsAndCertificationsAsync(string id, CancellationToken cancellationToken=default);
+        Task<Lawyer?> GetByIdWithExperiencesAsync(string id, CancellationToken cancellationToken=default);
+        Task<Lawyer?> GetLawyerWithVerificationAsync(string id, CancellationToken cancellationToken=default);
     }
 }

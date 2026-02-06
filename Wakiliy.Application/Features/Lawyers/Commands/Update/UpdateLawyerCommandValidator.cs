@@ -28,9 +28,9 @@ namespace Wakiliy.Application.Features.Lawyers.Commands.Update
                 .MaximumLength(100)
                 .When(x => !string.IsNullOrWhiteSpace(x.LicenseNumber));
 
-            RuleFor(x => x.Specialization)
-                .MaximumLength(200)
-                .When(x => !string.IsNullOrWhiteSpace(x.Specialization));
+            RuleFor(x => x.SpecializationIds)
+                .Must(list => list == null || list.All(id => id > 0))
+                .WithMessage("Specialization ids must be positive numbers");
 
             RuleFor(x => x.YearsOfExperience)
                 .GreaterThanOrEqualTo(0)

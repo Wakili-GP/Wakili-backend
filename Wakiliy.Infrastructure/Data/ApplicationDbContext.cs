@@ -10,6 +10,11 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
     public DbSet<Lawyer> Lawyers { get; set; }
     public DbSet<Client> Clients { get; set; }
     public DbSet<EmailOtp> EmailOtps { get; set; }
+    public DbSet<Specialization> Specializations { get; set; }
+    public DbSet<AcademicQualification> AcademicQualifications { get; set; }
+    public DbSet<ProfessionalCertification> ProfessionalCertifications { get; set; }
+    public DbSet<WorkExperience> WorkExperiences { get; set; }
+    public DbSet<VerificationDocuments> VerificationDocuments { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 

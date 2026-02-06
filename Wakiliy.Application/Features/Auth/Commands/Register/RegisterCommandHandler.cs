@@ -37,7 +37,14 @@ public class RegisterCommandHandler(UserManager<AppUser> userManager,
         if (emailExists)
             return Result.Failure<AuthResponse>(UserErrors.DuplicatedEmail);
 
-        var user = request.Adapt<AppUser>();
+        AppUser user;
+        if (userTypeEnum == UserType.Lawyer)
+            user = request.Adapt<Lawyer>();
+        else
+            user = request.Adapt<Client>();
+
+
+
         user.UserName = request.Email;
         user.NormalizedUserName = request.Email.ToUpper();
 

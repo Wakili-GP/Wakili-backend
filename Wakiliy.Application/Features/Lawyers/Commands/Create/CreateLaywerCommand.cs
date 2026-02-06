@@ -18,7 +18,7 @@ namespace Wakiliy.Application.Features.Lawyers.Commands.Create
         public string LastName { get; set; } = string.Empty;
         public string? Address { get; set; } = string.Empty;
         public string LicenseNumber { get; set; } = string.Empty;
-        public string Specialization { get; set; } = string.Empty;
+        public List<int> SpecializationIds { get; set; } = new();
         public int YearsOfExperience { get; set; }
         public VerificationStatus VerificationStatus { get; set; }
     }
