@@ -32,7 +32,7 @@ namespace Wakiliy.Infrastructure.Services
             {
                 File = new FileDescription(file.FileName, stream),
                 Folder = folder,
-                UseFilename = true,
+                UseFilename = false,
                 UniqueFilename = true,
                 Overwrite = false
             };

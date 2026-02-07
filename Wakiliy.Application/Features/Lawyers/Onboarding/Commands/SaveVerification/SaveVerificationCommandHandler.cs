@@ -36,7 +36,7 @@ public class SaveVerificationCommandHandler(
             return Result.Failure<OnboardingStepResponse<VerificationDocumentsDto>>(
                 OnboardingErrors.LawyerNotFound);
 
-        // 🧹 Delete old docs
+        // Delete old docs
         await verificationDocumentRepository
             .DeleteByLawyerIdAsync(request.UserId, cancellationToken);
 
@@ -64,13 +64,9 @@ public class SaveVerificationCommandHandler(
             LawyerOnboardingSteps.Verification,
             LawyerOnboardingSteps.Completed);
 
-        await lawyerRepository.UpdateAsync(lawyer);
+        await lawyerRepository.UpdateAsync(lawyer,cancellationToken);
 
-        return Result.Success(
-            LawyerOnboardingHelper.BuildResponse(
-                lawyer,
-                new VerificationDocumentsDto(),
-                "Verification documents saved"));
+        return Result.Success(LawyerOnboardingHelper.BuildResponse(lawyer,PopulateResponsed(lawyer.VerificationDocuments),"Verification documents saved"));
     }
 
 
@@ -85,6 +81,7 @@ public class SaveVerificationCommandHandler(
         {
             LawyerId = userId,
             FileId = uploaded.Id,
+            File = uploaded,
             Type = type
         };
     }
@@ -123,5 +120,23 @@ public class SaveVerificationCommandHandler(
 
         await uploadedFileRepository.AddAsync(entity, CancellationToken.None);
         return entity;
+    }
+
+    private VerificationDocumentsDto PopulateResponsed(ICollection<VerificationDocuments> documents)
+    {
+        return new VerificationDocumentsDto
+        {
+            NationalIdFront = documents.FirstOrDefault(d => d.Type == VerificationDocumentType.NationalIdFront)?.File?.SystemFileUrl,
+            NationalIdBack = documents.FirstOrDefault(d => d.Type == VerificationDocumentType.NationalIdBack)?.File?.SystemFileUrl,
+            LawyerLicense = documents.FirstOrDefault(d => d.Type == VerificationDocumentType.LawyerLicense)?.File?.SystemFileUrl,
+            EducationalCertificates = documents
+                .Where(d => d.Type == VerificationDocumentType.EducationalCertificate)
+                .Select(d => d.File?.SystemFileUrl ?? string.Empty)
+                .ToList(),
+            ProfessionalCertificates = documents
+                .Where(d => d.Type == VerificationDocumentType.ProfessionalCertificate)
+                .Select(d => d.File?.SystemFileUrl ?? string.Empty)
+                .ToList()
+        };
     }
 }

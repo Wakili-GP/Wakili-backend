@@ -26,7 +26,20 @@ namespace Wakiliy.API.Controllers
             var cloudinaryUrl =
                 $"https://res.cloudinary.com/{cloudName}/raw/upload/{file.PublicId}";
 
-            return Redirect(cloudinaryUrl);
+            using var httpClient = new HttpClient();
+            var response = await httpClient.GetAsync(cloudinaryUrl);
+
+            if (!response.IsSuccessStatusCode)
+                return NotFound();
+
+            var stream = await response.Content.ReadAsStreamAsync();
+            var contentType = file.ContentType ?? "application/octet-stream";
+
+            return File(
+                stream,
+                contentType,
+                file.FileName
+            );
         }
 
     }

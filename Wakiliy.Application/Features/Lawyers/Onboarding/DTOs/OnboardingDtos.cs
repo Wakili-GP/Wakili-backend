@@ -82,11 +82,11 @@ public class WorkExperienceDto
 
 public class VerificationDocumentsDto
 {
-    public UploadedDocumentDto? NationalIdFront { get; set; }
-    public UploadedDocumentDto? NationalIdBack { get; set; }
-    public UploadedDocumentDto? LawyerLicense { get; set; }
-    public List<UploadedDocumentDto> EducationalCertificates { get; set; } = new();
-    public List<UploadedDocumentDto> ProfessionalCertificates { get; set; } = new();
+    public string? NationalIdFront { get; set; }
+    public string? NationalIdBack { get; set; }
+    public string? LawyerLicense { get; set; }
+    public List<string> EducationalCertificates { get; set; } = new();
+    public List<string> ProfessionalCertificates { get; set; } = new();
 }
 
 public class UploadedDocumentDto
