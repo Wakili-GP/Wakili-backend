@@ -16,7 +16,13 @@ namespace Wakiliy.Application.Features.Lawyers.Onboarding.Mapping
                 .Map(dest => dest.NationalIdBack,
                      src => src.VerificationDocuments.FirstOrDefault(d => d.Type == VerificationDocumentType.NationalIdBack).File.SystemFileUrl)
                 .Map(dest => dest.LawyerLicense,
-                     src => src.VerificationDocuments.FirstOrDefault(d => d.Type == VerificationDocumentType.LawyerLicense).File.SystemFileUrl)
+                     src => new LawyerLicenseDto
+                     {
+                         LicensePath = src.VerificationDocuments.FirstOrDefault(d => d.Type == VerificationDocumentType.LawyerLicense).File.SystemFileUrl,
+                         IssuingAuthority = src.IssuingAuthority,
+                         LicenseNumber = src.LicenseNumber,
+                         LicenseYear = src.LicenseYear
+                     })
                 .Map(dest => dest.EducationalCertificates,
                      src => src.VerificationDocuments.Where(d => d.Type == VerificationDocumentType.EducationalCertificate).Select(d => d.File.SystemFileUrl).ToList())
                 .Map(dest => dest.ProfessionalCertificates,

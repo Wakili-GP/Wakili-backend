@@ -34,7 +34,6 @@ namespace Wakiliy.Application.Features.Lawyers.Commands.Create
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 Address = request.Address,
-                LicenseNumber = request.LicenseNumber,
                 YearsOfExperience = request.YearsOfExperience,
                 VerificationStatus = request.VerificationStatus,
                 JoinedDate = DateTime.UtcNow,

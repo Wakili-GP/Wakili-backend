@@ -17,8 +17,6 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
         RuleFor(x => x.Email)
             .NotEmpty().EmailAddress();
 
-        RuleFor(x => x.PhoneNumber)
-            .NotEmpty();
 
         RuleFor(x => x.Password)
             .NotEmpty().MinimumLength(6);

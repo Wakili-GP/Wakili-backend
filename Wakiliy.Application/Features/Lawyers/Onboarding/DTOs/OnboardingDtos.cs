@@ -82,11 +82,19 @@ public class WorkExperienceDto
 
 public class VerificationDocumentsDto
 {
-    public string? NationalIdFront { get; set; }
-    public string? NationalIdBack { get; set; }
-    public string? LawyerLicense { get; set; }
+    public string NationalIdFront { get; set; } = string.Empty;
+    public string NationalIdBack { get; set; } = string.Empty;
+    public LawyerLicenseDto LawyerLicense { get; set; } = default!;
     public List<string> EducationalCertificates { get; set; } = new();
     public List<string> ProfessionalCertificates { get; set; } = new();
+}
+
+public class LawyerLicenseDto
+{
+    public string LicensePath { get; set; } = string.Empty;
+    public string LicenseNumber { get; set; } = string.Empty;
+    public string IssuingAuthority { get; set; } = string.Empty;
+    public string LicenseYear { get; set; } = string.Empty;
 }
 
 public class UploadedDocumentDto

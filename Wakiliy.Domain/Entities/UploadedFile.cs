@@ -10,7 +10,6 @@ namespace Wakiliy.Domain.Entities
     {
         public Guid Id { get; set; }
         public string OwnerId { get; set; } = string.Empty;
-        public AppUser Owner { get; set; } = default;
         public string FileName { get; set; } = string.Empty;
         public string PublicId { get; set; } = string.Empty;
         public string SystemFileUrl { get; set; } = string.Empty;

@@ -1,18 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Wakiliy.Application.Common.Interfaces;
 using Wakiliy.Application.Features.Lawyers.Onboarding.Common;
 using Wakiliy.Application.Features.Lawyers.Onboarding.DTOs;
 using Wakiliy.Application.Repositories;
 using Wakiliy.Domain.Constants;
 using Wakiliy.Domain.Entities;
-using Wakiliy.Domain.Enums;
 using Wakiliy.Domain.Errors;
 using Wakiliy.Domain.Repositories;
 using Wakiliy.Domain.Responses;
@@ -45,7 +38,7 @@ public class SaveVerificationCommandHandler(
         // Single files
         documents.Add(await CreateDoc(request.NationalIdFront, request.UserId, VerificationDocumentType.NationalIdFront));
         documents.Add(await CreateDoc(request.NationalIdBack, request.UserId, VerificationDocumentType.NationalIdBack));
-        documents.Add(await CreateDoc(request.LawyerLicense, request.UserId, VerificationDocumentType.LawyerLicense));
+        documents.Add(await CreateDoc(request.License.LicenseFile, request.UserId, VerificationDocumentType.LawyerLicense));
 
         // Multiple files
         documents.AddRange(await CreateMultipleDocs(
@@ -59,6 +52,9 @@ public class SaveVerificationCommandHandler(
             VerificationDocumentType.ProfessionalCertificate));
 
         lawyer.VerificationDocuments = documents;
+        lawyer.LicenseNumber = request.License.LicenseNumber;
+        lawyer.LicenseYear = request.License.LicenseYear;
+        lawyer.IssuingAuthority = request.License.IssuingAuthority;
 
         lawyer.MarkStepCompleted(
             LawyerOnboardingSteps.Verification,
@@ -66,7 +62,7 @@ public class SaveVerificationCommandHandler(
 
         await lawyerRepository.UpdateAsync(lawyer,cancellationToken);
 
-        return Result.Success(LawyerOnboardingHelper.BuildResponse(lawyer,PopulateResponsed(lawyer.VerificationDocuments),"Verification documents saved"));
+        return Result.Success(LawyerOnboardingHelper.BuildResponse(lawyer,PopulateResponsed(lawyer),"Verification documents saved"));
     }
 
 
@@ -122,18 +118,24 @@ public class SaveVerificationCommandHandler(
         return entity;
     }
 
-    private VerificationDocumentsDto PopulateResponsed(ICollection<VerificationDocuments> documents)
+    private VerificationDocumentsDto PopulateResponsed(Lawyer lawyer)
     {
         return new VerificationDocumentsDto
         {
-            NationalIdFront = documents.FirstOrDefault(d => d.Type == VerificationDocumentType.NationalIdFront)?.File?.SystemFileUrl,
-            NationalIdBack = documents.FirstOrDefault(d => d.Type == VerificationDocumentType.NationalIdBack)?.File?.SystemFileUrl,
-            LawyerLicense = documents.FirstOrDefault(d => d.Type == VerificationDocumentType.LawyerLicense)?.File?.SystemFileUrl,
-            EducationalCertificates = documents
+            NationalIdFront = lawyer.VerificationDocuments.FirstOrDefault(d => d.Type == VerificationDocumentType.NationalIdFront)?.File?.SystemFileUrl,
+            NationalIdBack = lawyer.VerificationDocuments.FirstOrDefault(d => d.Type == VerificationDocumentType.NationalIdBack)?.File?.SystemFileUrl,
+            LawyerLicense = new LawyerLicenseDto
+            {
+                LicensePath = lawyer.VerificationDocuments.FirstOrDefault(d => d.Type == VerificationDocumentType.LawyerLicense)?.File?.SystemFileUrl,
+                LicenseNumber = lawyer.LicenseNumber,
+                LicenseYear = lawyer.LicenseYear,
+                IssuingAuthority = lawyer.IssuingAuthority
+            },
+            EducationalCertificates = lawyer.VerificationDocuments
                 .Where(d => d.Type == VerificationDocumentType.EducationalCertificate)
                 .Select(d => d.File?.SystemFileUrl ?? string.Empty)
                 .ToList(),
-            ProfessionalCertificates = documents
+            ProfessionalCertificates = lawyer.VerificationDocuments
                 .Where(d => d.Type == VerificationDocumentType.ProfessionalCertificate)
                 .Select(d => d.File?.SystemFileUrl ?? string.Empty)
                 .ToList()

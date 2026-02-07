@@ -12,6 +12,7 @@ public class SaveBasicInfoCommand : IRequest<Result<OnboardingStepResponse<Basic
     [JsonIgnore]
     public string UserId { get; set; } = string.Empty;
     public IFormFile? ProfileImage { get; set; }
+    public string PhoneNumber { get; set; } = string.Empty;
     public string Country { get; set; } = string.Empty;
     public string City { get; set; } = string.Empty;
     public string? Bio { get; set; }

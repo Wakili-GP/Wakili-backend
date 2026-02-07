@@ -29,11 +29,6 @@ namespace Wakiliy.Infrastructure.Data.Config
             builder.Property(x => x.Purpose)
                 .HasConversion<string>();
 
-            builder.HasOne(f => f.Owner)
-                .WithMany(u => u.ImageProfileFile)
-                .HasForeignKey(f => f.OwnerId)
-                .OnDelete(DeleteBehavior.Cascade);
-
         }
     }
 }

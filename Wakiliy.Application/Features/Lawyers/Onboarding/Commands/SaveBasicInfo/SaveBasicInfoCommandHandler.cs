@@ -53,8 +53,7 @@ public class SaveBasicInfoCommandHandler(
 
         if (request.ProfileImage is not null)
         {
-            var file = await SaveAndUploadImageAsync(request.ProfileImage,lawyer.Id,cancellationToken);
-            lawyer.ImageProfileFile.Add(file);
+            lawyer.ProfileImage = await SaveAndUploadImageAsync(request.ProfileImage,lawyer.Id,cancellationToken);
         }
 
         lawyer.MarkStepCompleted(LawyerOnboardingSteps.BasicInfo, LawyerOnboardingSteps.Education);
@@ -63,7 +62,7 @@ public class SaveBasicInfoCommandHandler(
 
         responseData = lawyer.Adapt<BasicInfoDataDto>();
         responseData.PracticeAreas = lawyer.Specializations.Adapt<List<SpecializationOptionDto>>();
-        responseData.ProfileImage = lawyer.ImageProfileFile.Last().SystemFileUrl;
+        responseData.ProfileImage = lawyer.ProfileImage?.SystemFileUrl;
 
 
         var response = LawyerOnboardingHelper.BuildResponse(lawyer, responseData, "Basic info saved successfully");
