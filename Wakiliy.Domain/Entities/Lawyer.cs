@@ -25,7 +25,7 @@ public class Lawyer : AppUser
     public List<WorkExperience> WorkExperiences { get; set; } = new();
 
     
-    public VerificationDocuments? VerificationDocuments { get; set; }
+    public ICollection<VerificationDocuments>? VerificationDocuments { get; set; } = new List<VerificationDocuments>();
     public VerificationStatus VerificationStatus { get; set; } = VerificationStatus.Pending;
 
     // ===== Onboarding Progress =====

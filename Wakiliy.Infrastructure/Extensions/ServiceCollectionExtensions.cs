@@ -34,6 +34,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUploadedFileRepository, UploadedFileRepository>();
         services.AddScoped<IAcademicQualificationRepository, AcademicQualificationRepository>();
         services.AddScoped<IProfessionalCertificationRepository, ProfessionalCertificationRepository>();
+        services.AddScoped<IVerificationDocumentRepository, VerificationDocumentRepository>();
 
 
 

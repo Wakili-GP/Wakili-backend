@@ -6,14 +6,21 @@ namespace Wakiliy.Domain.Entities;
 public class VerificationDocuments
 {
     public Guid Id { get; set; }
-    public string LawyerId { get; set; } = string.Empty;
 
-    public string NationalIdFrontUrl { get; set; } = string.Empty;
-    public string NationalIdBackUrl { get; set; } = string.Empty;
-    public string LawyerLicenseUrl { get; set; } = string.Empty;
-
-    public List<string> EducationalCertificatesUrls { get; set; } = new();
-    public List<string> ProfessionalCertificatesUrls { get; set; } = new();
-
+    public string LawyerId { get; set; } = default!;
     public Lawyer Lawyer { get; set; } = default!;
+
+    public Guid? FileId { get; set; }
+    public UploadedFile? File { get; set; }
+
+    public VerificationDocumentType Type { get; set; }
+}
+
+public enum VerificationDocumentType
+{
+    NationalIdFront,
+    NationalIdBack,
+    LawyerLicense,
+    EducationalCertificate,
+    ProfessionalCertificate
 }
