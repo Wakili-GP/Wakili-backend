@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using Wakiliy.Application.Features.Specializations.DTOs;
@@ -37,7 +38,7 @@ public class BasicInfoDataDto
 public class EducationDataDto
 {
     public List<AcademicQualificationDto> AcademicQualifications { get; set; } = new();
-    public List<ProfessionalCertificationDto> ProfessionalCertifications { get; set; } = new();
+    public List<ProfessionalCertificationResponseDto> ProfessionalCertifications { get; set; } = new();
 }
 
 public class AcademicQualificationDto
@@ -53,7 +54,15 @@ public class ProfessionalCertificationDto
     public string CertificateName { get; set; } = string.Empty;
     public string IssuingOrganization { get; set; } = string.Empty;
     public string YearObtained { get; set; } = string.Empty;
-    public string Document { get; set; } = string.Empty;
+    public IFormFile Document { get; set; } = default!;
+}
+
+public class ProfessionalCertificationResponseDto
+{
+    public string CertificateName { get; set; } = string.Empty;
+    public string IssuingOrganization { get; set; } = string.Empty;
+    public string YearObtained { get; set; } = string.Empty;
+    public string DocumentPath { get; set; } = default!;
 }
 
 public class ExperienceDataDto

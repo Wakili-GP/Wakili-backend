@@ -32,7 +32,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ISpecializationRepository, SpecializationRepository>();
         services.AddScoped<IEmailOtpRepository, EmailOtpRepository>();
         services.AddScoped<IUploadedFileRepository, UploadedFileRepository>();
-        
+        services.AddScoped<IAcademicQualificationRepository, AcademicQualificationRepository>();
+        services.AddScoped<IProfessionalCertificationRepository, ProfessionalCertificationRepository>();
+
+
 
         // Register Services
         services.AddScoped<IEmailSender, EmailService>();

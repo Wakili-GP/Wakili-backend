@@ -35,7 +35,7 @@ public class LawyerOnboardingController(IMediator mediator) : ControllerBase
     [HttpPost("education")]
     [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> SaveEducation([FromBody] SaveEducationCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> SaveEducation([FromForm] SaveEducationCommand command, CancellationToken cancellationToken)
     {
         command.UserId = User.GetUserId();
         var result = await mediator.Send(command, cancellationToken);

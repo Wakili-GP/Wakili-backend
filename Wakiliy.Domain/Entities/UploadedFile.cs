@@ -19,6 +19,7 @@ namespace Wakiliy.Domain.Entities
         public FileCategory Category { get; set; }
         public FilePurpose Purpose { get; set; }
         public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
+
     }
 
     public enum FileCategory
