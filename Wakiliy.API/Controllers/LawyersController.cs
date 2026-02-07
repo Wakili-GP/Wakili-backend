@@ -10,7 +10,9 @@ using Wakiliy.Application.Features.Lawyers.Commands.Update;
 using Wakiliy.Application.Features.Lawyers.DTOs;
 using Wakiliy.Application.Features.Lawyers.Queries.GetAll;
 using Wakiliy.Application.Features.Lawyers.Queries.GetById;
+using Wakiliy.Application.Features.Lawyers.Queries.GetVerificationRequests;
 using Wakiliy.Domain.Constants;
+using Wakiliy.Domain.Enums;
 
 namespace Wakiliy.API.Controllers
 {
@@ -47,6 +49,20 @@ namespace Wakiliy.API.Controllers
         public async Task<IActionResult> GetAllLawyers(CancellationToken cancellationToken)
         {
             var result = await mediator.Send(new GetAllLawyersQuery(), cancellationToken);
+            return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+        }
+
+        /// <summary>
+        /// Get lawyer verification requests with optional status filters.
+        /// </summary>
+        /// <param name="status">Verification status filter.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>List of verification requests.</returns>
+        [HttpGet("lawyer-verification")]
+        [ProducesResponseType(typeof(List<LawyerVerificationRequestResponse>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetLawyerVerificationRequests([FromQuery] VerificationStatus? status, CancellationToken cancellationToken)
+        {
+            var result = await mediator.Send(new GetLawyerVerificationRequestsQuery(status), cancellationToken);
             return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
         }
 

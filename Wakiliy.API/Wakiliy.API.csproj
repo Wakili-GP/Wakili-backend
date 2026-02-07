@@ -23,4 +23,11 @@
     <ProjectReference Include="..\Wakiliy.Infrastructure\Wakiliy.Infrastructure.csproj" />
   </ItemGroup>
 
+    <ItemGroup>
+	    <Content Include="Templates\**\*">
+		    <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+	    </Content>
+    </ItemGroup>
+
+
 </Project>

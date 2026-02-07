@@ -66,5 +66,10 @@ namespace Wakiliy.Infrastructure.Repositories
                 .Include(l => l.VerificationDocuments).ThenInclude(vd => vd.File)
                 .FirstOrDefaultAsync(l => l.Id == id);
         }
+
+        public IQueryable<Lawyer> GetVerificationRequestsQueryable()
+        {
+            return dbContext.Lawyers.AsNoTracking();
+        }
     }
 }
