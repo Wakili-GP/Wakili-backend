@@ -15,5 +15,6 @@ namespace Wakiliy.Domain.Repositories
         Task<Lawyer?> GetByIdWithQualificationsAndCertificationsAsync(string id, CancellationToken cancellationToken=default);
         Task<Lawyer?> GetByIdWithExperiencesAsync(string id, CancellationToken cancellationToken=default);
         Task<Lawyer?> GetLawyerWithVerificationAsync(string id, CancellationToken cancellationToken=default);
+        Task<Lawyer?> GetByIdWithAllOnboardingDataAsync(string id);
     }
 }

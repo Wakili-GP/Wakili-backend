@@ -7,6 +7,7 @@ using Wakiliy.Application.Features.Lawyers.Onboarding.Commands.SaveBasicInfo;
 using Wakiliy.Application.Features.Lawyers.Onboarding.Commands.SaveEducation;
 using Wakiliy.Application.Features.Lawyers.Onboarding.Commands.SaveExperience;
 using Wakiliy.Application.Features.Lawyers.Onboarding.Commands.SaveVerification;
+using Wakiliy.Application.Features.Lawyers.Queries.GetOnboardingProgress;
 using Wakiliy.Domain.Constants;
 
 namespace Wakiliy.API.Controllers;
@@ -65,6 +66,17 @@ public class LawyerOnboardingController(IMediator mediator) : ControllerBase
     {
         command.UserId = User.GetUserId();
         var result = await mediator.Send(command, cancellationToken);
+        return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
+    }
+
+    /// <summary>
+    /// Gets the lawyer's current onboarding progress and all submitted data.
+    /// </summary>
+    [HttpGet("progress")]
+    public async Task<IActionResult> GetProgress(CancellationToken cancellationToken)
+    {
+        var query = new GetOnboardingProgressQuery(User.GetUserId());
+        var result = await mediator.Send(query, cancellationToken);
         return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
     }
 }

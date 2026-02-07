@@ -55,5 +55,16 @@ namespace Wakiliy.Infrastructure.Repositories
                     //.ThenInclude(v => v.ProfessionalCertificates)
                 .FirstOrDefaultAsync(l => l.Id == id, cancellationToken);
         }
+
+        public async Task<Lawyer?> GetByIdWithAllOnboardingDataAsync(string id)
+        {
+            return await dbContext.Lawyers
+                .Include(l => l.Specializations)
+                .Include(l => l.AcademicQualifications)
+                .Include(l => l.ProfessionalCertifications).ThenInclude(pc => pc.Document)
+                .Include(l => l.WorkExperiences)
+                .Include(l => l.VerificationDocuments).ThenInclude(vd => vd.File)
+                .FirstOrDefaultAsync(l => l.Id == id);
+        }
     }
 }
