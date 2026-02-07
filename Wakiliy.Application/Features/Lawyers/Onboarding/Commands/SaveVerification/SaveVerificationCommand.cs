@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Wakiliy.Application.Features.Lawyers.Onboarding.DTOs;
 using Wakiliy.Domain.Responses;
 
@@ -11,9 +12,9 @@ public class SaveVerificationCommand : IRequest<Result<OnboardingStepResponse<Ve
     [JsonIgnore]
     public string UserId { get; set; } = string.Empty;
 
-    public UploadedDocumentDto NationalIdFront { get; set; } = new();
-    public UploadedDocumentDto NationalIdBack { get; set; } = new();
-    public UploadedDocumentDto LawyerLicense { get; set; } = new();
-    public List<UploadedDocumentDto> EducationalCertificates { get; set; } = new();
-    public List<UploadedDocumentDto> ProfessionalCertificates { get; set; } = new();
+    public IFormFile NationalIdFront { get; set; } = default!;
+    public IFormFile NationalIdBack { get; set; } = default!;
+    public IFormFile LawyerLicense { get; set; } = default!;
+    public List<IFormFile> EducationalCertificates { get; set; } = new();
+    public List<IFormFile> ProfessionalCertificates { get; set; } = new();
 }

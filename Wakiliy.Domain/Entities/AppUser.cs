@@ -5,7 +5,7 @@ public class AppUser : IdentityUser
 {
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
-    public string? ImageUrl { get; set; } = string.Empty;
+    public List<UploadedFile> ImageProfileFile { get; set; } = [];
     public bool? AcceptTerms { get; set; }
     public string? Gender { get; set; }
     public string? Address { get; set; }

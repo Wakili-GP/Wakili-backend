@@ -1,17 +1,21 @@
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1.Ocsp;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Wakiliy.Application.Common.Interfaces;
 using Wakiliy.Application.Features.Lawyers.Onboarding.Common;
 using Wakiliy.Application.Features.Lawyers.Onboarding.DTOs;
 using Wakiliy.Application.Features.Specializations.DTOs;
+using Wakiliy.Application.Repositories;
 using Wakiliy.Domain.Constants;
 using Wakiliy.Domain.Entities;
+using Wakiliy.Domain.Enums;
 using Wakiliy.Domain.Errors;
 using Wakiliy.Domain.Repositories;
 using Wakiliy.Domain.Responses;
@@ -19,9 +23,10 @@ using Wakiliy.Domain.Responses;
 namespace Wakiliy.Application.Features.Lawyers.Onboarding.Commands.SaveBasicInfo;
 
 public class SaveBasicInfoCommandHandler(
-    UserManager<AppUser> userManager,
     ILawyerRepository lawyerRepository,
-    ISpecializationRepository specializationRepository)
+    ISpecializationRepository specializationRepository,
+    IFileUploadService fileUploadService,
+    IUploadedFileRepository uploadedFileRepository)
     : IRequestHandler<SaveBasicInfoCommand, Result<OnboardingStepResponse<BasicInfoDataDto>>>
 {
     public async Task<Result<OnboardingStepResponse<BasicInfoDataDto>>> Handle(SaveBasicInfoCommand request, CancellationToken cancellationToken)
@@ -43,25 +48,50 @@ public class SaveBasicInfoCommandHandler(
         foreach (var specialization in selectedSpecializations)
             lawyer.Specializations.Add(specialization);
 
-        if (!string.IsNullOrEmpty(request.ProfileImage))
-            lawyer.ImageUrl = request.ProfileImage;
+        BasicInfoDataDto responseData = new();
+
+
+        if (request.ProfileImage is not null)
+        {
+            var file = await SaveAndUploadImageAsync(request.ProfileImage,lawyer.Id,cancellationToken);
+            lawyer.ImageProfileFile.Add(file);
+        }
 
         lawyer.MarkStepCompleted(LawyerOnboardingSteps.BasicInfo, LawyerOnboardingSteps.Education);
 
-        var result = await userManager.UpdateAsync(lawyer);
-        if (!result.Succeeded)
-        {
-            var error = result.Errors.First();
-            return Result.Failure<OnboardingStepResponse<BasicInfoDataDto>>(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
-        }
+        await lawyerRepository.UpdateAsync(lawyer,cancellationToken);
 
-        var responseData = lawyer.Adapt<BasicInfoDataDto>();
+        responseData = lawyer.Adapt<BasicInfoDataDto>();
         responseData.PracticeAreas = lawyer.Specializations.Adapt<List<SpecializationOptionDto>>();
-        responseData.ProfileImage = lawyer.ImageUrl;
+        responseData.ProfileImage = lawyer.ImageProfileFile.Last().SystemFileUrl;
 
 
         var response = LawyerOnboardingHelper.BuildResponse(lawyer, responseData, "Basic info saved successfully");
         return Result.Success(response);
     }
-  
+
+    private async Task<UploadedFile> SaveAndUploadImageAsync(IFormFile profileImage,string userId,CancellationToken cancellationToken)
+    {
+        var uploadResult = await fileUploadService.UploadAsync(profileImage, "uploads");
+
+        var fileEntity = new UploadedFile
+        {
+            Id = Guid.NewGuid(),
+            OwnerId = userId,
+
+            FileName = uploadResult.FileName,
+            PublicId = uploadResult.PublicId,
+            Size = uploadResult.Size,
+            ContentType = uploadResult.ContentType,
+
+            Category = FileCategory.ProfilePicture,
+            Purpose = FilePurpose.Profile,
+        };
+
+        fileEntity.SystemFileUrl = $"/api/files/{fileEntity.Id}";
+
+        await uploadedFileRepository.AddAsync(fileEntity,cancellationToken);
+
+        return fileEntity;
+    }
 }

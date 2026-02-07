@@ -7,29 +7,17 @@ public class SaveVerificationCommandValidator : AbstractValidator<SaveVerificati
 {
     public SaveVerificationCommandValidator()
     {
-        RuleFor(x => x.NationalIdFront).SetValidator(new UploadedDocumentValidator());
-        RuleFor(x => x.NationalIdBack).SetValidator(new UploadedDocumentValidator());
-        RuleFor(x => x.LawyerLicense).SetValidator(new UploadedDocumentValidator());
+        RuleFor(x => x.NationalIdFront).NotNull().WithMessage("National ID front image is required");
+        RuleFor(x => x.NationalIdBack).NotNull().WithMessage("National ID back image is required");
+        RuleFor(x => x.LawyerLicense).NotNull().WithMessage("Lawyer license image is required");
 
         RuleForEach(x => x.EducationalCertificates)
-            .SetValidator(new UploadedDocumentValidator());
+            .NotNull()
+            .WithMessage("Educational certificate files cannot be null");
 
         RuleForEach(x => x.ProfessionalCertificates)
-            .SetValidator(new UploadedDocumentValidator());
+            .NotNull()
+            .WithMessage("Professional certificate files cannot be null");
     }
 
-    private class UploadedDocumentValidator : AbstractValidator<UploadedDocumentDto>
-    {
-        public UploadedDocumentValidator()
-        {
-            RuleFor(x => x.File)
-                .NotEmpty();
-
-            RuleFor(x => x.FileName)
-                .NotEmpty();
-
-            RuleFor(x => x.Status)
-                .NotEmpty();
-        }
-    }
 }

@@ -8,12 +8,12 @@ public class VerificationDocuments
     public Guid Id { get; set; }
     public string LawyerId { get; set; } = string.Empty;
 
-    public UploadedDocument NationalIdFront { get; set; } = new();
-    public UploadedDocument NationalIdBack { get; set; } = new();
-    public UploadedDocument LawyerLicense { get; set; } = new();
+    public string NationalIdFrontUrl { get; set; } = string.Empty;
+    public string NationalIdBackUrl { get; set; } = string.Empty;
+    public string LawyerLicenseUrl { get; set; } = string.Empty;
 
-    public List<UploadedDocument> EducationalCertificates { get; set; } = new();
-    public List<UploadedDocument> ProfessionalCertificates { get; set; } = new();
+    public List<string> EducationalCertificatesUrls { get; set; } = new();
+    public List<string> ProfessionalCertificatesUrls { get; set; } = new();
 
     public Lawyer Lawyer { get; set; } = default!;
 }

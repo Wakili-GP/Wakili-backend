@@ -23,9 +23,6 @@ internal class UserConfiguration : IEntityTypeConfiguration<AppUser>
         builder.Property(b => b.Address)
             .HasMaxLength(250);
 
-        builder.Property(b => b.ImageUrl)
-            .HasMaxLength(500);
-
 
         builder.UseTptMappingStrategy();
     }

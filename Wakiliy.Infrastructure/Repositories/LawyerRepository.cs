@@ -50,9 +50,9 @@ namespace Wakiliy.Infrastructure.Repositories
         {
             return await dbContext.Lawyers
                 .Include(l => l.VerificationDocuments)
-                    .ThenInclude(v => v.EducationalCertificates)
+                    //.ThenInclude(v => v.EducationalCertificates)
                 .Include(l => l.VerificationDocuments)
-                    .ThenInclude(v => v.ProfessionalCertificates)
+                    //.ThenInclude(v => v.ProfessionalCertificates)
                 .FirstOrDefaultAsync(l => l.Id == id, cancellationToken);
         }
     }

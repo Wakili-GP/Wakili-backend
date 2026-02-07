@@ -22,7 +22,7 @@ public class LawyerOnboardingController(IMediator mediator) : ControllerBase
     [HttpPost("basic-info")]
     [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> SaveBasicInfo([FromBody] SaveBasicInfoCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> SaveBasicInfo([FromForm] SaveBasicInfoCommand command, CancellationToken cancellationToken)
     {
         command.UserId = User.GetUserId();
         var result = await mediator.Send(command, cancellationToken);
