@@ -23,6 +23,11 @@ internal class UserConfiguration : IEntityTypeConfiguration<AppUser>
         builder.Property(b => b.Address)
             .HasMaxLength(250);
 
+        builder.Property(b=>b.Status)
+            .HasConversion<string>()
+            .HasMaxLength(20)
+            .IsRequired();
+
 
         builder.UseTptMappingStrategy();
     }
