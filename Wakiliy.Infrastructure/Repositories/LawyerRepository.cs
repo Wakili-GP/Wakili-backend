@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Wakiliy.Domain.Common.Models;
 using Wakiliy.Domain.Entities;
+using Wakiliy.Domain.Enums;
 using Wakiliy.Domain.Repositories;
 using Wakiliy.Infrastructure.Data;
 
@@ -70,6 +72,36 @@ namespace Wakiliy.Infrastructure.Repositories
         public IQueryable<Lawyer> GetVerificationRequestsQueryable()
         {
             return dbContext.Lawyers.AsNoTracking();
+        }
+
+        public async Task<List<LawyerVerificationModel>> GetVerificationRequestsAsync(
+            VerificationStatus? status, 
+            CancellationToken cancellationToken = default)
+        {
+            var query = dbContext.Lawyers
+                .Include(l => l.Specializations)
+                .AsNoTracking();
+
+            if (status.HasValue)
+            {
+                query = query.Where(l => l.VerificationStatus == status.Value);
+            }
+
+            var result = await query
+                .Select(l => new LawyerVerificationModel
+                {
+                    Id = l.Id,
+                    FirstName = l.FirstName,
+                    LastName = l.LastName,
+                    Email = l.Email,
+                    Specializations = string.Join(", ", l.Specializations.Select(s => s.Name)),
+                    SubmittedAt = l.LastOnboardingUpdate,
+                    ProfileImageUrl = l.ProfileImage.SystemFileUrl,
+                    Status = l.VerificationStatus.ToString()
+                })
+                .ToListAsync(cancellationToken);
+
+            return result;
         }
     }
 }

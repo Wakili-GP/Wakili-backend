@@ -6,5 +6,5 @@ using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.Lawyers.Queries.GetVerificationRequests
 {
-    public record GetLawyerVerificationRequestsQuery(VerificationStatus? Status) : IRequest<Result<List<LawyerVerificationRequestResponse>>>;
+    public record GetLawyerVerificationRequestsQuery(VerificationStatus? Status) : IRequest<Result<IEnumerable<LawyerVerificationRequestResponse>>>;
 }

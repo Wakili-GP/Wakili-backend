@@ -199,7 +199,7 @@ namespace Wakiliy.Infrastructure.Migrations
 
                     b.HasIndex("LawyerId");
 
-                    b.ToTable("AcademicQualifications");
+                    b.ToTable("AcademicQualifications", (string)null);
                 });
 
             modelBuilder.Entity("Wakiliy.Domain.Entities.AppUser", b =>
@@ -333,7 +333,7 @@ namespace Wakiliy.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EmailOtps");
+                    b.ToTable("EmailOtps", (string)null);
                 });
 
             modelBuilder.Entity("Wakiliy.Domain.Entities.ProfessionalCertification", b =>
@@ -366,7 +366,7 @@ namespace Wakiliy.Infrastructure.Migrations
 
                     b.HasIndex("LawyerId");
 
-                    b.ToTable("ProfessionalCertifications");
+                    b.ToTable("ProfessionalCertifications", (string)null);
                 });
 
             modelBuilder.Entity("Wakiliy.Domain.Entities.Specialization", b =>
@@ -414,7 +414,7 @@ namespace Wakiliy.Infrastructure.Migrations
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("Specializations");
+                    b.ToTable("Specializations", (string)null);
                 });
 
             modelBuilder.Entity("Wakiliy.Domain.Entities.UploadedFile", b =>
@@ -487,7 +487,7 @@ namespace Wakiliy.Infrastructure.Migrations
 
                     b.HasIndex("LawyerId");
 
-                    b.ToTable("VerificationDocuments");
+                    b.ToTable("VerificationDocuments", (string)null);
                 });
 
             modelBuilder.Entity("Wakiliy.Domain.Entities.WorkExperience", b =>
@@ -524,7 +524,7 @@ namespace Wakiliy.Infrastructure.Migrations
 
                     b.HasIndex("LawyerId");
 
-                    b.ToTable("WorkExperiences");
+                    b.ToTable("WorkExperiences", (string)null);
                 });
 
             modelBuilder.Entity("Wakiliy.Domain.Entities.Client", b =>
@@ -535,7 +535,7 @@ namespace Wakiliy.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("Clients");
+                    b.ToTable("Clients", (string)null);
                 });
 
             modelBuilder.Entity("Wakiliy.Domain.Entities.Lawyer", b =>
@@ -594,7 +594,7 @@ namespace Wakiliy.Infrastructure.Migrations
                     b.Property<int?>("YearsOfExperience")
                         .HasColumnType("int");
 
-                    b.ToTable("Lawyers");
+                    b.ToTable("Lawyers", (string)null);
                 });
 
             modelBuilder.Entity("LawyerSpecializations", b =>

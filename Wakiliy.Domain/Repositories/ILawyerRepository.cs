@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Wakiliy.Domain.Common.Models;
 using Wakiliy.Domain.Entities;
+using Wakiliy.Domain.Enums;
 
 namespace Wakiliy.Domain.Repositories
 {
@@ -17,5 +19,6 @@ namespace Wakiliy.Domain.Repositories
         Task<Lawyer?> GetLawyerWithVerificationAsync(string id, CancellationToken cancellationToken=default);
         Task<Lawyer?> GetByIdWithAllOnboardingDataAsync(string id);
         IQueryable<Lawyer> GetVerificationRequestsQueryable();
+        Task<List<LawyerVerificationModel>> GetVerificationRequestsAsync(VerificationStatus? status, CancellationToken cancellationToken = default);
     }
 }

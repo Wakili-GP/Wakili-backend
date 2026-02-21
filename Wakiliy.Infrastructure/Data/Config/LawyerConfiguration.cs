@@ -58,5 +58,6 @@ internal class LawyerConfiguration : IEntityTypeConfiguration<Lawyer>
             .WithOne(v=>v.Lawyer)
             .HasForeignKey(v => v.LawyerId)
             .OnDelete(DeleteBehavior.Cascade);
+
     }
 }

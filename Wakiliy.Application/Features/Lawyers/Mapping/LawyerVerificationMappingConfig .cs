@@ -15,27 +15,13 @@ namespace Wakiliy.Application.Features.Lawyers.Mapping
         {
             config.NewConfig<Lawyer, LawyerVerificationRequestResponse>()
                 .Map(dest => dest.Id, src => src.Id)
-                .Map(dest => dest.Name,
-                    src => $"{src.FirstName ?? ""} {src.LastName}".Trim())
                 .Map(dest => dest.Email, src => src.Email)
-                .Map(dest => dest.Phone, src => src.PhoneNumber)
                 .Map(dest => dest.SubmittedAt, src => src.LastOnboardingUpdate)
                 .Map(dest => dest.Status, src => src.VerificationStatus.ToString())
-                .Map(dest => dest.Specialties,
-                    src => src.Specializations.Select(s => s.Name))
                 .Map(dest => dest.ProfileImageUrl,
                     src => src.ProfileImage != null
                         ? "/api/files/" + src.ProfileImage.Id
-                        : null)
-                .Map(dest => dest.Documents,
-                    src => src.VerificationDocuments.Select(doc =>
-                        new VerificationDocumentResponse
-                        {
-                            Type = doc.Type.ToString(),
-                            FileUrl = doc.FileId.HasValue
-                                ? "/api/files/" + doc.FileId.Value
-                                : null
-                        }));
+                        : null);
         }
     }
 }
