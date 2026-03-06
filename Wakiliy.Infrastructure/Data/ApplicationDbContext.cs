@@ -16,6 +16,7 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
     public DbSet<WorkExperience> WorkExperiences { get; set; }
     public DbSet<VerificationDocuments> VerificationDocuments { get; set; }
     public DbSet<UploadedFile> UploadedFiles => Set<UploadedFile>();
+    public DbSet<FavoriteLawyer> FavoriteLawyers { get; set; }
 
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }

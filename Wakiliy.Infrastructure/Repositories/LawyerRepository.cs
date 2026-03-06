@@ -66,7 +66,7 @@ namespace Wakiliy.Infrastructure.Repositories
                 .Include(l => l.AcademicQualifications)
                 .Include(l => l.ProfessionalCertifications).ThenInclude(pc => pc.Document)
                 .Include(l => l.WorkExperiences)
-                .Include(l => l.VerificationDocuments).ThenInclude(vd => vd.File)
+                .Include(l => l.VerificationDocuments!).ThenInclude(vd => vd.File)
                 .FirstOrDefaultAsync(l => l.Id == id && l.CurrentOnboardingStep == LawyerOnboardingSteps.Completed);
         }
 
@@ -98,7 +98,7 @@ namespace Wakiliy.Infrastructure.Repositories
                     Email = l.Email,
                     Specializations = string.Join(", ", l.Specializations.Select(s => s.Name)),
                     SubmittedAt = l.LastOnboardingUpdate,
-                    ProfileImageUrl = l.ProfileImage.SystemFileUrl,
+                    ProfileImageUrl = l.ProfileImage != null ? l.ProfileImage.SystemFileUrl : "",
                     Status = l.VerificationStatus.ToString()
                 })
                 .ToListAsync(cancellationToken);

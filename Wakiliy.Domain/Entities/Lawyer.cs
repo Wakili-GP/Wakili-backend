@@ -27,5 +27,5 @@ public class Lawyer : AppUser
     public List<int> CompletedOnboardingSteps { get; set; } = new();
     public DateTime LastOnboardingUpdate { get; set; } = DateTime.UtcNow;
     public double? AverageRating { get; set; }
-    public bool IsActive { get; set; }
+    public bool IsActive { get; set; } = true;
 }

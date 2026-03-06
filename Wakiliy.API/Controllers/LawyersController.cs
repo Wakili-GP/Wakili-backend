@@ -11,6 +11,7 @@ using Wakiliy.Application.Features.Lawyers.Commands.Verification.ApproveVerifica
 using Wakiliy.Application.Features.Lawyers.Commands.Verification.RejectVerification;
 using Wakiliy.Application.Features.Lawyers.DTOs;
 using Wakiliy.Application.Features.Lawyers.Queries.GetAll;
+using Wakiliy.Application.Features.Lawyers.Queries.GetApprovedLawyers;
 using Wakiliy.Application.Features.Lawyers.Queries.GetById;
 using Wakiliy.Application.Features.Lawyers.Queries.GetVerificationRequestById;
 using Wakiliy.Application.Features.Lawyers.Queries.GetVerificationRequests;
@@ -90,6 +91,21 @@ namespace Wakiliy.API.Controllers
             var command = new RejectVerificationCommand { LawyerId = lawyerId, Note = request.Note };
             var result = await mediator.Send(command);
             return result.IsSuccess ? result.ToSuccess("Verification rejected successfully") : result.ToProblem();
+        }
+
+        /// <summary>
+        /// Get all approved lawyers available to all users
+        /// </summary>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>List of approved and active lawyers.</returns>
+        /// <response code="200">List of approved lawyers returned</response>
+        [HttpGet("approved")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(List<LawyerResponse>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetApprovedLawyers(CancellationToken cancellationToken)
+        {
+            var result = await mediator.Send(new GetApprovedLawyersQuery(), cancellationToken);
+            return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
         }
     }
     
