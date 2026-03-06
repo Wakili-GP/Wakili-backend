@@ -1,4 +1,4 @@
-﻿using Mapster;
+using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Wakiliy.Application.Features.Auth.DTOs;
@@ -6,34 +6,39 @@ using Wakiliy.Application.Interfaces.Services;
 using Wakiliy.Domain.Constants;
 using Wakiliy.Domain.Entities;
 using Wakiliy.Domain.Errors;
+using Wakiliy.Domain.Repositories;
 using Wakiliy.Domain.Responses;
 
-namespace Wakiliy.Application.Features.Auth.Commands.Login;
-public class LoginCommandHandler(UserManager<AppUser> userManager,
+namespace Wakiliy.Application.Features.Auth.Commands.AdminLogin;
+
+public class AdminLoginCommandHandler(
+    UserManager<AppUser> userManager,
     SignInManager<AppUser> signInManager,
-    IJwtProvider jwtProvider) : IRequestHandler<LoginCommand, Result<LoginResponse>>
+    IJwtProvider jwtProvider,
+    IAdminRepository adminRepository) : IRequestHandler<AdminLoginCommand, Result<LoginResponse>>
 {
-    public async Task<Result<LoginResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
+    public async Task<Result<LoginResponse>> Handle(AdminLoginCommand request, CancellationToken cancellationToken)
     {
         var user = await userManager.FindByEmailAsync(request.Email);
 
         if (user is null)
             return Result.Failure<LoginResponse>(UserErrors.InvalidCredentials);
 
-        // Admins must use the admin-login endpoint
-        var userRoles = await userManager.GetRolesAsync(user);
-        if (userRoles.Contains(DefaultRoles.Admin))
+        var isAdmin = await userManager.IsInRoleAsync(user, DefaultRoles.Admin);
+        if (!isAdmin)
             return Result.Failure<LoginResponse>(UserErrors.Unauthorized);
 
         var result = await signInManager.PasswordSignInAsync(user, request.Password, false, lockoutOnFailure: true);
 
         if (result.Succeeded)
         {
-            // generate token
+            var userRoles = await userManager.GetRolesAsync(user);
+
+            // Generate token
             (string token, int expiresIn) = jwtProvider.GenerateToken(user, userRoles);
 
             var userDto = user.Adapt<UserDto>();
-            userDto.UserType = userRoles.FirstOrDefault() ?? DefaultRoles.Client;
+            userDto.UserType = DefaultRoles.Admin;
 
             var loginResponse = new LoginResponse
             {

@@ -16,4 +16,14 @@ public static class OnboardingErrors
         "Onboarding.InvalidDocumentStatus",
         "One or more document statuses are invalid.",
         StatusCodes.Status400BadRequest);
+
+    public static readonly Error AlreadyApproved = new(
+        "Verification.AlreadyApproved",
+        "This lawyer's verification has already been approved.",
+        StatusCodes.Status400BadRequest);
+
+    public static readonly Error AlreadyRejected = new(
+        "Verification.AlreadyRejected",
+        "This lawyer's verification has already been rejected.",
+        StatusCodes.Status400BadRequest);
 }

@@ -69,7 +69,6 @@ namespace Wakiliy.Application.Features.Lawyers.Queries.GetVerificationRequestByI
                 LicenseNumber = lawyer.LicenseNumber,
                 IssuingAuthority = lawyer.IssuingAuthority,
                 LicenseYear = lawyer.LicenseYear,
-                BarNumber = lawyer.LicenseNumber // Assuming BarNumber is same as LicenseNumber
             };
 
             return Result.Success(response);

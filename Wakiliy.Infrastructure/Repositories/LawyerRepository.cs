@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Wakiliy.Domain.Common.Models;
+using Wakiliy.Domain.Constants;
 using Wakiliy.Domain.Entities;
 using Wakiliy.Domain.Enums;
 using Wakiliy.Domain.Repositories;
@@ -66,7 +67,7 @@ namespace Wakiliy.Infrastructure.Repositories
                 .Include(l => l.ProfessionalCertifications).ThenInclude(pc => pc.Document)
                 .Include(l => l.WorkExperiences)
                 .Include(l => l.VerificationDocuments).ThenInclude(vd => vd.File)
-                .FirstOrDefaultAsync(l => l.Id == id);
+                .FirstOrDefaultAsync(l => l.Id == id && l.CurrentOnboardingStep == LawyerOnboardingSteps.Completed);
         }
 
         public IQueryable<Lawyer> GetVerificationRequestsQueryable()
@@ -80,6 +81,7 @@ namespace Wakiliy.Infrastructure.Repositories
         {
             var query = dbContext.Lawyers
                 .Include(l => l.Specializations)
+                .Where(l=> l.CurrentOnboardingStep == LawyerOnboardingSteps.Completed)
                 .AsNoTracking();
 
             if (status.HasValue)

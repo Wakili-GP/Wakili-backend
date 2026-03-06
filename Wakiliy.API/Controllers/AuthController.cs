@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Wakiliy.API.Extensions;
 using Wakiliy.Application.Features.Account.DTOs;
 using Wakiliy.Application.Features.Account.Queries.GetInfo;
+using Wakiliy.Application.Features.Auth.Commands.AdminLogin;
 using Wakiliy.Application.Features.Auth.Commands.ConfirmEmail;
 using Wakiliy.Application.Features.Auth.Commands.ForgotPassword;
 using Wakiliy.Application.Features.Auth.Commands.Login;
@@ -67,7 +68,7 @@ public class AuthController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
-    /// Login and get a token.
+    /// Login as a lawyer or client and get a token.
     /// </summary>
     /// <param name="command">Login credentials.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
@@ -75,7 +76,24 @@ public class AuthController(IMediator mediator) : ControllerBase
     [HttpPost("login")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Login([FromBody] LoginCommand command, CancellationToken cancellationToken)
+    {
+        var result = await mediator.Send(command, cancellationToken);
+        return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
+    }
+
+    /// <summary>
+    /// Login as an admin and get a token.
+    /// </summary>
+    /// <param name="command">Admin login credentials.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>JWT token and admin user info.</returns>
+    [HttpPost("admin-login")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> AdminLogin([FromBody] AdminLoginCommand command, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(command, cancellationToken);
         return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
