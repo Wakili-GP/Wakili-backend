@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Wakiliy.Application.Features.Admins.DTOs;
 using Wakiliy.Application.Features.Lawyers.DTOs;
+using Wakiliy.Domain.Common.Models;
 using Wakiliy.Domain.Entities;
 
 namespace Wakiliy.Application.Features.Lawyers.Mapping
@@ -22,6 +24,9 @@ namespace Wakiliy.Application.Features.Lawyers.Mapping
                     src => src.ProfileImage != null
                         ? "/api/files/" + src.ProfileImage.Id
                         : null);
+
+            config.NewConfig<UserReadModel, UserListItemDto>()
+            .Map(dest => dest.Status, src => src.Status.ToString());
         }
     }
 }

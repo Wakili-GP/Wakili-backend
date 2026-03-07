@@ -1,0 +1,23 @@
+using Mapster;
+using MediatR;
+using Wakiliy.Application.Features.Admins.DTOs;
+using Wakiliy.Domain.Errors;
+using Wakiliy.Domain.Repositories;
+using Wakiliy.Domain.Responses;
+
+namespace Wakiliy.Application.Features.Admins.Queries.GetUserById
+{
+    public class GetUserByIdQueryHandler(IUserRepository userRepository)
+        : IRequestHandler<GetUserByIdQuery, Result<UserListItemDto>>
+    {
+        public async Task<Result<UserListItemDto>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
+        {
+            var user = await userRepository.GetUserByIdAsync(request.Id);
+
+            if (user is null)
+                return Result.Failure<UserListItemDto>(UserErrors.UserNotFound);
+
+            return Result.Success(user.Adapt<UserListItemDto>());
+        }
+    }
+}
