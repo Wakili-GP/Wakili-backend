@@ -19,5 +19,7 @@ namespace Wakiliy.Application.Features.Lawyers.DTOs
         public List<SpecializationOptionDto> Specializations { get; set; } = new();
         public List<string> SessionTypes { get; set; } = new();
         public DateTime JoinedDate { get; set; }
+        public decimal? PhoneSessionPrice { get; set; }
+        public decimal? InOfficeSessionPrice { get; set; }
     }
 }

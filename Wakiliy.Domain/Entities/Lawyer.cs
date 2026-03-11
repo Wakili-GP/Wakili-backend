@@ -28,4 +28,6 @@ public class Lawyer : AppUser
     public DateTime LastOnboardingUpdate { get; set; } = DateTime.UtcNow;
     public double? AverageRating { get; set; }
     public bool IsActive { get; set; } = true;
+    public decimal? PhoneSessionPrice { get; set; }
+    public decimal? InOfficeSessionPrice { get; set; }
 }

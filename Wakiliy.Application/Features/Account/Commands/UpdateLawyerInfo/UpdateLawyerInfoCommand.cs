@@ -3,9 +3,9 @@ using System.Text.Json.Serialization;
 using Wakiliy.Application.Features.Account.DTOs;
 using Wakiliy.Domain.Responses;
 
-namespace Wakiliy.Application.Features.Account.Commands.Update
+namespace Wakiliy.Application.Features.Account.Commands.UpdateLawyerInfo
 {
-    public class UpdateAccountCommand : IRequest<Result<UserInfoResponse>>
+    public class UpdateLawyerInfoCommand : IRequest<Result<UserInfoResponse>>
     {
         [JsonIgnore]
         public string Id { get; set; } = string.Empty;
@@ -15,5 +15,11 @@ namespace Wakiliy.Application.Features.Account.Commands.Update
         public string? ImageUrl { get; set; }
         public string? Gender { get; set; }
         public string? Address { get; set; }
+
+        public string? LicenseNumber { get; set; }
+        public List<int>? SpecializationIds { get; set; }
+        public int? YearsOfExperience { get; set; }
+        public decimal? PhoneSessionPrice { get; set; }
+        public decimal? InOfficeSessionPrice { get; set; }
     }
 }

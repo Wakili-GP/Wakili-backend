@@ -9,6 +9,7 @@ using Wakiliy.Application.Features.Lawyers.Commands.ToggleStatus;
 using Wakiliy.Application.Features.Lawyers.Commands.Update;
 using Wakiliy.Application.Features.Lawyers.Commands.Verification.ApproveVerification;
 using Wakiliy.Application.Features.Lawyers.Commands.Verification.RejectVerification;
+using Wakiliy.Application.Common.Models;
 using Wakiliy.Application.Features.Lawyers.DTOs;
 using Wakiliy.Application.Features.Lawyers.Queries.GetAll;
 using Wakiliy.Application.Features.Lawyers.Queries.GetApprovedLawyers;
@@ -97,14 +98,14 @@ namespace Wakiliy.API.Controllers
         /// Get all approved lawyers available to all users
         /// </summary>
         /// <param name="cancellationToken">Cancellation token.</param>
-        /// <returns>List of approved and active lawyers.</returns>
-        /// <response code="200">List of approved lawyers returned</response>
+        /// <returns>Paginated list of approved and active lawyers.</returns>
+        /// <response code="200">Paginated list of approved lawyers returned</response>
         [HttpGet("approved")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(List<LawyerResponse>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetApprovedLawyers(CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(PaginatedResult<LawyerResponse>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetApprovedLawyers([FromQuery] GetApprovedLawyersQuery request, CancellationToken cancellationToken)
         {
-            var result = await mediator.Send(new GetApprovedLawyersQuery(), cancellationToken);
+            var result = await mediator.Send(request, cancellationToken);
             return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
         }
     }

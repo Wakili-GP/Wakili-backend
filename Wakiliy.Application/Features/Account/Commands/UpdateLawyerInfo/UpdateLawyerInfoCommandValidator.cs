@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FluentValidation;
 
-namespace Wakiliy.Application.Features.Lawyers.Commands.Update
+namespace Wakiliy.Application.Features.Account.Commands.UpdateLawyerInfo
 {
-    public class UpdateLawyerCommandValidator : AbstractValidator<UpdateLawyerCommand>
+    public class UpdateLawyerInfoCommandValidator : AbstractValidator<UpdateLawyerInfoCommand>
     {
-        public UpdateLawyerCommandValidator()
+        public UpdateLawyerInfoCommandValidator()
         {
-
             RuleFor(x => x.PhoneNumber)
                 .MaximumLength(20)
                 .When(x => !string.IsNullOrWhiteSpace(x.PhoneNumber));
@@ -35,7 +29,14 @@ namespace Wakiliy.Application.Features.Lawyers.Commands.Update
             RuleFor(x => x.YearsOfExperience)
                 .GreaterThanOrEqualTo(0)
                 .When(x => x.YearsOfExperience.HasValue);
-                
+
+            RuleFor(x => x.PhoneSessionPrice)
+                .GreaterThanOrEqualTo(0)
+                .When(x => x.PhoneSessionPrice.HasValue);
+
+            RuleFor(x => x.InOfficeSessionPrice)
+                .GreaterThanOrEqualTo(0)
+                .When(x => x.InOfficeSessionPrice.HasValue);
         }
     }
 }

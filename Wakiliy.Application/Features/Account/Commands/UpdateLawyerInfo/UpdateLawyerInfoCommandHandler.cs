@@ -1,27 +1,23 @@
-﻿using System;
-using System.Linq;
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Wakiliy.Application.Features.Lawyers.DTOs;
-using Wakiliy.Domain.Entities;
+using Microsoft.Extensions.Logging;
+using Wakiliy.Application.Features.Account.DTOs;
 using Wakiliy.Domain.Errors;
 using Wakiliy.Domain.Repositories;
 using Wakiliy.Domain.Responses;
 
-namespace Wakiliy.Application.Features.Lawyers.Commands.Update
+namespace Wakiliy.Application.Features.Account.Commands.UpdateLawyerInfo
 {
-    public class UpdateLawyerCommandHandler(ILawyerRepository lawyerRepository, ISpecializationRepository specializationRepository) : IRequestHandler<UpdateLawyerCommand, Result<LawyerResponse>>
+    public class UpdateLawyerInfoCommandHandler(ILawyerRepository lawyerRepository,ILogger<UpdateLawyerInfoCommandHandler> logger, ISpecializationRepository specializationRepository) : IRequestHandler<UpdateLawyerInfoCommand, Result<UserInfoResponse>>
     {
-        public async Task<Result<LawyerResponse>> Handle(UpdateLawyerCommand request, CancellationToken cancellationToken)
+        public async Task<Result<UserInfoResponse>> Handle(UpdateLawyerInfoCommand request, CancellationToken cancellationToken)
         {
+            logger.LogInformation("UpdateLawyerInfoCommandHandler: {Id}", request.Id);
             var lawyer = await lawyerRepository.GetByIdAsync(request.Id, cancellationToken);
-            
             if (lawyer is null)
             {
-                return Result.Failure<LawyerResponse>(new Error("Lawyer.NotFound", "Lawyer not found", StatusCodes.Status404NotFound));
+                return Result.Failure<UserInfoResponse>(new Error("Lawyer.NotFound", "Lawyer profile not found or user is not a lawyer", StatusCodes.Status404NotFound));
             }
 
             request.Adapt(lawyer);
@@ -32,7 +28,7 @@ namespace Wakiliy.Application.Features.Lawyers.Commands.Update
                 var specializations = await specializationRepository.GetByIdsAsync(ids, cancellationToken);
                 if (specializations.Count != ids.Count)
                 {
-                    return Result.Failure<LawyerResponse>(SpecializationErrors.InvalidSelection);
+                    return Result.Failure<UserInfoResponse>(SpecializationErrors.InvalidSelection);
                 }
 
                 lawyer.Specializations.Clear();
@@ -44,7 +40,7 @@ namespace Wakiliy.Application.Features.Lawyers.Commands.Update
 
             await lawyerRepository.UpdateAsync(lawyer, cancellationToken);
 
-            return Result.Success<LawyerResponse>(lawyer.Adapt<LawyerResponse>());
+            return Result.Success(lawyer.Adapt<UserInfoResponse>());
         }
     }
 }

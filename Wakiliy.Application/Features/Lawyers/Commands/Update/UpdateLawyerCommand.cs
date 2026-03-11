@@ -17,6 +17,5 @@ namespace Wakiliy.Application.Features.Lawyers.Commands.Update
         public string? LicenseNumber { get; set; }
         public List<int>? SpecializationIds { get; set; }
         public int? YearsOfExperience { get; set; }
-        public VerificationStatus? VerificationStatus { get; set; }
     }
 }
