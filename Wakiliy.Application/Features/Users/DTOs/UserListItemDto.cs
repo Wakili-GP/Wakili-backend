@@ -1,6 +1,6 @@
 using Wakiliy.Domain.Enums;
 
-namespace Wakiliy.Application.Features.Admins.DTOs
+namespace Wakiliy.Application.Features.Users.DTOs
 {
     public class UserListItemDto
     {

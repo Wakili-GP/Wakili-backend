@@ -2,14 +2,18 @@ using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Wakiliy.Application.Common.Interfaces;
 using Wakiliy.Application.Features.Account.DTOs;
+using Wakiliy.Application.Repositories;
+using Wakiliy.Domain.Constants;
+using Wakiliy.Domain.Entities;
 using Wakiliy.Domain.Errors;
 using Wakiliy.Domain.Repositories;
 using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.Account.Commands.UpdateLawyerInfo
 {
-    public class UpdateLawyerInfoCommandHandler(ILawyerRepository lawyerRepository,ILogger<UpdateLawyerInfoCommandHandler> logger, ISpecializationRepository specializationRepository) : IRequestHandler<UpdateLawyerInfoCommand, Result<UserInfoResponse>>
+    public class UpdateLawyerInfoCommandHandler(ILawyerRepository lawyerRepository,ILogger<UpdateLawyerInfoCommandHandler> logger, ISpecializationRepository specializationRepository,IUploadedFileRepository uploadedFileRepository,IFileUploadService fileUploadService) : IRequestHandler<UpdateLawyerInfoCommand, Result<UserInfoResponse>>
     {
         public async Task<Result<UserInfoResponse>> Handle(UpdateLawyerInfoCommand request, CancellationToken cancellationToken)
         {
@@ -19,8 +23,6 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateLawyerInfo
             {
                 return Result.Failure<UserInfoResponse>(new Error("Lawyer.NotFound", "Lawyer profile not found or user is not a lawyer", StatusCodes.Status404NotFound));
             }
-
-            request.Adapt(lawyer);
 
             if (request.SpecializationIds is not null)
             {
@@ -38,9 +40,52 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateLawyerInfo
                 }
             }
 
+            
+            lawyer.FirstName = request.FirstName ?? lawyer.FirstName;
+            lawyer.LastName = request.LastName ?? lawyer.LastName;
+            lawyer.PhoneNumber = request.PhoneNumber ?? lawyer.PhoneNumber;
+            lawyer.Gender = request.Gender ?? lawyer.Gender;
+            lawyer.Address = request.Address ?? lawyer.Address;
+            lawyer.LicenseNumber = request.LicenseNumber ?? lawyer.LicenseNumber;
+            lawyer.YearsOfExperience = request.YearsOfExperience ?? lawyer.YearsOfExperience;
+            lawyer.PhoneSessionPrice = request.PhoneSessionPrice ?? lawyer.PhoneSessionPrice;
+            lawyer.InOfficeSessionPrice = request.InOfficeSessionPrice ?? lawyer.InOfficeSessionPrice;
+
+            var response = lawyer.Adapt<UserInfoResponse>();
+            response.UserType = DefaultRoles.Lawyer;
+
+            if (request.ProfileImage is not null)
+            {
+                var existingFiles = await uploadedFileRepository.GetByOwnerAsync(lawyer.Id, FilePurpose.Profile, cancellationToken);
+                var existingProfileImages = existingFiles.Where(f => f.Category == FileCategory.ProfilePicture).ToList();
+                foreach (var existingFile in existingProfileImages)
+                {
+                    await uploadedFileRepository.DeleteAsync(existingFile, cancellationToken);
+                }
+
+                var uploadResult = await fileUploadService.UploadAsync(request.ProfileImage, "uploads");
+                var file = new UploadedFile
+                {
+                    Id = Guid.NewGuid(),
+                    OwnerId = lawyer.Id,
+                    FileName = uploadResult.FileName,
+                    PublicId = uploadResult.PublicId,
+                    Size = uploadResult.Size,
+                    ContentType = uploadResult.ContentType,
+                    Category = FileCategory.ProfilePicture,
+                    Purpose = FilePurpose.Profile,
+                    UploadedAt = DateTime.UtcNow
+                };
+
+                file.SystemFileUrl = $"/api/files/{file.Id}";
+                response.ImageUrl = file.SystemFileUrl;
+                lawyer.ProfileImage = file;
+                await uploadedFileRepository.AddAsync(file, cancellationToken);
+                
+            }
             await lawyerRepository.UpdateAsync(lawyer, cancellationToken);
 
-            return Result.Success(lawyer.Adapt<UserInfoResponse>());
+            return Result.Success(response);
         }
     }
 }

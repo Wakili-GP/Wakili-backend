@@ -40,6 +40,12 @@ namespace Wakiliy.Infrastructure.Repositories
                 .Where(f => f.OwnerId == ownerId && f.Purpose == purpose)
                 .ToListAsync(ct);
         }
+
+        public async Task DeleteAsync(UploadedFile file, CancellationToken ct)
+        {
+            _context.UploadedFiles.Remove(file);
+            await _context.SaveChangesAsync(ct);
+        }
     }
 
 }

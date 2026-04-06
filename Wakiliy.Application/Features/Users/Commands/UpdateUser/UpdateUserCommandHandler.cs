@@ -1,13 +1,13 @@
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Wakiliy.Application.Features.Admins.DTOs;
+using Wakiliy.Application.Features.Users.DTOs;
 using Wakiliy.Domain.Constants;
 using Wakiliy.Domain.Entities;
 using Wakiliy.Domain.Errors;
 using Wakiliy.Domain.Responses;
 
-namespace Wakiliy.Application.Features.Admins.Commands.UpdateUser
+namespace Wakiliy.Application.Features.Users.Commands.UpdateUser
 {
     public class UpdateUserCommandHandler(UserManager<AppUser> userManager)
         : IRequestHandler<UpdateUserCommand, Result<UserListItemDto>>

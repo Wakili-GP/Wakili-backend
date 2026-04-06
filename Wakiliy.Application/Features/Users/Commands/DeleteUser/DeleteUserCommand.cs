@@ -2,7 +2,7 @@ using MediatR;
 using System.Text.Json.Serialization;
 using Wakiliy.Domain.Responses;
 
-namespace Wakiliy.Application.Features.Admins.Commands.DeleteUser
+namespace Wakiliy.Application.Features.Users.Commands.DeleteUser
 {
     public class DeleteUserCommand : IRequest<Result>
     {

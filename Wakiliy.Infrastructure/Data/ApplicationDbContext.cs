@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using System.Security.Claims;
+using Wakiliy.Domain.Common;
 using Wakiliy.Domain.Entities;
 
 namespace Wakiliy.Infrastructure.Data;
-public class ApplicationDbContext : IdentityDbContext<AppUser>
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHttpContextAccessor httpContextAccessor) : IdentityDbContext<AppUser>(options)
 {
     // DbSets
     public DbSet<Lawyer> Lawyers { get; set; }
@@ -18,9 +21,40 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
     public DbSet<UploadedFile> UploadedFiles => Set<UploadedFile>();
     public DbSet<FavoriteLawyer> FavoriteLawyers { get; set; }
 
+    public override int SaveChanges()
+    {
+        ApplyAuditInformation();
+        return base.SaveChanges();
+    }
 
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        ApplyAuditInformation();
+        return base.SaveChangesAsync(cancellationToken);
+    }
 
+    private void ApplyAuditInformation()
+    {
+        var userId = httpContextAccessor?.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
+        {
+            switch (entry.State)
+            {
+                case EntityState.Added:
+                    entry.Entity.CreatedOn = DateTime.UtcNow;
+                    if (userId != null)
+                    {
+                        entry.Entity.CreatedById = userId;
+                    }
+                    break;
+                case EntityState.Modified:
+                    entry.Entity.UpdatedOn = DateTime.UtcNow;
+                    entry.Entity.UpdatedById = userId;
+                    break;
+            }
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

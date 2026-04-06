@@ -9,7 +9,7 @@ namespace Wakiliy.Domain.Repositories;
 public interface ISpecializationRepository
 {
     Task<Specialization?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
-    Task<List<Specialization>> GetAllAsync(CancellationToken cancellationToken = default);
+    public IQueryable<Specialization> GetAll();
     Task<List<Specialization>> GetActiveAsync(CancellationToken cancellationToken = default);
     Task<List<Specialization>> GetByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken = default);
     Task<bool> ExistsByNameAsync(string name, int? excludeId = null, CancellationToken cancellationToken = default);

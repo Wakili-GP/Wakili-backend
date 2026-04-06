@@ -22,11 +22,6 @@ namespace Wakiliy.Application.Features.Admins.Commands.CreateAdmin
             RuleFor(x => x.Password)
                 .NotEmpty()
                 .MinimumLength(6);
-
-            RuleFor(x => x.Role)
-                .NotEmpty()
-                .Must(role => role.Equals(DefaultRoles.Admin, StringComparison.OrdinalIgnoreCase))
-                .WithMessage("Role must be 'admin'.");
         }
     }
 }

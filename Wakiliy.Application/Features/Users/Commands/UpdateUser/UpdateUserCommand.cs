@@ -1,9 +1,9 @@
 using MediatR;
 using System.Text.Json.Serialization;
-using Wakiliy.Application.Features.Admins.DTOs;
+using Wakiliy.Application.Features.Users.DTOs;
 using Wakiliy.Domain.Responses;
 
-namespace Wakiliy.Application.Features.Admins.Commands.UpdateUser
+namespace Wakiliy.Application.Features.Users.Commands.UpdateUser
 {
     public class UpdateUserCommand : IRequest<Result<UserListItemDto>>
     {

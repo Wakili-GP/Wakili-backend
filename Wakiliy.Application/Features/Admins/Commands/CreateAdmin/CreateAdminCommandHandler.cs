@@ -25,7 +25,7 @@ namespace Wakiliy.Application.Features.Admins.Commands.CreateAdmin
                 return Result.Failure<AdminDto>(UserErrors.DuplicatedEmail);
 
             // Validate role exists
-            var roleExists = await roleManager.RoleExistsAsync(request.Role);
+            var roleExists = await roleManager.RoleExistsAsync(DefaultRoles.Admin);
             if (!roleExists)
                 return Result.Failure<AdminDto>(UserErrors.InvalidRoles);
 
@@ -50,7 +50,7 @@ namespace Wakiliy.Application.Features.Admins.Commands.CreateAdmin
             }
 
             // Assign admin role
-            await userManager.AddToRoleAsync(user, request.Role);
+            await userManager.AddToRoleAsync(user, DefaultRoles.Admin);
 
             // Map to DTO
             var adminDto = new AdminDto
@@ -59,7 +59,7 @@ namespace Wakiliy.Application.Features.Admins.Commands.CreateAdmin
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email!,
-                Role = request.Role,
+                Role = DefaultRoles.Admin,
                 Status = user.Status.ToString(),
                 CreatedAt = user.CreatedAt
             };

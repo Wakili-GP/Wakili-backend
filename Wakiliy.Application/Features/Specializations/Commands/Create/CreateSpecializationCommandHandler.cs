@@ -1,6 +1,7 @@
 using System;
 using Mapster;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Wakiliy.Application.Features.Specializations.DTOs;
 using Wakiliy.Domain.Entities;
 using Wakiliy.Domain.Errors;

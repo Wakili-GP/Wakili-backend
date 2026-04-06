@@ -25,8 +25,6 @@ namespace Wakiliy.Application.Features.Lawyers.Mapping
                         ? "/api/files/" + src.ProfileImage.Id
                         : null);
 
-            config.NewConfig<UserReadModel, UserListItemDto>()
-            .Map(dest => dest.Status, src => src.Status.ToString());
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace Wakiliy.Domain.Constants;
 public static class DefaultRoles
 {
+    public const string SuperAdmin = "SuperAdmin";
     public const string Admin = "Admin";
     public const string Client = "Client";
     public const string Lawyer = "Lawyer";

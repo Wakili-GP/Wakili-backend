@@ -11,7 +11,11 @@ public class GetAllSpecializationsQueryHandler(ISpecializationRepository special
 {
     public async Task<Result<List<SpecializationResponse>>> Handle(GetAllSpecializationsQuery request, CancellationToken cancellationToken)
     {
-        var items = await specializationRepository.GetAllAsync(cancellationToken);
-        return Result.Success(items.Adapt<List<SpecializationResponse>>());
+        var items = specializationRepository.GetAll()
+        .OrderByDescending(s => s.CreatedOn)
+        .ProjectToType<SpecializationResponse>()
+        .ToList();
+        
+        return Result.Success(items);
     }
 }

@@ -3,35 +3,36 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Wakiliy.API.Extensions;
-using Wakiliy.Application.Features.Admins.Commands.DeleteUser;
-using Wakiliy.Application.Features.Admins.Commands.ToggleUserStatus;
-using Wakiliy.Application.Features.Admins.Commands.UpdateUser;
-using Wakiliy.Application.Features.Admins.DTOs;
-using Wakiliy.Application.Features.Admins.Queries.GetUserById;
-using Wakiliy.Application.Features.Admins.Queries.GetUsers;
+using Wakiliy.Application.Common.Models;
+using Wakiliy.Application.Features.Users.Commands.DeleteUser;
+using Wakiliy.Application.Features.Users.Commands.ToggleUserStatus;
+using Wakiliy.Application.Features.Users.Commands.UpdateUser;
+using Wakiliy.Application.Features.Users.DTOs;
+using Wakiliy.Application.Features.Users.Queries.GetUserById;
+using Wakiliy.Application.Features.Users.Queries.GetUsers;
 using Wakiliy.Domain.Constants;
 
 namespace Wakiliy.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = DefaultRoles.Admin)]
+    [Authorize(Roles = $"{DefaultRoles.Admin},{DefaultRoles.SuperAdmin}")]
     public class UsersController(IMediator mediator) : ControllerBase
     {
         /// <summary>
-        /// Get all users (lawyers and clients)
+        /// Get all users (lawyers and clients) with pagination and filters
         /// </summary>
         /// <remarks>
-        /// Returns a list of all users
+        /// Returns a paginated list of all users based on query filters
         /// </remarks>
-        /// <response code="200">List of users returned</response>
+        /// <response code="200">Paginated list of users returned</response>
         /// <response code="401">Unauthorized</response>
         /// <response code="403">Admins only</response>
         [HttpGet]
-        [ProducesResponseType(typeof(List<UserListItemDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetUsers()
+        [ProducesResponseType(typeof(PaginatedResult<UserListItemDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetUsers([FromQuery] GetUsersQuery query)
         {
-            var result = await mediator.Send(new GetUsersQuery());
+            var result = await mediator.Send(query);
             return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
         }
 

@@ -26,7 +26,7 @@ namespace Wakiliy.API.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = DefaultRoles.Admin)]
+    [Authorize(Roles = $"{DefaultRoles.Admin},{DefaultRoles.SuperAdmin}")]
     public class LawyersController(IMediator mediator) : ControllerBase
     {
         /// <summary>

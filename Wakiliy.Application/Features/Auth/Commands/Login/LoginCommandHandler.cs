@@ -1,6 +1,7 @@
 ﻿using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Wakiliy.Application.Features.Auth.DTOs;
 using Wakiliy.Application.Interfaces.Services;
 using Wakiliy.Domain.Constants;
@@ -15,7 +16,7 @@ public class LoginCommandHandler(UserManager<AppUser> userManager,
 {
     public async Task<Result<LoginResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        var user = await userManager.FindByEmailAsync(request.Email);
+        var user = await userManager.Users.Include(x=>x.ProfileImage).Where(u => u.Email == request.Email).FirstOrDefaultAsync(cancellationToken);
 
         if (user is null)
             return Result.Failure<LoginResponse>(UserErrors.InvalidCredentials);
@@ -34,6 +35,7 @@ public class LoginCommandHandler(UserManager<AppUser> userManager,
 
             var userDto = user.Adapt<UserDto>();
             userDto.UserType = userRoles.FirstOrDefault() ?? DefaultRoles.Client;
+            userDto.imageUrl = user.ProfileImage?.SystemFileUrl;
 
             var loginResponse = new LoginResponse
             {

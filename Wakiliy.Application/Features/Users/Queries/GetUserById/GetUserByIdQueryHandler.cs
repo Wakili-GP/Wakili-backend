@@ -1,11 +1,11 @@
 using Mapster;
 using MediatR;
-using Wakiliy.Application.Features.Admins.DTOs;
+using Wakiliy.Application.Features.Users.DTOs;
 using Wakiliy.Domain.Errors;
 using Wakiliy.Domain.Repositories;
 using Wakiliy.Domain.Responses;
 
-namespace Wakiliy.Application.Features.Admins.Queries.GetUserById
+namespace Wakiliy.Application.Features.Users.Queries.GetUserById
 {
     public class GetUserByIdQueryHandler(IUserRepository userRepository)
         : IRequestHandler<GetUserByIdQuery, Result<UserListItemDto>>

@@ -19,12 +19,9 @@ internal class SpecializationRepository(ApplicationDbContext dbContext) : ISpeci
             .FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
     }
 
-    public async Task<List<Specialization>> GetAllAsync(CancellationToken cancellationToken)
+    public IQueryable<Specialization> GetAll()
     {
-        return await dbContext.Specializations
-            .AsNoTracking()
-            .OrderByDescending(s => s.CreatedOn)
-            .ToListAsync(cancellationToken);
+        return dbContext.Specializations.AsNoTracking();
     }
 
     public async Task<List<Specialization>> GetActiveAsync(CancellationToken cancellationToken)

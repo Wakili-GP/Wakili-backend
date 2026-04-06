@@ -33,7 +33,7 @@ public class DbSeeder
 
         #region Seed Roles
 
-        string[] roleNames = { DefaultRoles.Admin, DefaultRoles.Client, DefaultRoles.Lawyer };
+        string[] roleNames = { DefaultRoles.SuperAdmin, DefaultRoles.Admin, DefaultRoles.Client, DefaultRoles.Lawyer };
 
         foreach (var roleName in roleNames)
         {
@@ -44,7 +44,10 @@ public class DbSeeder
         }
         #endregion
 
-        // Ensure admin and lawyer users exists
+        // Ensure admin, lawyer and superadmin users exists
+        var superAdminEmail = configuration["SuperAdminUser:Email"];
+        var superAdminUserName = configuration["SuperAdminUser:UserName"];
+        var superAdminPassword = configuration["SuperAdminUser:Password"];
         var adminEmail = configuration["AdminUser:Email"];
         var adminUserName = configuration["AdminUser:UserName"];
         var adminPassword = configuration["AdminUser:Password"];
@@ -53,6 +56,41 @@ public class DbSeeder
         var lawyerPassword = configuration["LawyerUser:Password"];
 
 
+
+        #region Seed SuperAdmin User
+        if (string.IsNullOrEmpty(superAdminEmail) || string.IsNullOrEmpty(superAdminPassword) || string.IsNullOrEmpty(superAdminUserName))
+        {
+            throw new Exception("SuperAdmin email, password, username must be set in appsettings.json.");
+        }
+
+        var superAdminUser = await userManager.FindByEmailAsync(superAdminEmail);
+
+        if (superAdminUser == null)
+        {
+            superAdminUser = new AppUser { UserName = superAdminUserName, Email = superAdminEmail, EmailConfirmed = true, FirstName="SuperAdmin",LastName="User" };
+            try
+            {
+                var result = await userManager.CreateAsync(superAdminUser, superAdminPassword);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(superAdminUser, DefaultRoles.SuperAdmin);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error seeding SuperAdmin:", ex);
+            }
+        }
+        else
+        {
+            // Ensure superadmin is always in the "SuperAdmin" role
+            if (!await userManager.IsInRoleAsync(superAdminUser, DefaultRoles.SuperAdmin))
+            {
+                await userManager.AddToRoleAsync(superAdminUser, DefaultRoles.SuperAdmin);
+            }
+        }
+
+        #endregion
 
         #region Seed Admin User
 
@@ -65,7 +103,7 @@ public class DbSeeder
 
         if (adminUser == null)
         {
-            adminUser = new AppUser { UserName = adminUserName, Email = adminEmail,EmailConfirmed = true };
+            adminUser = new AppUser { UserName = adminUserName, Email = adminEmail,EmailConfirmed = true,FirstName="Admin",LastName="User" };
             try
             {
                 var result = await userManager.CreateAsync(adminUser, adminPassword);
@@ -102,7 +140,7 @@ public class DbSeeder
 
         if (lawyerUser == null)
         {
-            lawyerUser = new AppUser { UserName = lawyerUserName, Email = lawyerEmail ,EmailConfirmed = true };
+            lawyerUser = new AppUser { UserName = lawyerUserName, Email = lawyerEmail ,EmailConfirmed = true,FirstName="Lawyer",LastName="User" };
             try
             {
                 var result = await userManager.CreateAsync(lawyerUser, lawyerPassword);

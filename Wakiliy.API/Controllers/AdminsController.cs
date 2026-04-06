@@ -15,7 +15,7 @@ namespace Wakiliy.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = DefaultRoles.Admin)]
+    [Authorize(Roles = DefaultRoles.SuperAdmin)]
     public class AdminsController(IMediator mediator) : ControllerBase
     {
         /// <summary>

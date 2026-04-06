@@ -1,13 +1,17 @@
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Wakiliy.Application.Common.Interfaces;
 using Wakiliy.Application.Features.Account.DTOs;
+using Wakiliy.Application.Repositories;
+using Wakiliy.Domain.Constants;
+using Wakiliy.Domain.Entities;
 using Wakiliy.Domain.Repositories;
 using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.Account.Commands.UpdateClientInfo
 {
-    public class UpdateClientInfoCommandHandler(IClientRepository clientRepository) : IRequestHandler<UpdateClientInfoCommand, Result<UserInfoResponse>>
+    public class UpdateClientInfoCommandHandler(IClientRepository clientRepository, IFileUploadService fileUploadService, IUploadedFileRepository uploadedFileRepository) : IRequestHandler<UpdateClientInfoCommand, Result<UserInfoResponse>>
     {
         public async Task<Result<UserInfoResponse>> Handle(UpdateClientInfoCommand request, CancellationToken cancellationToken)
         {
@@ -17,11 +21,48 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateClientInfo
                 return Result.Failure<UserInfoResponse>(new Error("Client.NotFound", "Client profile not found or user is not a client", StatusCodes.Status404NotFound));
             }
 
-            request.Adapt(client);
+            client.FirstName = request.FirstName ?? client.FirstName;
+            client.LastName = request.LastName ?? client.LastName;
+            client.PhoneNumber = request.PhoneNumber ?? client.PhoneNumber;
+            client.Gender = request.Gender ?? client.Gender;
+            client.Address = request.Address ?? client.Address;
+
+            var response = client.Adapt<UserInfoResponse>();
+            response.UserType = DefaultRoles.Client;
+
+
+            if (request.ProfileImage is not null)
+            {
+                var existingFiles = await uploadedFileRepository.GetByOwnerAsync(client.Id, FilePurpose.Profile, cancellationToken);
+                var existingProfileImages = existingFiles.Where(f => f.Category == FileCategory.ProfilePicture).ToList();
+                foreach (var existingFile in existingProfileImages)
+                {
+                    await uploadedFileRepository.DeleteAsync(existingFile, cancellationToken);
+                }
+
+                var uploadResult = await fileUploadService.UploadAsync(request.ProfileImage, "uploads");
+                var file = new UploadedFile
+                {
+                    Id = Guid.NewGuid(),
+                    OwnerId = client.Id,
+                    FileName = uploadResult.FileName,
+                    PublicId = uploadResult.PublicId,
+                    Size = uploadResult.Size,
+                    ContentType = uploadResult.ContentType,
+                    Category = FileCategory.ProfilePicture,
+                    Purpose = FilePurpose.Profile,
+                    UploadedAt = DateTime.UtcNow
+                };
+
+                file.SystemFileUrl = $"/api/files/{file.Id}";
+                response.ImageUrl = file.SystemFileUrl;
+                client.ProfileImage = file;
+                await uploadedFileRepository.AddAsync(file, cancellationToken);
+                
+            }
 
             await clientRepository.UpdateAsync(client, cancellationToken);
-
-            return Result.Success(client.Adapt<UserInfoResponse>());
+            return Result.Success(response);
         }
     }
 }

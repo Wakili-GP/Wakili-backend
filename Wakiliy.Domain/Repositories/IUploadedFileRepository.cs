@@ -14,6 +14,7 @@ namespace Wakiliy.Application.Repositories
         Task<List<UploadedFile>> GetByOwnerAsync(string ownerId,FilePurpose purpose,CancellationToken cancellationToken = default);
 
         Task<UploadedFile?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+        Task DeleteAsync(UploadedFile file, CancellationToken cancellationToken = default);
     }
 
 }

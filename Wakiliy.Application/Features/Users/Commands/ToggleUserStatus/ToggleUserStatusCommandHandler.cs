@@ -6,7 +6,7 @@ using Wakiliy.Domain.Enums;
 using Wakiliy.Domain.Errors;
 using Wakiliy.Domain.Responses;
 
-namespace Wakiliy.Application.Features.Admins.Commands.ToggleUserStatus
+namespace Wakiliy.Application.Features.Users.Commands.ToggleUserStatus
 {
     public class ToggleUserStatusCommandHandler(UserManager<AppUser> userManager)
         : IRequestHandler<ToggleUserStatusCommand, Result>

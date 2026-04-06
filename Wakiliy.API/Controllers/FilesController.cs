@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Wakiliy.API.Extensions;
 using Wakiliy.Application.Repositories;
 using Wakiliy.Infrastructure.Repositories;
+using Wakiliy.Domain.Constants;
 
 namespace Wakiliy.API.Controllers
 {
@@ -19,7 +20,7 @@ namespace Wakiliy.API.Controllers
             if (file is null)
                 return NotFound();
 
-            if (file.OwnerId != User.GetUserId()) return Forbid();
+            if (file.OwnerId != User.GetUserId() && !User.IsInRole(DefaultRoles.Admin)) return Forbid();
 
             var cloudName = configuration["Cloudinary:CloudName"];
 
