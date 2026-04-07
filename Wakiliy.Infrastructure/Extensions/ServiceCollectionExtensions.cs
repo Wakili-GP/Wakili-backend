@@ -39,6 +39,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAdminRepository, AdminRepository>();
         services.AddScoped<IFavoriteLawyerRepository, FavoriteLawyerRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IAppointmentSlotRepository, AppointmentSlotRepository>();
 
 
 

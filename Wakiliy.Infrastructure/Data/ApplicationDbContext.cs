@@ -20,6 +20,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<VerificationDocuments> VerificationDocuments { get; set; }
     public DbSet<UploadedFile> UploadedFiles => Set<UploadedFile>();
     public DbSet<FavoriteLawyer> FavoriteLawyers { get; set; }
+    public DbSet<AppointmentSlot> AppointmentSlots { get; set; } = default!;
 
     public override int SaveChanges()
     {
