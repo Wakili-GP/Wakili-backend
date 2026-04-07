@@ -1,7 +1,7 @@
 using MediatR;
 using Wakiliy.Domain.Responses;
 
-namespace Wakiliy.Application.Features.Appointments.Commands.Delete;
+namespace Wakiliy.Application.Features.AppointmentSlots.Commands.Delete;
 
 public class DeleteAppointmentSlotCommand : IRequest<Result>
 {

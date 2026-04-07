@@ -1,11 +1,11 @@
 using MediatR;
+using Wakiliy.Application.Features.AppointmentSlots.DTOs;
 using Wakiliy.Domain.Responses;
 
-namespace Wakiliy.Application.Features.Appointments.Commands.Update;
+namespace Wakiliy.Application.Features.AppointmentSlots.Commands.Create;
 
-public class UpdateAppointmentSlotCommand : IRequest<Result>
+public class CreateAppointmentSlotCommand : IRequest<Result<AppointmentSlotDto>>
 {
-    public int Id { get; set; }
     public string LawyerId { get; set; } = string.Empty;
     public DayOfWeek DayOfWeek { get; set; }
     public TimeSpan StartTime { get; set; }

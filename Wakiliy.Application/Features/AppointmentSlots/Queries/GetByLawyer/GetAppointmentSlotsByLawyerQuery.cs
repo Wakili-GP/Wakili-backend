@@ -1,8 +1,8 @@
 using MediatR;
-using Wakiliy.Application.Features.Appointments.DTOs;
+using Wakiliy.Application.Features.AppointmentSlots.DTOs;
 using Wakiliy.Domain.Responses;
 
-namespace Wakiliy.Application.Features.Appointments.Queries.GetByLawyer;
+namespace Wakiliy.Application.Features.AppointmentSlots.Queries.GetByLawyer;
 
 public class GetAppointmentSlotsByLawyerQuery : IRequest<Result<List<AppointmentSlotDto>>>
 {

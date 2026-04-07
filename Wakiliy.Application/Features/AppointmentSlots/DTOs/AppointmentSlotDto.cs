@@ -1,6 +1,6 @@
 using Wakiliy.Domain.Entities;
 
-namespace Wakiliy.Application.Features.Appointments.DTOs;
+namespace Wakiliy.Application.Features.AppointmentSlots.DTOs;
 
 public class AppointmentSlotDto
 {

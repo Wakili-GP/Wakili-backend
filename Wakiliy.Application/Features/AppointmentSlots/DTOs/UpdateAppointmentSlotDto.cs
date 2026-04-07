@@ -1,7 +1,7 @@
 using MediatR;
 using Wakiliy.Domain.Responses;
 
-namespace Wakiliy.Application.Features.Appointments.DTOs;
+namespace Wakiliy.Application.Features.AppointmentSlots.DTOs;
 
 public class UpdateAppointmentSlotDto
 {

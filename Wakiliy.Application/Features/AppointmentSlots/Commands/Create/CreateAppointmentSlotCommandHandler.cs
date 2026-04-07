@@ -1,12 +1,12 @@
 using Mapster;
 using MediatR;
-using Wakiliy.Application.Features.Appointments.DTOs;
+using Wakiliy.Application.Features.AppointmentSlots.DTOs;
 using Wakiliy.Domain.Entities;
 using Wakiliy.Domain.Errors;
 using Wakiliy.Domain.Repositories;
 using Wakiliy.Domain.Responses;
 
-namespace Wakiliy.Application.Features.Appointments.Commands.Create;
+namespace Wakiliy.Application.Features.AppointmentSlots.Commands.Create;
 
 public class CreateAppointmentSlotCommandHandler(IAppointmentSlotRepository appointmentSlotRepository) 
     : IRequestHandler<CreateAppointmentSlotCommand, Result<AppointmentSlotDto>>

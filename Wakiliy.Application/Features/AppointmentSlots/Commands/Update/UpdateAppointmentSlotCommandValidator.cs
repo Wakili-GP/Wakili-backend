@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace Wakiliy.Application.Features.Appointments.Commands.Update;
+namespace Wakiliy.Application.Features.AppointmentSlots.Commands.Update;
 
 public class UpdateAppointmentSlotCommandValidator : AbstractValidator<UpdateAppointmentSlotCommand>
 {

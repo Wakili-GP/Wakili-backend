@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace Wakiliy.Application.Features.Appointments.Commands.Create;
+namespace Wakiliy.Application.Features.AppointmentSlots.Commands.Create;
 
 public class CreateAppointmentSlotCommandValidator : AbstractValidator<CreateAppointmentSlotCommand>
 {

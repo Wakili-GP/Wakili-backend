@@ -3,7 +3,7 @@ using Wakiliy.Domain.Errors;
 using Wakiliy.Domain.Repositories;
 using Wakiliy.Domain.Responses;
 
-namespace Wakiliy.Application.Features.Appointments.Commands.Update;
+namespace Wakiliy.Application.Features.AppointmentSlots.Commands.Update;
 
 public class UpdateAppointmentSlotCommandHandler(IAppointmentSlotRepository appointmentSlotRepository) 
     : IRequestHandler<UpdateAppointmentSlotCommand, Result>

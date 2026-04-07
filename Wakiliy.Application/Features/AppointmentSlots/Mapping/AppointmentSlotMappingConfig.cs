@@ -1,8 +1,8 @@
 using Mapster;
-using Wakiliy.Application.Features.Appointments.DTOs;
+using Wakiliy.Application.Features.AppointmentSlots.DTOs;
 using Wakiliy.Domain.Entities;
 
-namespace Wakiliy.Application.Features.Appointments.Mapping;
+namespace Wakiliy.Application.Features.AppointmentSlots.Mapping;
 
 public class AppointmentSlotMappingConfig : IRegister
 {

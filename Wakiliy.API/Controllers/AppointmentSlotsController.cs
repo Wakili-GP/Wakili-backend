@@ -1,17 +1,12 @@
-using System.Collections.Generic;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Wakiliy.API.Common;
-using Wakiliy.Application.Features.Appointments.Commands.Create;
-using Wakiliy.Application.Features.Appointments.Commands.Delete;
-using Wakiliy.Application.Features.Appointments.Commands.Update;
-using Wakiliy.Application.Features.Appointments.Queries.GetByLawyer;
-using System.Threading.Tasks;
-using System.Security.Claims;
+using Wakiliy.Application.Features.AppointmentSlots.Commands.Create;
+using Wakiliy.Application.Features.AppointmentSlots.Commands.Delete;
+using Wakiliy.Application.Features.AppointmentSlots.Commands.Update;
+using Wakiliy.Application.Features.AppointmentSlots.Queries.GetByLawyer;
 using Wakiliy.API.Extensions;
-using Wakiliy.Application.Features.Appointments.DTOs;
+using Wakiliy.Application.Features.AppointmentSlots.DTOs;
 using Wakiliy.Domain.Constants;
 
 namespace Wakiliy.API.Controllers

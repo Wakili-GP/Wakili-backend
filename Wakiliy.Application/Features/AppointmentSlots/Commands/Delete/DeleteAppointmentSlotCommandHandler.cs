@@ -3,7 +3,7 @@ using Wakiliy.Domain.Errors;
 using Wakiliy.Domain.Repositories;
 using Wakiliy.Domain.Responses;
 
-namespace Wakiliy.Application.Features.Appointments.Commands.Delete;
+namespace Wakiliy.Application.Features.AppointmentSlots.Commands.Delete;
 
 public class DeleteAppointmentSlotCommandHandler(IAppointmentSlotRepository appointmentSlotRepository) 
     : IRequestHandler<DeleteAppointmentSlotCommand, Result>
