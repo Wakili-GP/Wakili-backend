@@ -6,6 +6,7 @@ using Wakiliy.Application.Features.Auth.DTOs;
 using Wakiliy.Application.Interfaces.Services;
 using Wakiliy.Domain.Constants;
 using Wakiliy.Domain.Entities;
+using Wakiliy.Domain.Enums;
 using Wakiliy.Domain.Errors;
 using Wakiliy.Domain.Responses;
 
@@ -35,7 +36,19 @@ public class LoginCommandHandler(UserManager<AppUser> userManager,
 
             var userDto = user.Adapt<UserDto>();
             userDto.UserType = userRoles.FirstOrDefault() ?? DefaultRoles.Client;
+            
+            if (user is Lawyer lawyer)
+            {
+                if (lawyer.CurrentOnboardingStep < LawyerOnboardingSteps.Completed)
+                    userDto.Status = LawyerOnboardingStatus.Unfinished.ToString();
+                else if (lawyer.VerificationStatus != VerificationStatus.Approved)
+                    userDto.Status = LawyerOnboardingStatus.SubmittedAndNotApproved.ToString();
+                else
+                    userDto.Status = LawyerOnboardingStatus.SubmittedAndApproved.ToString();
+            }
+
             userDto.imageUrl = user.ProfileImage?.SystemFileUrl;
+
 
             var loginResponse = new LoginResponse
             {
