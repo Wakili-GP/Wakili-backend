@@ -14,7 +14,7 @@ public class CreateAppointmentSlotCommandHandler(IAppointmentSlotRepository appo
     public async Task<Result<AppointmentSlotDto>> Handle(CreateAppointmentSlotCommand request, CancellationToken cancellationToken)
     {
         var hasOverlap = await appointmentSlotRepository.HasOverlappingSlotAsync(
-            request.LawyerId, request.DayOfWeek, request.StartTime, request.EndTime, null, cancellationToken);
+            request.LawyerId, request.Date, request.StartTime, request.EndTime, null, cancellationToken);
             
         if (hasOverlap)
         {
@@ -24,9 +24,10 @@ public class CreateAppointmentSlotCommandHandler(IAppointmentSlotRepository appo
         var appointmentSlot = new AppointmentSlot
         {
             LawyerId = request.LawyerId,
-            DayOfWeek = request.DayOfWeek,
+            Date = request.Date,
             StartTime = request.StartTime,
-            EndTime = request.EndTime
+            EndTime = request.EndTime,
+            SessionType = request.SessionType
         };
 
         await appointmentSlotRepository.AddAsync(appointmentSlot, cancellationToken);

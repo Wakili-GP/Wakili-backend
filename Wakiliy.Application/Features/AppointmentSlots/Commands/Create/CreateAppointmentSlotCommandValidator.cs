@@ -9,8 +9,8 @@ public class CreateAppointmentSlotCommandValidator : AbstractValidator<CreateApp
         RuleFor(v => v.LawyerId)
             .NotEmpty().WithMessage("Lawyer ID is required.");
 
-        RuleFor(v => v.DayOfWeek)
-            .IsInEnum().WithMessage("Valid Day of Week is required.");
+        RuleFor(v => v.Date)
+            .NotEmpty().WithMessage("Valid Date is required.");
 
         RuleFor(v => v.StartTime)
             .NotEmpty().WithMessage("Start Time is required.")
@@ -19,5 +19,8 @@ public class CreateAppointmentSlotCommandValidator : AbstractValidator<CreateApp
         RuleFor(v => v.EndTime)
             .NotEmpty().WithMessage("End Time is required.")
             .GreaterThan(v => v.StartTime).WithMessage("End Time must be after Start Time.");
+
+        RuleFor(v => v.SessionType)
+            .IsInEnum().WithMessage("Valid Session Type is required.");
     }
 }

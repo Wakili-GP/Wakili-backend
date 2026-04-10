@@ -17,12 +17,12 @@ internal class AppointmentSlotRepository(ApplicationDbContext dbContext) : IAppo
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
-    public IQueryable<AppointmentSlot> GetByLawyerIdQuery(string lawyerId)
+    public IQueryable<AppointmentSlot> GetByLawyerIdQuery(string lawyerId, DateOnly date)
     {
         return dbContext.AppointmentSlots
             .AsNoTracking()
-            .Where(x => x.LawyerId == lawyerId)
-            .OrderBy(x => x.DayOfWeek)
+            .Where(x => x.LawyerId == lawyerId && x.Date == date)
+            .OrderBy(x => x.Date)
             .ThenBy(x => x.StartTime)
             .AsQueryable();
     }
@@ -45,11 +45,11 @@ internal class AppointmentSlotRepository(ApplicationDbContext dbContext) : IAppo
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<bool> HasOverlappingSlotAsync(string lawyerId, System.DayOfWeek dayOfWeek, System.TimeSpan startTime, System.TimeSpan endTime, int? excludeSlotId = null, CancellationToken cancellationToken = default)
+    public async Task<bool> HasOverlappingSlotAsync(string lawyerId, DateOnly date, TimeSpan startTime, TimeSpan endTime, int? excludeSlotId = null, CancellationToken cancellationToken = default)
     {
         return await dbContext.AppointmentSlots
             .AnyAsync(x => x.LawyerId == lawyerId 
-                        && x.DayOfWeek == dayOfWeek 
+                        && x.Date == date 
                         && (!excludeSlotId.HasValue || x.Id != excludeSlotId)
                         && x.StartTime < endTime 
                         && x.EndTime > startTime, 

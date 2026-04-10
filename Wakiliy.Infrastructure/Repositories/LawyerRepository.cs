@@ -67,7 +67,7 @@ namespace Wakiliy.Infrastructure.Repositories
                 .Include(l => l.ProfessionalCertifications).ThenInclude(pc => pc.Document)
                 .Include(l => l.WorkExperiences)
                 .Include(l => l.VerificationDocuments!).ThenInclude(vd => vd.File)
-                .FirstOrDefaultAsync(l => l.Id == id && l.CurrentOnboardingStep == LawyerOnboardingSteps.Completed);
+                .FirstOrDefaultAsync(l => l.Id == id);
         }
 
         public IQueryable<Lawyer> GetVerificationRequestsQueryable()

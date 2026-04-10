@@ -29,9 +29,9 @@ namespace Wakiliy.API.Controllers
         /// <response code="404">Lawyer not found</response>
         [HttpGet("lawyer/{lawyerId}")]
         [ProducesResponseType(typeof(List<AppointmentSlotDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetLawyerAppointmentSlots(string lawyerId)
+        public async Task<IActionResult> GetLawyerAppointmentSlots(string lawyerId, [FromQuery] DateOnly? date)
         {
-            var query = new GetAppointmentSlotsByLawyerQuery { LawyerId = lawyerId };
+            var query = new GetAppointmentSlotsByLawyerQuery { LawyerId = lawyerId, Date = date };
             var result = await Mediator.Send(query);
             return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
         }
@@ -44,9 +44,9 @@ namespace Wakiliy.API.Controllers
         [HttpGet()]
         [Authorize(Roles = $"{DefaultRoles.Lawyer}")]
         [ProducesResponseType(typeof(List<AppointmentSlotDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetMyAppointmentSlots()
+        public async Task<IActionResult> GetMyAppointmentSlots([FromQuery] DateOnly date)
         {
-            var query = new GetAppointmentSlotsByLawyerQuery { LawyerId = User.GetUserId() };
+            var query = new GetAppointmentSlotsByLawyerQuery { LawyerId = User.GetUserId(), Date = date };
             var result = await Mediator.Send(query);
             return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
         }
@@ -65,9 +65,10 @@ namespace Wakiliy.API.Controllers
         {
             var command = new CreateAppointmentSlotCommand
             {
-                DayOfWeek = dto.DayOfWeek,
+                Date = dto.Date,
                 StartTime = dto.StartTime,
                 EndTime = dto.EndTime,
+                SessionType = dto.SessionType,
                 LawyerId = User.GetUserId()
             };
             var result = await Mediator.Send(command);
@@ -90,9 +91,10 @@ namespace Wakiliy.API.Controllers
         {       
             var command = new UpdateAppointmentSlotCommand
             {
-              DayOfWeek = dto.DayOfWeek,
+              Date = dto.Date,
               StartTime = dto.StartTime,
               EndTime = dto.EndTime,  
+              SessionType = dto.SessionType,
               Id = id,
               LawyerId = User.GetUserId()
             };

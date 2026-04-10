@@ -18,16 +18,17 @@ public class UpdateAppointmentSlotCommandHandler(IAppointmentSlotRepository appo
         }
 
         var hasOverlap = await appointmentSlotRepository.HasOverlappingSlotAsync(
-            request.LawyerId, request.DayOfWeek, request.StartTime, request.EndTime, request.Id, cancellationToken);
+            request.LawyerId, request.Date, request.StartTime, request.EndTime, request.Id, cancellationToken);
             
         if (hasOverlap)
         {
             return Result.Failure(new Error("AppointmentSlot.Overlap", "The appointment slot overlaps with an existing slot.", 409));
         }
 
-        appointmentSlot.DayOfWeek = request.DayOfWeek;
+        appointmentSlot.Date = request.Date;
         appointmentSlot.StartTime = request.StartTime;
         appointmentSlot.EndTime = request.EndTime;
+        appointmentSlot.SessionType = request.SessionType;
 
         await appointmentSlotRepository.UpdateAsync(appointmentSlot, cancellationToken);
 
