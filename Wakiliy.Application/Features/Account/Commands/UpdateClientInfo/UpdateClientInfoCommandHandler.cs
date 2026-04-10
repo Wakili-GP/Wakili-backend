@@ -31,6 +31,8 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateClientInfo
             var response = client.Adapt<UserInfoResponse>();
             response.UserType = DefaultRoles.Client;
             response.IsEmailVerified = client.EmailConfirmed;
+            response.LastName = client.LastName;
+            response.FirstName = client.FirstName;
 
 
             if (request.ProfileImage is not null)
@@ -57,14 +59,14 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateClientInfo
                 };
 
                 file.SystemFileUrl = $"/api/files/{file.Id}";
-                response.ImageUrl = file.SystemFileUrl;
+                response.profileImage = file.SystemFileUrl;
                 client.ProfileImage = file;
                 await uploadedFileRepository.AddAsync(file, cancellationToken);
 
             }
             else
             {
-                response.ImageUrl = client.ProfileImage?.SystemFileUrl;
+                response.profileImage = client.ProfileImage?.SystemFileUrl;
             }
 
             await clientRepository.UpdateAsync(client, cancellationToken);

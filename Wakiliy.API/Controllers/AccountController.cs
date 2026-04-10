@@ -31,7 +31,7 @@ namespace Wakiliy.API.Controllers
         public async Task<IActionResult> GetClientData(CancellationToken cancellationToken)
         {
             var result = await mediator.Send(new GetClientDataQuery(User.GetUserId()), cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+            return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace Wakiliy.API.Controllers
             };
 
             var result = await mediator.Send(command, cancellationToken);
-            return result.IsSuccess ? Ok(new { message = result.Value }) : result.ToProblem();
+            return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace Wakiliy.API.Controllers
             };
 
             var result = await mediator.Send(command, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+            return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace Wakiliy.API.Controllers
             };
 
             var result = await mediator.Send(command, cancellationToken);
-            return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+            return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
         }
     }
 }

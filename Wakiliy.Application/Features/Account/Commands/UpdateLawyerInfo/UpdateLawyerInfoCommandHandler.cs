@@ -79,7 +79,7 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateLawyerInfo
                 };
 
                 file.SystemFileUrl = $"/api/files/{file.Id}";
-                response.ImageUrl = file.SystemFileUrl;
+                response.profileImage = file.SystemFileUrl;
                 lawyer.ProfileImage = file;
                 await uploadedFileRepository.AddAsync(file, cancellationToken);
                 

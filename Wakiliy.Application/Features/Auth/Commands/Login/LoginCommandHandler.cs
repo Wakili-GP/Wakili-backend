@@ -50,7 +50,7 @@ public class LoginCommandHandler(UserManager<AppUser> userManager,
                     userDto.Status = LawyerOnboardingStatus.SubmittedAndApproved.ToString();
             }
 
-            userDto.imageUrl = user.ProfileImage?.SystemFileUrl;
+            userDto.profileImage = user.ProfileImage?.SystemFileUrl;
 
 
             var loginResponse = new LoginResponse

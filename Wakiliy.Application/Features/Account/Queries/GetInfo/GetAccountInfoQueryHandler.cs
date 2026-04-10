@@ -27,7 +27,7 @@ namespace Wakiliy.Application.Features.Account.Queries.GetInfo
             var response = user.Adapt<UserInfoResponse>();
             response.UserType = userType;
             response.IsEmailVerified = user.EmailConfirmed;
-            response.ImageUrl = user.ProfileImage?.SystemFileUrl;
+            response.profileImage = user.ProfileImage?.SystemFileUrl;
 
             if(user.Status == UserStatus.Inactive)
                 response.Status = UserStatus.Inactive.ToString();

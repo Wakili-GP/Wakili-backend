@@ -12,7 +12,7 @@ namespace Wakiliy.Application.Features.Auth.DTOs
         public string UserType { get; set; } = string.Empty;
         public string? Status { get; set; }
         public string? PhoneNumber { get; set; }
-        public string? imageUrl { get; set; }
+        public string? profileImage { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

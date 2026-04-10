@@ -13,7 +13,7 @@ namespace Wakiliy.Application.Features.Account.DTOs
         public string? City { get; set; }
         public string? Country { get; set; }
         public string? PhoneNumber { get; set; }
-        public string? ImageUrl { get; set; }
+        public string? profileImage { get; set; }
         public bool IsEmailVerified { get; set; }
         public DateTime CreatedAt { get; set; }
     }
