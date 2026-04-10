@@ -20,9 +20,6 @@ namespace Wakiliy.Application.Features.Lawyers.Commands.Update
                 .MaximumLength(200)
                 .When(x => !string.IsNullOrWhiteSpace(x.FullName));
 
-            RuleFor(x => x.Address)
-                .MaximumLength(500)
-                .When(x => !string.IsNullOrWhiteSpace(x.Address));
 
             RuleFor(x => x.LicenseNumber)
                 .MaximumLength(100)

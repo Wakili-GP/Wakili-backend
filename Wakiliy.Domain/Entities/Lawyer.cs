@@ -7,8 +7,6 @@ namespace Wakiliy.Domain.Entities;
 public class Lawyer : AppUser
 {
     public DateTime JoinedDate { get; set; }
-    public string Country { get; set; } = string.Empty;
-    public string City { get; set; } = string.Empty;
     public string? Bio { get; set; }
     public int? YearsOfExperience { get; set; }
 

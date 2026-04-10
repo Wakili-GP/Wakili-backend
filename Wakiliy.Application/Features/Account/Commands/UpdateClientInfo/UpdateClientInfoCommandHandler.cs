@@ -24,7 +24,8 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateClientInfo
             client.FirstName = request.FirstName ?? client.FirstName;
             client.LastName = request.LastName ?? client.LastName;
             client.PhoneNumber = request.PhoneNumber ?? client.PhoneNumber;
-            client.Address = request.Address ?? client.Address;
+            client.City = request.City ?? client.City;
+            client.Country = request.Country ?? client.Country;
             client.Bio = request.Bio ?? client.Bio;
 
             var response = client.Adapt<UserInfoResponse>();

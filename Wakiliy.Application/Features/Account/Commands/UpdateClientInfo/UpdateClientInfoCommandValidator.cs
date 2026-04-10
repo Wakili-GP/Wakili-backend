@@ -18,9 +18,13 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateClientInfo
                 .MaximumLength(200)
                 .When(x => !string.IsNullOrWhiteSpace(x.LastName));
 
-            RuleFor(x => x.Address)
-                .MaximumLength(500)
-                .When(x => !string.IsNullOrWhiteSpace(x.Address));
+            RuleFor(x => x.City)
+                .MaximumLength(150)
+                .When(x => !string.IsNullOrWhiteSpace(x.City));
+
+            RuleFor(x => x.Country)
+                .MaximumLength(150)
+                .When(x => !string.IsNullOrWhiteSpace(x.Country));
         }
     }
 }

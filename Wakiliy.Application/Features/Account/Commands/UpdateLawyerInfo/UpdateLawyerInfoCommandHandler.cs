@@ -44,8 +44,9 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateLawyerInfo
             lawyer.FirstName = request.FirstName ?? lawyer.FirstName;
             lawyer.LastName = request.LastName ?? lawyer.LastName;
             lawyer.PhoneNumber = request.PhoneNumber ?? lawyer.PhoneNumber;
+            lawyer.City = request.City ?? lawyer.City;
+            lawyer.Country = request.Country ?? lawyer.Country;
             lawyer.Gender = request.Gender ?? lawyer.Gender;
-            lawyer.Address = request.Address ?? lawyer.Address;
             lawyer.LicenseNumber = request.LicenseNumber ?? lawyer.LicenseNumber;
             lawyer.YearsOfExperience = request.YearsOfExperience ?? lawyer.YearsOfExperience;
             lawyer.PhoneSessionPrice = request.PhoneSessionPrice ?? lawyer.PhoneSessionPrice;

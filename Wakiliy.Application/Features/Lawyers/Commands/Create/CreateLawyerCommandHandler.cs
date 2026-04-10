@@ -33,7 +33,6 @@ namespace Wakiliy.Application.Features.Lawyers.Commands.Create
                 EmailConfirmed = true,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                Address = request.Address,
                 YearsOfExperience = request.YearsOfExperience,
                 VerificationStatus = request.VerificationStatus,
                 JoinedDate = DateTime.UtcNow,

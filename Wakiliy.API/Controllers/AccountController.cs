@@ -74,7 +74,8 @@ namespace Wakiliy.API.Controllers
                 LastName = request.LastName,
                 PhoneNumber = request.PhoneNumber,
                 ProfileImage = request.ProfileImage,
-                Address = request.Address,
+                City = request.City,
+                Country = request.Country,
                 Bio = request.Bio
             };
 
@@ -102,7 +103,8 @@ namespace Wakiliy.API.Controllers
                 PhoneNumber = request.PhoneNumber,
                 ProfileImage = request.ProfileImage,
                 Gender = request.Gender,
-                Address = request.Address,
+                City = request.City,
+                Country = request.Country,
                 LicenseNumber = request.LicenseNumber,
                 SpecializationIds = request.SpecializationIds,
                 YearsOfExperience = request.YearsOfExperience,

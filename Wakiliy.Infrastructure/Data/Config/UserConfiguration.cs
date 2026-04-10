@@ -20,9 +20,6 @@ internal class UserConfiguration : IEntityTypeConfiguration<AppUser>
             .HasMaxLength(20);
 
 
-        builder.Property(b => b.Address)
-            .HasMaxLength(250);
-
         builder.Property(b=>b.Status)
             .HasConversion<string>()
             .HasMaxLength(20)

@@ -11,8 +11,8 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateClientInfo
         public string? LastName { get; set; }
         public string? PhoneNumber { get; set; }
         public IFormFile? ProfileImage { get; set; }
-        public string? Gender { get; set; }
-        public string? Address { get; set; }
+        public string? City { get; set; }
+        public string? Country { get; set; }
         public string? Bio { get; set; }
     }
     public class UpdateClientInfoCommand : IRequest<Result<UserInfoResponse>>
@@ -24,7 +24,8 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateClientInfo
         public string? LastName { get; set; }
         public string? PhoneNumber { get; set; }
         public IFormFile? ProfileImage { get; set; }
-        public string? Address { get; set; }
+        public string? City { get; set; }
+        public string? Country { get; set; }
         public string? Bio { get; set; }
     }
 }

@@ -23,9 +23,6 @@ namespace Wakiliy.Application.Features.Lawyers.Commands.Create
                 .NotEmpty()
                 .MaximumLength(50);
 
-            RuleFor(x => x.Address)
-                .MaximumLength(500);
-
             RuleFor(x => x.LicenseNumber)
                 .NotEmpty()
                 .MaximumLength(100);

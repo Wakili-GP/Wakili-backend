@@ -12,7 +12,8 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateLawyerInfo
         public string? PhoneNumber { get; set; }
         public IFormFile? ProfileImage { get; set; }
         public string? Gender { get; set; }
-        public string? Address { get; set; }
+        public string? City { get; set; }
+        public string? Country { get; set; }
 
         public string? LicenseNumber { get; set; }
         public List<int>? SpecializationIds { get; set; }
@@ -30,7 +31,8 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateLawyerInfo
         public string? PhoneNumber { get; set; }
         public IFormFile? ProfileImage { get; set; }
         public string? Gender { get; set; }
-        public string? Address { get; set; }
+        public string? City { get; set; }
+        public string? Country { get; set; }
 
         public string? LicenseNumber { get; set; }
         public List<int>? SpecializationIds { get; set; }

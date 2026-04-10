@@ -9,7 +9,8 @@ public class AppUser : IdentityUser
     public UploadedFile? ProfileImage { get; set; }
     public bool? AcceptTerms { get; set; }
     public string? Gender { get; set; }
-    public string? Address { get; set; }
+    public string? City { get; set; }
+    public string? Country { get; set; }
     public UserStatus Status { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
