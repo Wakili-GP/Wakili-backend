@@ -1,4 +1,7 @@
 using MediatR;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Http;
+using Wakiliy.Application.Helpers;
 using Wakiliy.Domain.Enums;
 using Wakiliy.Domain.Errors;
 using Wakiliy.Domain.Repositories;
@@ -6,7 +9,10 @@ using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.Appointments.Commands.Complete;
 
-public class CompleteAppointmentCommandHandler(IAppointmentRepository appointmentRepository)
+public class CompleteAppointmentCommandHandler(
+    IAppointmentRepository appointmentRepository,
+    IEmailSender emailSender,
+    IHttpContextAccessor httpContextAccessor)
     : IRequestHandler<CompleteAppointmentCommand, Result>
 {
     public async Task<Result> Handle(CompleteAppointmentCommand request, CancellationToken cancellationToken)
@@ -27,6 +33,26 @@ public class CompleteAppointmentCommandHandler(IAppointmentRepository appointmen
 
         await appointmentRepository.UpdateAsync(appointment, cancellationToken);
 
+        // Send review invitation email to the client
+        await SendReviewInvitationEmailAsync(appointment.Client.Email!, appointment.Client.FirstName, appointment.Lawyer.FirstName + " " + appointment.Lawyer.LastName, appointment.Id);
+
         return Result.Success();
+    }
+
+    private async Task SendReviewInvitationEmailAsync(string clientEmail, string clientFirstName, string lawyerFullName, Guid appointmentId)
+    {
+        var origin = httpContextAccessor.HttpContext?.Request.Headers.Origin.ToString();
+        var reviewUrl = $"{origin}/appointments/{appointmentId}/review";
+
+        var tokens = new Dictionary<string, string>
+        {
+            { "{{clientName}}", clientFirstName },
+            { "{{lawyerName}}", lawyerFullName },
+            { "{{reviewUrl}}", reviewUrl }
+        };
+
+        var emailBody = EmailBodyBuilder.GenerateEmailBody("ReviewInvitation", tokens);
+
+        await emailSender.SendEmailAsync(clientEmail, "قيّم تجربتك مع المحامي ⭐", emailBody);
     }
 }

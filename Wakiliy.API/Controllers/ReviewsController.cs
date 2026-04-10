@@ -44,7 +44,7 @@ public class ReviewsController : ControllerBase
         command.UserId = User.GetUserId();
 
         var result = await _mediator.Send(command);
-        return result.IsSuccess ? result.ToSuccess("Review created successfully") : result.ToProblem();
+        return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
     }
 
     /// <summary>
