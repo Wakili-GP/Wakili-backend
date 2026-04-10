@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -21,6 +21,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<UploadedFile> UploadedFiles => Set<UploadedFile>();
     public DbSet<FavoriteLawyer> FavoriteLawyers { get; set; }
     public DbSet<AppointmentSlot> AppointmentSlots { get; set; } = default!;
+    public DbSet<Appointment> Appointments { get; set; } = default!;
 
     public override int SaveChanges()
     {

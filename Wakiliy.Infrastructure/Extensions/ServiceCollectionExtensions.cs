@@ -1,4 +1,4 @@
-﻿using CloudinaryDotNet;
+using CloudinaryDotNet;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -40,6 +40,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IFavoriteLawyerRepository, FavoriteLawyerRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IAppointmentSlotRepository, AppointmentSlotRepository>();
+        services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 
 
 
