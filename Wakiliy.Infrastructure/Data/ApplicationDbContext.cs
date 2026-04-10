@@ -22,6 +22,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<FavoriteLawyer> FavoriteLawyers { get; set; }
     public DbSet<AppointmentSlot> AppointmentSlots { get; set; } = default!;
     public DbSet<Appointment> Appointments { get; set; } = default!;
+    public DbSet<Review> Reviews { get; set; } = default!;
+    public DbSet<SystemReview> SystemReviews { get; set; } = default!;
 
     public override int SaveChanges()
     {

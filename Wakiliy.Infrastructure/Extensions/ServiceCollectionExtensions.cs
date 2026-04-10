@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Wakiliy.Application.Common.Interfaces;
 using Wakiliy.Application.Common.Settings;
+using Wakiliy.Application.Interfaces;
 using Wakiliy.Application.Interfaces.Services;
 using Wakiliy.Application.Repositories;
 using Wakiliy.Domain.Repositories;
@@ -41,6 +42,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IAppointmentSlotRepository, AppointmentSlotRepository>();
         services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+        services.AddScoped<IReviewRepository, ReviewRepository>();
+        services.AddScoped<ISystemReviewRepository, SystemReviewRepository>();
 
 
 
