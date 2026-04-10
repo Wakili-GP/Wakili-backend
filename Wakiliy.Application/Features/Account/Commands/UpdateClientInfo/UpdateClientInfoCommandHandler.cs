@@ -24,11 +24,12 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateClientInfo
             client.FirstName = request.FirstName ?? client.FirstName;
             client.LastName = request.LastName ?? client.LastName;
             client.PhoneNumber = request.PhoneNumber ?? client.PhoneNumber;
-            client.Gender = request.Gender ?? client.Gender;
             client.Address = request.Address ?? client.Address;
+            client.Bio = request.Bio ?? client.Bio;
 
             var response = client.Adapt<UserInfoResponse>();
             response.UserType = DefaultRoles.Client;
+            response.IsEmailVerified = client.EmailConfirmed;
 
 
             if (request.ProfileImage is not null)
@@ -58,7 +59,11 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateClientInfo
                 response.ImageUrl = file.SystemFileUrl;
                 client.ProfileImage = file;
                 await uploadedFileRepository.AddAsync(file, cancellationToken);
-                
+
+            }
+            else
+            {
+                response.ImageUrl = client.ProfileImage?.SystemFileUrl;
             }
 
             await clientRepository.UpdateAsync(client, cancellationToken);

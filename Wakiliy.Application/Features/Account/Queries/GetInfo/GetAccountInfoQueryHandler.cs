@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Wakiliy.Application.Features.Account.DTOs;
 using Wakiliy.Domain.Constants;
 using Wakiliy.Domain.Entities;
+using Wakiliy.Domain.Enums;
 using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.Account.Queries.GetInfo
@@ -27,6 +28,21 @@ namespace Wakiliy.Application.Features.Account.Queries.GetInfo
             response.UserType = userType;
             response.IsEmailVerified = user.EmailConfirmed;
             response.ImageUrl = user.ProfileImage?.SystemFileUrl;
+
+            if(user.Status == UserStatus.Inactive)
+                response.Status = UserStatus.Inactive.ToString();
+            else if (user.Status == UserStatus.Active && userType == DefaultRoles.Client)
+                response.Status = UserStatus.Active.ToString();
+            
+             if (user is Lawyer lawyer)
+            {
+                if (lawyer.CurrentOnboardingStep < LawyerOnboardingSteps.Completed)
+                    response.Status = LawyerOnboardingStatus.Unfinished.ToString();
+                else if (lawyer.VerificationStatus != VerificationStatus.Approved)
+                    response.Status = LawyerOnboardingStatus.SubmittedAndNotApproved.ToString();
+                else
+                    response.Status = LawyerOnboardingStatus.SubmittedAndApproved.ToString();
+            }
 
             return Result.Success(response);
         }

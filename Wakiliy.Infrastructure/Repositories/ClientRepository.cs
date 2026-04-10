@@ -12,6 +12,7 @@ namespace Wakiliy.Infrastructure.Repositories
         public async Task<Client?> GetByIdAsync(string id, CancellationToken cancellationToken = default)
         {
             return await dbContext.Users
+                .Include(c => c.ProfileImage)
                 .OfType<Client>()
                 .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
         }

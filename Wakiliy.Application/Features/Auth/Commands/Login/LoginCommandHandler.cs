@@ -22,6 +22,9 @@ public class LoginCommandHandler(UserManager<AppUser> userManager,
         if (user is null)
             return Result.Failure<LoginResponse>(UserErrors.InvalidCredentials);
 
+        if(user.Status == UserStatus.Inactive)
+            return Result.Failure<LoginResponse>(UserErrors.InactiveUser);
+
         // Admins must use the admin-login endpoint
         var userRoles = await userManager.GetRolesAsync(user);
         if (userRoles.Contains(DefaultRoles.Admin))

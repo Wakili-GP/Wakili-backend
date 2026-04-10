@@ -21,5 +21,5 @@ public static class UserErrors
     public static readonly Error EmailAlreadyConfirmed = new("User.EmailAlreadyConfirmed", "Email already confirmed", StatusCodes.Status400BadRequest);
     public static readonly Error InvalidRoles = new("Role.InvalidRoles", "Invalid roles", StatusCodes.Status400BadRequest);
     public static readonly Error Unauthorized = new("User.Unauthorized", "You are not authorized to access this resource", StatusCodes.Status403Forbidden);
-
+    public static readonly Error InactiveUser = new("User.Inactive", "Your account is inactive, Please contact support", StatusCodes.Status403Forbidden);
 }

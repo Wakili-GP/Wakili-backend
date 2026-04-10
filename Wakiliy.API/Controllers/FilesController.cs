@@ -20,7 +20,7 @@ namespace Wakiliy.API.Controllers
             if (file is null)
                 return NotFound();
 
-            if (file.OwnerId != User.GetUserId() && !User.IsInRole(DefaultRoles.Admin)) return Forbid();
+            // if (file.OwnerId != User.GetUserId() && !User.IsInRole(DefaultRoles.Admin)) return Forbid();
 
             var cloudName = configuration["Cloudinary:CloudName"];
 
@@ -36,11 +36,13 @@ namespace Wakiliy.API.Controllers
             var stream = await response.Content.ReadAsStreamAsync();
             var contentType = file.ContentType ?? "application/octet-stream";
 
-            return File(
-                stream,
-                contentType,
-                file.FileName
-            );
+
+            Response.Headers["Content-Disposition"] = $"inline; filename=\"{file.FileName}\"";
+
+            return new FileStreamResult(stream, contentType)
+            {
+                EnableRangeProcessing = true 
+            };
         }
 
     }
