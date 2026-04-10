@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Wakiliy.Application.Features.Lawyers.Onboarding.DTOs;
 using Wakiliy.Domain.Responses;
 
@@ -9,8 +10,7 @@ namespace Wakiliy.Application.Features.Lawyers.Onboarding.Commands.SaveVerificat
 
 public class SaveVerificationCommand : IRequest<Result<OnboardingStepResponse<VerificationDocumentsDto>>>
 {
-    [JsonIgnore]
-    public string UserId { get; set; } = string.Empty;
+    public string? UserId { get; set; }
 
     public IFormFile NationalIdFront { get; set; } = default!;
     public IFormFile NationalIdBack { get; set; } = default!;

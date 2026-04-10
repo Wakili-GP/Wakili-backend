@@ -8,8 +8,7 @@ namespace Wakiliy.Application.Features.Lawyers.Onboarding.Commands.SaveEducation
 
 public class SaveEducationCommand : IRequest<Result<OnboardingStepResponse<EducationDataDto>>>
 {
-    [JsonIgnore]
-    public string UserId { get; set; } = string.Empty;
+    public string? UserId { get; set; }
 
     public List<AcademicQualificationDto> AcademicQualifications { get; set; } = new();
     public List<ProfessionalCertificationDto>? ProfessionalCertifications { get; set; } = new();

@@ -9,8 +9,7 @@ namespace Wakiliy.Application.Features.Lawyers.Onboarding.Commands.SaveBasicInfo
 
 public class SaveBasicInfoCommand : IRequest<Result<OnboardingStepResponse<BasicInfoDataDto>>>
 {
-    [JsonIgnore]
-    public string UserId { get; set; } = string.Empty;
+    public string? UserId { get; set; }
     public IFormFile? ProfileImage { get; set; }
     public string PhoneNumber { get; set; } = string.Empty;
     public string Country { get; set; } = string.Empty;
