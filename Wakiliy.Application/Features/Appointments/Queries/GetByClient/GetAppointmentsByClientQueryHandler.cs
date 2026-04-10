@@ -6,15 +6,12 @@ using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.Appointments.Queries.GetByClient;
 
-public class GetAppointmentsByClientQueryHandler(IAppointmentRepository appointmentRepository)
+public class GetAppointmentsByClientQueryHandler(IUnitOfWork unitOfWork)
     : IRequestHandler<GetAppointmentsByClientQuery, Result<List<AppointmentDto>>>
 {
     public async Task<Result<List<AppointmentDto>>> Handle(GetAppointmentsByClientQuery request, CancellationToken cancellationToken)
     {
-        var appointments = await appointmentRepository.GetByClientIdAsync(request.ClientId, cancellationToken);
-
-        var result = appointments.Adapt<List<AppointmentDto>>();
-
-        return Result.Success(result);
+        var appointments = await unitOfWork.Appointments.GetByClientIdAsync(request.ClientId, cancellationToken);
+        return Result.Success(appointments.Adapt<List<AppointmentDto>>());
     }
 }

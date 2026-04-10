@@ -9,12 +9,12 @@ using Wakiliy.Domain.Responses;
 namespace Wakiliy.Application.Features.Lawyers.Commands.Verification.RejectVerification;
 
 public class RejectVerificationCommandHandler(
-    ILawyerRepository lawyerRepository,
+    IUnitOfWork unitOfWork,
     IEmailSender emailSender) : IRequestHandler<RejectVerificationCommand, Result>
 {
     public async Task<Result> Handle(RejectVerificationCommand request, CancellationToken cancellationToken)
     {
-        var lawyer = await lawyerRepository.GetByIdAsync(request.LawyerId, cancellationToken);
+        var lawyer = await unitOfWork.Lawyers.GetByIdAsync(request.LawyerId, cancellationToken);
 
         if (lawyer is null)
             return Result.Failure(OnboardingErrors.LawyerNotFound);
@@ -23,9 +23,9 @@ public class RejectVerificationCommandHandler(
             return Result.Failure(OnboardingErrors.AlreadyRejected);
 
         lawyer.VerificationStatus = VerificationStatus.Rejected;
-        await lawyerRepository.UpdateAsync(lawyer, cancellationToken);
+        await unitOfWork.Lawyers.UpdateAsync(lawyer, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        // Build the optional note section HTML
         var noteSection = string.IsNullOrWhiteSpace(request.Note)
             ? string.Empty
             : $"<div class=\"note-box\"><strong>ملاحظة المراجع:</strong><br/>{request.Note}</div>";

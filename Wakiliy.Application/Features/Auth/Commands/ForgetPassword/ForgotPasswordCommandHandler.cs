@@ -14,7 +14,7 @@ namespace Wakiliy.Application.Features.Auth.Commands.ForgotPassword
     public class ForgotPasswordCommandHandler(
         UserManager<AppUser> userManager,
         IEmailSender emailSender,
-        IEmailOtpRepository emailOtpRepository) : IRequestHandler<ForgetPasswordCommand, Result<string>>
+        IUnitOfWork unitOfWork) : IRequestHandler<ForgetPasswordCommand, Result<string>>
     {
         public async Task<Result<string>> Handle(ForgetPasswordCommand request, CancellationToken cancellationToken)
         {
@@ -22,12 +22,12 @@ namespace Wakiliy.Application.Features.Auth.Commands.ForgotPassword
             if (user is null)
                 return Result.Success("Password reset code sent to your email");
 
-            await emailOtpRepository.InvalidatePreviousAsync(user.Email!);
+            await unitOfWork.EmailOtps.InvalidatePreviousAsync(user.Email!);
 
             var otp = Random.Shared.Next(100000, 999999).ToString();
             var hashedOtp = HashOtp(otp);
 
-            await emailOtpRepository.AddAsync(new EmailOtp
+            await unitOfWork.EmailOtps.AddAsync(new EmailOtp
             {
                 Email = request.Email,
                 Code = hashedOtp,
@@ -36,7 +36,7 @@ namespace Wakiliy.Application.Features.Auth.Commands.ForgotPassword
                 Purpose = OtpPurpose.PasswordReset
             });
 
-            await emailOtpRepository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
             await SendResetPasswordOtpEmail(user, otp,emailSender);
 

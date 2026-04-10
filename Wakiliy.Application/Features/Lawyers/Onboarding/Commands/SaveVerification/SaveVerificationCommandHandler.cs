@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Wakiliy.Application.Common.Interfaces;
 using Wakiliy.Application.Features.Lawyers.Onboarding.Common;
@@ -13,9 +13,7 @@ using Wakiliy.Domain.Responses;
 namespace Wakiliy.Application.Features.Lawyers.Onboarding.Commands.SaveVerification;
 
 public class SaveVerificationCommandHandler(
-    ILawyerRepository lawyerRepository,
-    IVerificationDocumentRepository verificationDocumentRepository,
-    IUploadedFileRepository uploadedFileRepository,
+    IUnitOfWork unitOfWork,
     IFileUploadService fileUploadService)
     : IRequestHandler<SaveVerificationCommand, Result<OnboardingStepResponse<VerificationDocumentsDto>>>
 {
@@ -23,15 +21,14 @@ public class SaveVerificationCommandHandler(
         SaveVerificationCommand request,
         CancellationToken cancellationToken)
     {
-        var lawyer = await lawyerRepository.GetByIdAsync(request.UserId);
+        var lawyer = await unitOfWork.Lawyers.GetByIdAsync(request.UserId);
 
         if (lawyer is null)
             return Result.Failure<OnboardingStepResponse<VerificationDocumentsDto>>(
                 OnboardingErrors.LawyerNotFound);
 
         // Delete old docs
-        await verificationDocumentRepository
-            .DeleteByLawyerIdAsync(request.UserId, cancellationToken);
+        await unitOfWork.VerificationDocuments.DeleteByLawyerIdAsync(request.UserId, cancellationToken);
 
         var documents = new List<VerificationDocuments>();
 
@@ -60,7 +57,8 @@ public class SaveVerificationCommandHandler(
             LawyerOnboardingSteps.Verification,
             LawyerOnboardingSteps.Completed);
 
-        await lawyerRepository.UpdateAsync(lawyer,cancellationToken);
+        await unitOfWork.Lawyers.UpdateAsync(lawyer, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success(LawyerOnboardingHelper.BuildResponse(lawyer,PopulateResponsed(lawyer),"Verification documents saved"));
     }
@@ -114,7 +112,7 @@ public class SaveVerificationCommandHandler(
 
         entity.SystemFileUrl = $"/api/files/{entity.Id}";
 
-        await uploadedFileRepository.AddAsync(entity, CancellationToken.None);
+        await unitOfWork.UploadedFiles.AddAsync(entity, CancellationToken.None);
         return entity;
     }
 

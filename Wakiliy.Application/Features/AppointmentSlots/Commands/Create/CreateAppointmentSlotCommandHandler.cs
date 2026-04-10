@@ -8,18 +8,16 @@ using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.AppointmentSlots.Commands.Create;
 
-public class CreateAppointmentSlotCommandHandler(IAppointmentSlotRepository appointmentSlotRepository) 
+public class CreateAppointmentSlotCommandHandler(IUnitOfWork unitOfWork)
     : IRequestHandler<CreateAppointmentSlotCommand, Result<AppointmentSlotDto>>
 {
     public async Task<Result<AppointmentSlotDto>> Handle(CreateAppointmentSlotCommand request, CancellationToken cancellationToken)
     {
-        var hasOverlap = await appointmentSlotRepository.HasOverlappingSlotAsync(
+        var hasOverlap = await unitOfWork.AppointmentSlots.HasOverlappingSlotAsync(
             request.LawyerId, request.Date, request.StartTime, request.EndTime, null, cancellationToken);
-            
+
         if (hasOverlap)
-        {
             return Result.Failure<AppointmentSlotDto>(new Error("AppointmentSlot.Overlap", "The appointment slot overlaps with an existing slot.", 409));
-        }
 
         var appointmentSlot = new AppointmentSlot
         {
@@ -30,7 +28,8 @@ public class CreateAppointmentSlotCommandHandler(IAppointmentSlotRepository appo
             SessionType = request.SessionType
         };
 
-        await appointmentSlotRepository.AddAsync(appointmentSlot, cancellationToken);
+        await unitOfWork.AppointmentSlots.AddAsync(appointmentSlot, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success(appointmentSlot.Adapt<AppointmentSlotDto>());
     }

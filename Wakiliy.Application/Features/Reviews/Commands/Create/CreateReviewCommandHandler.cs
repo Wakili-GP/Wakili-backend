@@ -10,21 +10,19 @@ using Wakiliy.Domain.Responses;
 namespace Wakiliy.Application.Features.Reviews.Commands.Create;
 
 public class CreateReviewCommandHandler(
-    IAppointmentRepository appointmentRepository,
-    IReviewRepository reviewRepository,
-    ISystemReviewRepository systemReviewRepository)
+    IUnitOfWork unitOfWork)
     : IRequestHandler<CreateReviewCommand, Result<ReviewResponseDto>>
 {
     public async Task<Result<ReviewResponseDto>> Handle(CreateReviewCommand request, CancellationToken cancellationToken)
     {
-        var appointment = await appointmentRepository.GetByIdAsync(request.AppointmentId, cancellationToken);
+        var appointment = await unitOfWork.Appointments.GetByIdAsync(request.AppointmentId, cancellationToken);
         if (appointment is null)
             return Result.Failure<ReviewResponseDto>(ReviewErrors.AppointmentNotFound);
 
         if (appointment.Status != AppointmentStatus.Completed)
             return Result.Failure<ReviewResponseDto>(ReviewErrors.AppointmentNotCompleted);
 
-        var reviewExists = await reviewRepository.ExistsByAppointmentIdAsync(request.AppointmentId, cancellationToken);
+        var reviewExists = await unitOfWork.Reviews.ExistsByAppointmentIdAsync(request.AppointmentId, cancellationToken);
         if (reviewExists)
             return Result.Failure<ReviewResponseDto>(ReviewErrors.ReviewAlreadyExists);
 
@@ -45,9 +43,9 @@ public class CreateReviewCommandHandler(
             }
         };
 
-        await reviewRepository.AddAsync(review, cancellationToken);
+        await unitOfWork.Reviews.AddAsync(review, cancellationToken);
 
-        var isFirstReview = await systemReviewRepository.IsFirstReviewForUserAsync(request.UserId, cancellationToken);
+        var isFirstReview = await unitOfWork.SystemReviews.IsFirstReviewForUserAsync(request.UserId, cancellationToken);
         if (isFirstReview && request.SystemReview is not null)
         {
             var systemReview = new SystemReview
@@ -65,9 +63,10 @@ public class CreateReviewCommandHandler(
                 }
             };
 
-            await systemReviewRepository.AddAsync(systemReview, cancellationToken);
+            await unitOfWork.SystemReviews.AddAsync(systemReview, cancellationToken);
         }
 
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success(review.Adapt<ReviewResponseDto>());
     }

@@ -13,12 +13,12 @@ using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.Account.Commands.UpdateLawyerInfo
 {
-    public class UpdateLawyerInfoCommandHandler(ILawyerRepository lawyerRepository,ILogger<UpdateLawyerInfoCommandHandler> logger, ISpecializationRepository specializationRepository,IUploadedFileRepository uploadedFileRepository,IFileUploadService fileUploadService) : IRequestHandler<UpdateLawyerInfoCommand, Result<UserInfoResponse>>
+    public class UpdateLawyerInfoCommandHandler(IUnitOfWork unitOfWork, ILogger<UpdateLawyerInfoCommandHandler> logger, IFileUploadService fileUploadService) : IRequestHandler<UpdateLawyerInfoCommand, Result<UserInfoResponse>>
     {
         public async Task<Result<UserInfoResponse>> Handle(UpdateLawyerInfoCommand request, CancellationToken cancellationToken)
         {
             logger.LogInformation("UpdateLawyerInfoCommandHandler: {Id}", request.Id);
-            var lawyer = await lawyerRepository.GetByIdAsync(request.Id, cancellationToken);
+            var lawyer = await unitOfWork.Lawyers.GetByIdAsync(request.Id, cancellationToken);
             if (lawyer is null)
             {
                 return Result.Failure<UserInfoResponse>(new Error("Lawyer.NotFound", "Lawyer profile not found or user is not a lawyer", StatusCodes.Status404NotFound));
@@ -27,7 +27,7 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateLawyerInfo
             if (request.SpecializationIds is not null)
             {
                 var ids = request.SpecializationIds.Distinct().ToList();
-                var specializations = await specializationRepository.GetByIdsAsync(ids, cancellationToken);
+                var specializations = await unitOfWork.Specializations.GetByIdsAsync(ids, cancellationToken);
                 if (specializations.Count != ids.Count)
                 {
                     return Result.Failure<UserInfoResponse>(SpecializationErrors.InvalidSelection);
@@ -57,11 +57,11 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateLawyerInfo
 
             if (request.ProfileImage is not null)
             {
-                var existingFiles = await uploadedFileRepository.GetByOwnerAsync(lawyer.Id, FilePurpose.Profile, cancellationToken);
+                var existingFiles = await unitOfWork.UploadedFiles.GetByOwnerAsync(lawyer.Id, FilePurpose.Profile, cancellationToken);
                 var existingProfileImages = existingFiles.Where(f => f.Category == FileCategory.ProfilePicture).ToList();
                 foreach (var existingFile in existingProfileImages)
                 {
-                    await uploadedFileRepository.DeleteAsync(existingFile, cancellationToken);
+                    await unitOfWork.UploadedFiles.DeleteAsync(existingFile, cancellationToken);
                 }
 
                 var uploadResult = await fileUploadService.UploadAsync(request.ProfileImage, "uploads");
@@ -81,10 +81,11 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateLawyerInfo
                 file.SystemFileUrl = $"/api/files/{file.Id}";
                 response.profileImage = file.SystemFileUrl;
                 lawyer.ProfileImage = file;
-                await uploadedFileRepository.AddAsync(file, cancellationToken);
+                await unitOfWork.UploadedFiles.AddAsync(file, cancellationToken);
                 
             }
-            await lawyerRepository.UpdateAsync(lawyer, cancellationToken);
+            await unitOfWork.Lawyers.UpdateAsync(lawyer, cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success(response);
         }

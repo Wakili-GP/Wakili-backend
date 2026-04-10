@@ -6,12 +6,12 @@ using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.Appointments.Commands.Reject;
 
-public class RejectAppointmentCommandHandler(IAppointmentRepository appointmentRepository)
+public class RejectAppointmentCommandHandler(IUnitOfWork unitOfWork)
     : IRequestHandler<RejectAppointmentCommand, Result>
 {
     public async Task<Result> Handle(RejectAppointmentCommand request, CancellationToken cancellationToken)
     {
-        var appointment = await appointmentRepository.GetByIdAsync(request.AppointmentId, cancellationToken);
+        var appointment = await unitOfWork.Appointments.GetByIdAsync(request.AppointmentId, cancellationToken);
 
         if (appointment is null)
             return Result.Failure(AppointmentErrors.AppointmentNotFound);
@@ -25,7 +25,8 @@ public class RejectAppointmentCommandHandler(IAppointmentRepository appointmentR
         appointment.Status = AppointmentStatus.Cancelled;
         appointment.CancelledAt = DateTime.UtcNow;
 
-        await appointmentRepository.UpdateAsync(appointment, cancellationToken);
+        await unitOfWork.Appointments.UpdateAsync(appointment, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
     }

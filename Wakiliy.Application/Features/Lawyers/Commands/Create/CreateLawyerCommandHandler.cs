@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Mapster;
 using MediatR;
@@ -13,13 +13,13 @@ using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.Lawyers.Commands.Create
 {
-    public class CreateLawyerCommandHandler(UserManager<AppUser> userManager, ISpecializationRepository specializationRepository)
+    public class CreateLawyerCommandHandler(UserManager<AppUser> userManager, IUnitOfWork unitOfWork)
         : IRequestHandler<CreateLaywerCommand, Result<LawyerResponse>>
     {
         public async Task<Result<LawyerResponse>> Handle(CreateLaywerCommand request, CancellationToken cancellationToken)
         {
             var specializationIds = request.SpecializationIds.Distinct().ToList();
-            var specializations = await specializationRepository.GetByIdsAsync(specializationIds, cancellationToken);
+            var specializations = await unitOfWork.Specializations.GetByIdsAsync(specializationIds, cancellationToken);
             if (!specializationIds.Any() || specializations.Count != specializationIds.Count)
             {
                 return Result.Failure<LawyerResponse>(SpecializationErrors.InvalidSelection);

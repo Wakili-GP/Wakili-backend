@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
@@ -13,7 +13,7 @@ using Wakiliy.Domain.Repositories;
 using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.Auth.Commands.ConfirmEmail;
-public class ConfirmEmailCommandHandler(UserManager<AppUser> userManager,ILogger<ConfirmEmailCommandHandler> logger,IEmailOtpRepository emailOtpRepository) : IRequestHandler<ConfirmEmailCommand, Result<string>>
+public class ConfirmEmailCommandHandler(UserManager<AppUser> userManager,ILogger<ConfirmEmailCommandHandler> logger,IUnitOfWork unitOfWork) : IRequestHandler<ConfirmEmailCommand, Result<string>>
 {
     public async Task<Result<string>> Handle(ConfirmEmailCommand request, CancellationToken cancellationToken)
     {
@@ -27,7 +27,7 @@ public class ConfirmEmailCommandHandler(UserManager<AppUser> userManager,ILogger
 
         var hashedOtp = HashOtp(request.Code);
 
-        var otpEntity = await emailOtpRepository
+        var otpEntity = await unitOfWork.EmailOtps
             .GetValidOtpAsync(request.Email, hashedOtp,OtpPurpose.EmailVerification);
 
         if (otpEntity is null)
@@ -39,8 +39,8 @@ public class ConfirmEmailCommandHandler(UserManager<AppUser> userManager,ILogger
         otpEntity.IsUsed = true;
         user.EmailConfirmed = true;
 
-        await emailOtpRepository.SaveChangesAsync();
         await userManager.UpdateAsync(user);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success("Email verified successfully");
     }

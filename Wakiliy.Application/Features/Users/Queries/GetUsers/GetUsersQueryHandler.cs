@@ -7,12 +7,12 @@ using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.Users.Queries.GetUsers
 {
-    public class GetUsersQueryHandler(IUserRepository userRepository)
+    public class GetUsersQueryHandler(IUnitOfWork unitOfWork)
         : IRequestHandler<GetUsersQuery, Result<PaginatedResult<UserListItemDto>>>
     {
         public async Task<Result<PaginatedResult<UserListItemDto>>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
         {
-            var (users, totalCount) = await userRepository.GetUsersPagedAsync(
+            var (users, totalCount) = await unitOfWork.Users.GetUsersPagedAsync(
                 request.Page,
                 request.PageSize,
                 request.Name,

@@ -10,12 +10,12 @@ using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.Lawyers.Onboarding.Commands.SaveExperience;
 
-public class SaveExperienceCommandHandler(ILawyerRepository lawyerRepository)
+public class SaveExperienceCommandHandler(IUnitOfWork unitOfWork)
     : IRequestHandler<SaveExperienceCommand, Result<OnboardingStepResponse<ExperienceDataDto>>>
 {
     public async Task<Result<OnboardingStepResponse<ExperienceDataDto>>> Handle(SaveExperienceCommand request, CancellationToken cancellationToken)
     {
-        var lawyer = await lawyerRepository.GetByIdWithExperiencesAsync(request.UserId, cancellationToken);
+        var lawyer = await unitOfWork.Lawyers.GetByIdWithExperiencesAsync(request.UserId, cancellationToken);
 
         if (lawyer is null)
             return Result.Failure<OnboardingStepResponse<ExperienceDataDto>>(OnboardingErrors.LawyerNotFound);
@@ -39,7 +39,8 @@ public class SaveExperienceCommandHandler(ILawyerRepository lawyerRepository)
 
         lawyer.MarkStepCompleted(LawyerOnboardingSteps.Experience, LawyerOnboardingSteps.Verification);
 
-        await lawyerRepository.UpdateAsync(lawyer,cancellationToken);
+        await unitOfWork.Lawyers.UpdateAsync(lawyer, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         var response = LawyerOnboardingHelper.BuildResponse(lawyer, new ExperienceDataDto
         {

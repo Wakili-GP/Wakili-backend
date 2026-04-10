@@ -6,16 +6,13 @@ using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.AppointmentSlots.Queries.GetByLawyer;
 
-public class GetAppointmentSlotsByLawyerQueryHandler(IAppointmentSlotRepository appointmentSlotRepository) 
+public class GetAppointmentSlotsByLawyerQueryHandler(IUnitOfWork unitOfWork)
     : IRequestHandler<GetAppointmentSlotsByLawyerQuery, Result<List<AppointmentSlotDto>>>
 {
     public async Task<Result<List<AppointmentSlotDto>>> Handle(GetAppointmentSlotsByLawyerQuery request, CancellationToken cancellationToken)
     {
-        var query = appointmentSlotRepository.GetByLawyerIdQuery(request.LawyerId,request.Date!.Value);
-
-        var items = query
-            .Adapt<IEnumerable<AppointmentSlotDto>>().ToList();
-
+        var query = unitOfWork.AppointmentSlots.GetByLawyerIdQuery(request.LawyerId, request.Date!.Value);
+        var items = query.Adapt<IEnumerable<AppointmentSlotDto>>().ToList();
         return Result.Success(items);
     }
 }

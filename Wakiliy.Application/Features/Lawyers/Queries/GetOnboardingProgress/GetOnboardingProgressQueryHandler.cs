@@ -1,4 +1,4 @@
-﻿using Mapster;
+using Mapster;
 using MediatR;
 using Wakiliy.Application.Features.Lawyers.Onboarding.DTOs;
 using Wakiliy.Application.Features.Lawyers.Queries.GetOnboardingProgress;
@@ -9,12 +9,12 @@ using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.Lawyers.Onboarding.Queries.GetOnboardingProgress
 {
-    public class GetOnboardingProgressQueryHandler(ILawyerRepository lawyerRepository)
+    public class GetOnboardingProgressQueryHandler(IUnitOfWork unitOfWork)
         : IRequestHandler<GetOnboardingProgressQuery, Result<OnboardingProgressResponseDto>>
     {
         public async Task<Result<OnboardingProgressResponseDto>> Handle(GetOnboardingProgressQuery request, CancellationToken cancellationToken)
         {
-            var lawyer = await lawyerRepository.GetByIdWithAllOnboardingDataAsync(request.UserId);
+            var lawyer = await unitOfWork.Lawyers.GetByIdWithAllOnboardingDataAsync(request.UserId);
 
             if (lawyer is null)
                 return Result.Failure<OnboardingProgressResponseDto>(OnboardingErrors.LawyerNotFound);

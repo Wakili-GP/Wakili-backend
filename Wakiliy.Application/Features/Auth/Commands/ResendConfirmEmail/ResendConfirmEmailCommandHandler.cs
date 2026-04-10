@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -20,7 +20,7 @@ namespace Wakiliy.Application.Features.Auth.Commands.ResendConfirmEmail
 {
     public class ResendConfirmEmailCommandHandler(
         UserManager<AppUser> userManager,
-        IEmailOtpRepository emailOtpRepository,
+        IUnitOfWork unitOfWork,
         IEmailSender emailSender,
         IHttpContextAccessor httpContextAccessor
         ) : IRequestHandler<ResendConfirmEmailCommand, Result>
@@ -35,11 +35,11 @@ namespace Wakiliy.Application.Features.Auth.Commands.ResendConfirmEmail
             if (user.EmailConfirmed)
                 return Result.Failure(AuthErrors.EmailAlreadyVerified);
 
-            var canResend = await emailOtpRepository.CanResendAsync(request.Email);
+            var canResend = await unitOfWork.EmailOtps.CanResendAsync(request.Email);
             if (!canResend)
                 return Result.Failure(AuthErrors.ResendTooSoon);
 
-            await emailOtpRepository.InvalidatePreviousAsync(request.Email);
+            await unitOfWork.EmailOtps.InvalidatePreviousAsync(request.Email);
 
             // generate code then save it into db and send confirmation email
             var code = GenerateRandomNumber();
@@ -53,8 +53,8 @@ namespace Wakiliy.Application.Features.Auth.Commands.ResendConfirmEmail
                 Purpose = OtpPurpose.EmailVerification
             };
 
-            await emailOtpRepository.AddAsync(emailOtp);
-            await emailOtpRepository.SaveChangesAsync();
+            await unitOfWork.EmailOtps.AddAsync(emailOtp);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
             await SendConfirmationEmail(user, code);
 

@@ -23,21 +23,19 @@ using Wakiliy.Domain.Responses;
 namespace Wakiliy.Application.Features.Lawyers.Onboarding.Commands.SaveBasicInfo;
 
 public class SaveBasicInfoCommandHandler(
-    ILawyerRepository lawyerRepository,
-    ISpecializationRepository specializationRepository,
-    IFileUploadService fileUploadService,
-    IUploadedFileRepository uploadedFileRepository)
+    IUnitOfWork unitOfWork,
+    IFileUploadService fileUploadService)
     : IRequestHandler<SaveBasicInfoCommand, Result<OnboardingStepResponse<BasicInfoDataDto>>>
 {
     public async Task<Result<OnboardingStepResponse<BasicInfoDataDto>>> Handle(SaveBasicInfoCommand request, CancellationToken cancellationToken)
     {
-        var lawyer = await lawyerRepository.GetByIdAsync(request.UserId, cancellationToken);
+        var lawyer = await unitOfWork.Lawyers.GetByIdAsync(request.UserId, cancellationToken);
 
         if (lawyer is null)
             return Result.Failure<OnboardingStepResponse<BasicInfoDataDto>>(OnboardingErrors.LawyerNotFound);
 
         var selectedIds = request.PracticeAreas.Distinct().ToList();
-        var selectedSpecializations = await specializationRepository.GetByIdsAsync(selectedIds, cancellationToken);
+        var selectedSpecializations = await unitOfWork.Specializations.GetByIdsAsync(selectedIds, cancellationToken);
 
         if (selectedSpecializations.Count != selectedIds.Count || selectedSpecializations.Any(s => !s.IsActive))
             return Result.Failure<OnboardingStepResponse<BasicInfoDataDto>>(SpecializationErrors.InvalidSelection);
@@ -53,12 +51,13 @@ public class SaveBasicInfoCommandHandler(
 
         if (request.ProfileImage is not null)
         {
-            lawyer.ProfileImage = await SaveAndUploadImageAsync(request.ProfileImage,lawyer.Id,cancellationToken);
+            lawyer.ProfileImage = await SaveAndUploadImageAsync(request.ProfileImage, lawyer.Id, cancellationToken);
         }
 
         lawyer.MarkStepCompleted(LawyerOnboardingSteps.BasicInfo, LawyerOnboardingSteps.Education);
 
-        await lawyerRepository.UpdateAsync(lawyer,cancellationToken);
+        await unitOfWork.Lawyers.UpdateAsync(lawyer, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         responseData = lawyer.Adapt<BasicInfoDataDto>();
         responseData.PracticeAreas = lawyer.Specializations.Adapt<List<SpecializationOptionDto>>();
@@ -69,7 +68,7 @@ public class SaveBasicInfoCommandHandler(
         return Result.Success(response);
     }
 
-    private async Task<UploadedFile> SaveAndUploadImageAsync(IFormFile profileImage,string userId,CancellationToken cancellationToken)
+    private async Task<UploadedFile> SaveAndUploadImageAsync(IFormFile profileImage, string userId, CancellationToken cancellationToken)
     {
         var uploadResult = await fileUploadService.UploadAsync(profileImage, "uploads");
 
@@ -89,7 +88,7 @@ public class SaveBasicInfoCommandHandler(
 
         fileEntity.SystemFileUrl = $"/api/files/{fileEntity.Id}";
 
-        await uploadedFileRepository.AddAsync(fileEntity,cancellationToken);
+        await unitOfWork.UploadedFiles.AddAsync(fileEntity, cancellationToken);
 
         return fileEntity;
     }

@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -17,7 +17,7 @@ namespace Wakiliy.Application.Features.Auth.Commands.ResetPassword
 {
     public class ResetPasswordHandler(
         UserManager<AppUser> userManager,
-        IEmailOtpRepository emailOtpRepository
+        IUnitOfWork unitOfWork
     ) : IRequestHandler<ResetPasswordCommand, Result<string>>
     {
         public async Task<Result<string>> Handle(ResetPasswordCommand request, CancellationToken ct)
@@ -29,7 +29,7 @@ namespace Wakiliy.Application.Features.Auth.Commands.ResetPassword
 
             var hashedOtp = HashOtp(request.Code);
 
-            var otpEntity = await emailOtpRepository.GetValidOtpAsync(request.Email,hashedOtp,OtpPurpose.PasswordReset);
+            var otpEntity = await unitOfWork.EmailOtps.GetValidOtpAsync(request.Email,hashedOtp,OtpPurpose.PasswordReset);
 
             if (otpEntity is null)
                 return Result.Failure<string>(AuthErrors.InvalidOtp);
@@ -48,7 +48,7 @@ namespace Wakiliy.Application.Features.Auth.Commands.ResetPassword
             }
 
             otpEntity.IsUsed = true;
-            await emailOtpRepository.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync(ct);
 
             return Result.Success("Password reset successfully");
         }

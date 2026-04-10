@@ -7,12 +7,12 @@ using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.Users.Queries.GetUserById
 {
-    public class GetUserByIdQueryHandler(IUserRepository userRepository)
+    public class GetUserByIdQueryHandler(IUnitOfWork unitOfWork)
         : IRequestHandler<GetUserByIdQuery, Result<UserListItemDto>>
     {
         public async Task<Result<UserListItemDto>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
         {
-            var user = await userRepository.GetUserByIdAsync(request.Id);
+            var user = await unitOfWork.Users.GetUserByIdAsync(request.Id);
 
             if (user is null)
                 return Result.Failure<UserListItemDto>(UserErrors.UserNotFound);

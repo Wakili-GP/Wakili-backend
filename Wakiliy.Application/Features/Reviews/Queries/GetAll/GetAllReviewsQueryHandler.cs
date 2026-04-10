@@ -6,12 +6,12 @@ using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.Reviews.Queries.GetAll;
 
-public class GetAllReviewsQueryHandler(IReviewRepository reviewRepository)
+public class GetAllReviewsQueryHandler(IUnitOfWork unitOfWork)
     : IRequestHandler<GetAllReviewsQuery, Result<List<ReviewResponseDto>>>
 {
     public async Task<Result<List<ReviewResponseDto>>> Handle(GetAllReviewsQuery request, CancellationToken cancellationToken)
     {
-        var reviews = await reviewRepository.GetAllAsync(cancellationToken);
+        var reviews = await unitOfWork.Reviews.GetAllAsync(cancellationToken);
         var result = reviews.Adapt<List<ReviewResponseDto>>();
         return Result.Success(result);
     }

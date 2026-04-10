@@ -1,4 +1,4 @@
-﻿using Mapster;
+using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -20,7 +20,7 @@ using static System.Net.WebRequestMethods;
 
 namespace Wakiliy.Application.Features.Auth.Commands.Register;
 public class RegisterCommandHandler(UserManager<AppUser> userManager,
-    IEmailOtpRepository emailOtpRepository,
+    IUnitOfWork unitOfWork,
     ILogger<RegisterCommandHandler> logger,
     IHttpContextAccessor httpContextAccessor,
     IEmailSender emailSender) : IRequestHandler<RegisterCommand,Result>
@@ -76,8 +76,8 @@ public class RegisterCommandHandler(UserManager<AppUser> userManager,
             Purpose = OtpPurpose.EmailVerification
         };
 
-        await emailOtpRepository.AddAsync(emailOtp);
-        await emailOtpRepository.SaveChangesAsync();
+        await unitOfWork.EmailOtps.AddAsync(emailOtp);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
 
         await SendConfirmationEmail(user, code);

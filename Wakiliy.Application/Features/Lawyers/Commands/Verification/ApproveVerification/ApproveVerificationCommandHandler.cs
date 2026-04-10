@@ -9,12 +9,12 @@ using Wakiliy.Domain.Responses;
 namespace Wakiliy.Application.Features.Lawyers.Commands.Verification.ApproveVerification;
 
 public class ApproveVerificationCommandHandler(
-    ILawyerRepository lawyerRepository,
+    IUnitOfWork unitOfWork,
     IEmailSender emailSender) : IRequestHandler<ApproveVerificationCommand, Result>
 {
     public async Task<Result> Handle(ApproveVerificationCommand request, CancellationToken cancellationToken)
     {
-        var lawyer = await lawyerRepository.GetByIdAsync(request.LawyerId, cancellationToken);
+        var lawyer = await unitOfWork.Lawyers.GetByIdAsync(request.LawyerId, cancellationToken);
 
         if (lawyer is null)
             return Result.Failure(OnboardingErrors.LawyerNotFound);
@@ -23,9 +23,9 @@ public class ApproveVerificationCommandHandler(
             return Result.Failure(OnboardingErrors.AlreadyApproved);
 
         lawyer.VerificationStatus = VerificationStatus.Approved;
-        await lawyerRepository.UpdateAsync(lawyer, cancellationToken);
+        await unitOfWork.Lawyers.UpdateAsync(lawyer, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        // Send approval email
         var tokens = new Dictionary<string, string>
         {
             { "{{name}}", $"{lawyer.FirstName} {lawyer.LastName}" }

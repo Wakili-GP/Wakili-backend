@@ -5,16 +5,17 @@ using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.Lawyers.Commands.RemoveFavorite;
 
-public class RemoveFavoriteLawyerCommandHandler(
-    IFavoriteLawyerRepository favoriteLawyerRepository) : IRequestHandler<RemoveFavoriteLawyerCommand, Result>
+public class RemoveFavoriteLawyerCommandHandler(IUnitOfWork unitOfWork) : IRequestHandler<RemoveFavoriteLawyerCommand, Result>
 {
     public async Task<Result> Handle(RemoveFavoriteLawyerCommand request, CancellationToken cancellationToken)
     {
-        var exists = await favoriteLawyerRepository.ExistsAsync(request.UserId, request.LawyerId, cancellationToken);
+        var exists = await unitOfWork.FavoriteLawyers.ExistsAsync(request.UserId, request.LawyerId, cancellationToken);
         if (!exists)
             return Result.Failure(FavoriteErrors.NotInFavorites);
 
-        await favoriteLawyerRepository.RemoveAsync(request.UserId, request.LawyerId, cancellationToken);
+        await unitOfWork.FavoriteLawyers.RemoveAsync(request.UserId, request.LawyerId, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
         return Result.Success();
     }
 }

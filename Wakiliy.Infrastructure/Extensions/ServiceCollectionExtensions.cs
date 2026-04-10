@@ -45,6 +45,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IReviewRepository, ReviewRepository>();
         services.AddScoped<ISystemReviewRepository, SystemReviewRepository>();
 
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 
 
         // Register Services

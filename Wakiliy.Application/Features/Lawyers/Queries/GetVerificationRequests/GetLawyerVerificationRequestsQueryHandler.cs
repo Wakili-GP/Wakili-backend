@@ -6,14 +6,14 @@ using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.Lawyers.Queries.GetVerificationRequests
 {
-    public class GetLawyerVerificationRequestsQueryHandler(ILawyerRepository lawyerRepository)
+    public class GetLawyerVerificationRequestsQueryHandler(IUnitOfWork unitOfWork)
         : IRequestHandler<GetLawyerVerificationRequestsQuery, Result<IEnumerable<LawyerVerificationRequestResponse>>>
     {
         public async Task<Result<IEnumerable<LawyerVerificationRequestResponse>>> Handle(
             GetLawyerVerificationRequestsQuery request,
             CancellationToken cancellationToken)
         {
-            var result = await lawyerRepository.GetVerificationRequestsAsync(
+            var result = await unitOfWork.Lawyers.GetVerificationRequestsAsync(
                 request.Status,
                 cancellationToken);
 

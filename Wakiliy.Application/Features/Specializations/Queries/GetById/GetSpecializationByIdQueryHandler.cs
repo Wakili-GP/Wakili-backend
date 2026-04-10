@@ -7,12 +7,12 @@ using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.Specializations.Queries.GetById;
 
-public class GetSpecializationByIdQueryHandler(ISpecializationRepository specializationRepository)
+public class GetSpecializationByIdQueryHandler(IUnitOfWork unitOfWork)
     : IRequestHandler<GetSpecializationByIdQuery, Result<SpecializationResponse>>
 {
     public async Task<Result<SpecializationResponse>> Handle(GetSpecializationByIdQuery request, CancellationToken cancellationToken)
     {
-        var specialization = await specializationRepository.GetByIdAsync(request.Id, cancellationToken);
+        var specialization = await unitOfWork.Specializations.GetByIdAsync(request.Id, cancellationToken);
         if (specialization is null)
         {
             return Result.Failure<SpecializationResponse>(SpecializationErrors.NotFound);

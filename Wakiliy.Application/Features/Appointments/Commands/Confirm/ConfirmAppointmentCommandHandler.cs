@@ -1,4 +1,7 @@
 using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Wakiliy.Application.Helpers;
 using Wakiliy.Domain.Enums;
 using Wakiliy.Domain.Errors;
 using Wakiliy.Domain.Repositories;
@@ -6,12 +9,12 @@ using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.Appointments.Commands.Confirm;
 
-public class ConfirmAppointmentCommandHandler(IAppointmentRepository appointmentRepository)
+public class ConfirmAppointmentCommandHandler(IUnitOfWork unitOfWork)
     : IRequestHandler<ConfirmAppointmentCommand, Result>
 {
     public async Task<Result> Handle(ConfirmAppointmentCommand request, CancellationToken cancellationToken)
     {
-        var appointment = await appointmentRepository.GetByIdAsync(request.AppointmentId, cancellationToken);
+        var appointment = await unitOfWork.Appointments.GetByIdAsync(request.AppointmentId, cancellationToken);
 
         if (appointment is null)
             return Result.Failure(AppointmentErrors.AppointmentNotFound);
@@ -25,7 +28,8 @@ public class ConfirmAppointmentCommandHandler(IAppointmentRepository appointment
         appointment.Status = AppointmentStatus.Confirmed;
         appointment.ConfirmedAt = DateTime.UtcNow;
 
-        await appointmentRepository.UpdateAsync(appointment, cancellationToken);
+        await unitOfWork.Appointments.UpdateAsync(appointment, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
     }

@@ -6,16 +6,17 @@ using Wakiliy.Application.Features.Account.DTOs;
 using Wakiliy.Application.Repositories;
 using Wakiliy.Domain.Constants;
 using Wakiliy.Domain.Entities;
+using Wakiliy.Domain.Errors;
 using Wakiliy.Domain.Repositories;
 using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.Account.Commands.UpdateClientInfo
 {
-    public class UpdateClientInfoCommandHandler(IClientRepository clientRepository, IFileUploadService fileUploadService, IUploadedFileRepository uploadedFileRepository) : IRequestHandler<UpdateClientInfoCommand, Result<UserInfoResponse>>
+    public class UpdateClientInfoCommandHandler(IUnitOfWork unitOfWork, IFileUploadService fileUploadService) : IRequestHandler<UpdateClientInfoCommand, Result<UserInfoResponse>>
     {
         public async Task<Result<UserInfoResponse>> Handle(UpdateClientInfoCommand request, CancellationToken cancellationToken)
         {
-            var client = await clientRepository.GetByIdAsync(request.Id, cancellationToken);
+            var client = await unitOfWork.Clients.GetByIdAsync(request.Id, cancellationToken);
             if (client is null)
             {
                 return Result.Failure<UserInfoResponse>(new Error("Client.NotFound", "Client profile not found or user is not a client", StatusCodes.Status404NotFound));
@@ -37,11 +38,11 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateClientInfo
 
             if (request.ProfileImage is not null)
             {
-                var existingFiles = await uploadedFileRepository.GetByOwnerAsync(client.Id, FilePurpose.Profile, cancellationToken);
+                var existingFiles = await unitOfWork.UploadedFiles.GetByOwnerAsync(client.Id, FilePurpose.Profile, cancellationToken);
                 var existingProfileImages = existingFiles.Where(f => f.Category == FileCategory.ProfilePicture).ToList();
                 foreach (var existingFile in existingProfileImages)
                 {
-                    await uploadedFileRepository.DeleteAsync(existingFile, cancellationToken);
+                    await unitOfWork.UploadedFiles.DeleteAsync(existingFile, cancellationToken);
                 }
 
                 var uploadResult = await fileUploadService.UploadAsync(request.ProfileImage, "uploads");
@@ -61,7 +62,7 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateClientInfo
                 file.SystemFileUrl = $"/api/files/{file.Id}";
                 response.profileImage = file.SystemFileUrl;
                 client.ProfileImage = file;
-                await uploadedFileRepository.AddAsync(file, cancellationToken);
+                await unitOfWork.UploadedFiles.AddAsync(file, cancellationToken);
 
             }
             else
@@ -69,7 +70,9 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateClientInfo
                 response.profileImage = client.ProfileImage?.SystemFileUrl;
             }
 
-            await clientRepository.UpdateAsync(client, cancellationToken);
+            await unitOfWork.Clients.UpdateAsync(client, cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+            
             return Result.Success(response);
         }
     }

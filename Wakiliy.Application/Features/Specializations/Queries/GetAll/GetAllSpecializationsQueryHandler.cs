@@ -6,16 +6,16 @@ using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.Specializations.Queries.GetAll;
 
-public class GetAllSpecializationsQueryHandler(ISpecializationRepository specializationRepository)
+public class GetAllSpecializationsQueryHandler(IUnitOfWork unitOfWork)
     : IRequestHandler<GetAllSpecializationsQuery, Result<List<SpecializationResponse>>>
 {
     public async Task<Result<List<SpecializationResponse>>> Handle(GetAllSpecializationsQuery request, CancellationToken cancellationToken)
     {
-        var items = specializationRepository.GetAll()
-        .OrderByDescending(s => s.CreatedOn)
-        .ProjectToType<SpecializationResponse>()
-        .ToList();
-        
+        var items = unitOfWork.Specializations.GetAll()
+            .OrderByDescending(s => s.CreatedOn)
+            .ProjectToType<SpecializationResponse>()
+            .ToList();
+
         return Result.Success(items);
     }
 }

@@ -19,16 +19,13 @@ using Wakiliy.Domain.Responses;
 namespace Wakiliy.Application.Features.Lawyers.Onboarding.Commands.SaveEducation;
 
 public class SaveEducationCommandHandler(
-    ILawyerRepository lawyerRepository,
-    IProfessionalCertificationRepository professionalCertificationRepository,
-    IAcademicQualificationRepository academicQualificationRepository,
-    IUploadedFileRepository uploadedFileRepository,
+    IUnitOfWork unitOfWork,
     IFileUploadService fileUploadService)
     : IRequestHandler<SaveEducationCommand, Result<OnboardingStepResponse<EducationDataDto>>>
 {
     public async Task<Result<OnboardingStepResponse<EducationDataDto>>> Handle(SaveEducationCommand request, CancellationToken cancellationToken)
     {
-        var lawyer = await lawyerRepository.GetByIdWithQualificationsAndCertificationsAsync(request.UserId);
+        var lawyer = await unitOfWork.Lawyers.GetByIdWithQualificationsAndCertificationsAsync(request.UserId);
 
         if (lawyer is null)
             return Result.Failure<OnboardingStepResponse<EducationDataDto>>(OnboardingErrors.LawyerNotFound);
@@ -36,8 +33,7 @@ public class SaveEducationCommandHandler(
         if (!lawyer.CanAccessStep(LawyerOnboardingSteps.Education))
             return Result.Failure<OnboardingStepResponse<EducationDataDto>>(OnboardingErrors.StepPrerequisite(LawyerOnboardingSteps.BasicInfo));
 
-        //lawyer.AcademicQualifications.Clear();
-        await academicQualificationRepository.DeleteByLawyerIdAsync(request.UserId,cancellationToken);
+        await unitOfWork.AcademicQualifications.DeleteByLawyerIdAsync(request.UserId, cancellationToken);
 
         lawyer.AcademicQualifications = request.AcademicQualifications
             .Select(q => new AcademicQualification
@@ -54,7 +50,7 @@ public class SaveEducationCommandHandler(
         if(request.ProfessionalCertifications != null)
         {
 
-            await professionalCertificationRepository.DeleteByLawyerIdAsync(request.UserId, cancellationToken);
+            await unitOfWork.ProfessionalCertifications.DeleteByLawyerIdAsync(request.UserId, cancellationToken);
 
             foreach (var certification in request.ProfessionalCertifications)
             {
@@ -78,7 +74,8 @@ public class SaveEducationCommandHandler(
 
         lawyer.MarkStepCompleted(LawyerOnboardingSteps.Education, LawyerOnboardingSteps.Experience);
 
-        await lawyerRepository.UpdateAsync(lawyer);
+        await unitOfWork.Lawyers.UpdateAsync(lawyer);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         var professionalCertificationsResposne = lawyer.ProfessionalCertifications.Select(c => new ProfessionalCertificationResponseDto
         {
@@ -126,7 +123,7 @@ public class SaveEducationCommandHandler(
 
         fileEntity.SystemFileUrl = $"/api/files/{fileEntity.Id}";
 
-        await uploadedFileRepository.AddAsync(fileEntity, cancellationToken);
+        await unitOfWork.UploadedFiles.AddAsync(fileEntity, cancellationToken);
 
         return fileEntity;
     }

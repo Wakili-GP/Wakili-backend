@@ -8,7 +8,7 @@ using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.Lawyers.Queries.GetVerificationRequestById
 {
-    public class GetLawyerVerificationRequestByIdQueryHandler(ILawyerRepository lawyerRepository)
+    public class GetLawyerVerificationRequestByIdQueryHandler(IUnitOfWork unitOfWork)
         : IRequestHandler<GetLawyerVerificationRequestByIdQuery, Result<LawyerVerificationDetailResponse>>
     {
         public async Task<Result<LawyerVerificationDetailResponse>> Handle(
@@ -16,7 +16,7 @@ namespace Wakiliy.Application.Features.Lawyers.Queries.GetVerificationRequestByI
             CancellationToken cancellationToken)
         {
             // Get lawyer with all related data
-            var lawyer = await lawyerRepository.GetByIdWithAllOnboardingDataAsync(request.Id);
+            var lawyer = await unitOfWork.Lawyers.GetByIdWithAllOnboardingDataAsync(request.Id);
 
             if (lawyer == null)
                 return Result.Failure<LawyerVerificationDetailResponse>(
