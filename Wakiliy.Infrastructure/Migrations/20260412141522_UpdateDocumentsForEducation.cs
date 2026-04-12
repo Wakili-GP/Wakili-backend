@@ -12,21 +12,21 @@ namespace Wakiliy.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<Guid>(
-                name: "AcademicQualificationId",
-                table: "UploadedFiles",
+                name: "DocumentId",
+                table: "AcademicQualifications",
                 type: "uniqueidentifier",
                 nullable: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_UploadedFiles_AcademicQualificationId",
-                table: "UploadedFiles",
-                column: "AcademicQualificationId");
+                name: "IX_AcademicQualifications_DocumentId",
+                table: "AcademicQualifications",
+                column: "DocumentId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_UploadedFiles_AcademicQualifications_AcademicQualificationId",
-                table: "UploadedFiles",
-                column: "AcademicQualificationId",
-                principalTable: "AcademicQualifications",
+                name: "FK_AcademicQualifications_UploadedFiles_DocumentId",
+                table: "AcademicQualifications",
+                column: "DocumentId",
+                principalTable: "UploadedFiles",
                 principalColumn: "Id");
         }
 
@@ -34,16 +34,16 @@ namespace Wakiliy.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_UploadedFiles_AcademicQualifications_AcademicQualificationId",
-                table: "UploadedFiles");
+                name: "FK_AcademicQualifications_UploadedFiles_DocumentId",
+                table: "AcademicQualifications");
 
             migrationBuilder.DropIndex(
-                name: "IX_UploadedFiles_AcademicQualificationId",
-                table: "UploadedFiles");
+                name: "IX_AcademicQualifications_DocumentId",
+                table: "AcademicQualifications");
 
             migrationBuilder.DropColumn(
-                name: "AcademicQualificationId",
-                table: "UploadedFiles");
+                name: "DocumentId",
+                table: "AcademicQualifications");
         }
     }
 }

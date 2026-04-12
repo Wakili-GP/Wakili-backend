@@ -48,7 +48,7 @@ public class AcademicQualificationDto
     public string FieldOfStudy { get; set; } = string.Empty;
     public string UniversityName { get; set; } = string.Empty;
     public string GraduationYear { get; set; } = string.Empty;
-    public List<IFormFile> Documents { get; set; } = new();
+    public IFormFile? Document { get; set; }
 }
 
 public class ProfessionalCertificationDto
@@ -73,7 +73,7 @@ public class AcademicQualificationResponseDto
     public string FieldOfStudy { get; set; } = string.Empty;
     public string UniversityName { get; set; } = string.Empty;
     public string GraduationYear { get; set; } = string.Empty;
-    public List<string> Documents { get; set; } = new();
+    public string? Document { get; set; }
 }
 
 public class ExperienceDataDto

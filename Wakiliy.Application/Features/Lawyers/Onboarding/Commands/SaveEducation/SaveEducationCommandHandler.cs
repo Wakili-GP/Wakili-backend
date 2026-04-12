@@ -44,16 +44,11 @@ public class SaveEducationCommandHandler(
                 FieldOfStudy = q.FieldOfStudy,
                 UniversityName = q.UniversityName,
                 GraduationYear = ParseYear(q.GraduationYear),
-                Documents = new List<UploadedFile>()
             };
 
-            if (q.Documents != null && q.Documents.Any())
+            if (q.Document != null)
             {
-                foreach (var doc in q.Documents)
-                {
-                    var uploaded = await SaveAndUploadFileAsync(doc, request.UserId, FilePurpose.Verification, FileCategory.EducationalCertificate, cancellationToken);
-                    qualification.Documents.Add(uploaded);
-                }
+                qualification.Document = await SaveAndUploadFileAsync(q.Document, request.UserId, FilePurpose.Verification, FileCategory.EducationalCertificate, cancellationToken);
             }
 
             lawyer.AcademicQualifications.Add(qualification);
@@ -104,7 +99,7 @@ public class SaveEducationCommandHandler(
             FieldOfStudy = q.FieldOfStudy,
             UniversityName = q.UniversityName,
             GraduationYear = q.GraduationYear.ToString(),
-            Documents = q.Documents.Select(d=>d.SystemFileUrl).ToList()
+            Document = q.Document?.SystemFileUrl
         }).ToList();
 
 

@@ -47,7 +47,8 @@ namespace Wakiliy.Application.Features.Lawyers.Queries.GetVerificationRequestByI
                     DegreeType = aq.DegreeType,
                     FieldOfStudy = aq.FieldOfStudy,
                     University = aq.UniversityName,
-                    GraduationYear = aq.GraduationYear.ToString()
+                    GraduationYear = aq.GraduationYear.ToString(),
+                    DocumentUrl = aq.Document?.SystemFileUrl
                 }).ToList(),
                 Certifications = lawyer.ProfessionalCertifications.Select(pc => new CertificationDto
                 {
@@ -84,7 +85,6 @@ namespace Wakiliy.Application.Features.Lawyers.Queries.GetVerificationRequestByI
             var nationalIdFront = verificationDocuments.FirstOrDefault(d => d.Type == VerificationDocumentType.NationalIdFront);
             var nationalIdBack = verificationDocuments.FirstOrDefault(d => d.Type == VerificationDocumentType.NationalIdBack);
             var lawyerLicense = verificationDocuments.FirstOrDefault(d => d.Type == VerificationDocumentType.LawyerLicense);
-            var educationalCerts = verificationDocuments.Where(d => d.Type == VerificationDocumentType.EducationalCertificate).ToList();
 
             docs.GovernmentId = nationalIdFront != null && nationalIdBack != null;
             docs.GovernmentIdUrl = nationalIdFront?.File?.SystemFileUrl;
@@ -92,29 +92,10 @@ namespace Wakiliy.Application.Features.Lawyers.Queries.GetVerificationRequestByI
             docs.ProfessionalLicenseUrl = lawyerLicense?.File?.SystemFileUrl;
             docs.IdentityVerification = docs.GovernmentId && docs.ProfessionalLicense;
 
-            docs.EducationCertificates = educationalCerts.Select(ec => new EducationCertificateDto
-            {
-                Name = ec.File?.FileName ?? "Certificate",
-                Url = ec.File?.SystemFileUrl,
-                Type = GetFileExtension(ec.File?.ContentType),
-                UploadedAt = ec.File?.UploadedAt ?? DateTime.UtcNow
-            }).ToList();
 
             return docs;
         }
 
-        private string GetFileExtension(string? contentType)
-        {
-            if (string.IsNullOrEmpty(contentType))
-                return "unknown";
-
-            return contentType.ToLower() switch
-            {
-                "application/pdf" => "pdf",
-                "image/jpeg" or "image/jpg" => "jpg",
-                "image/png" => "png",
-                _ => "unknown"
-            };
-        }
+        
     }
 }

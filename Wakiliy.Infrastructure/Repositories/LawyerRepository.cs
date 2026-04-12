@@ -62,7 +62,7 @@ namespace Wakiliy.Infrastructure.Repositories
             return await dbContext.Lawyers
                 .Include(l=>l.ProfileImage)
                 .Include(l => l.Specializations)
-                .Include(l => l.AcademicQualifications).ThenInclude(q => q.Documents)
+                .Include(l => l.AcademicQualifications).ThenInclude(q => q.Document)
                 .Include(l => l.ProfessionalCertifications).ThenInclude(pc => pc.Document)
                 .Include(l => l.WorkExperiences)
                 .Include(l => l.VerificationDocuments!).ThenInclude(vd => vd.File)
@@ -80,7 +80,6 @@ namespace Wakiliy.Infrastructure.Repositories
         {
             var query = dbContext.Lawyers
                 .Include(l => l.Specializations)
-                .Where(l=> l.CurrentOnboardingStep == LawyerOnboardingSteps.Completed)
                 .AsNoTracking();
 
             if (status.HasValue)

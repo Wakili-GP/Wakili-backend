@@ -42,6 +42,7 @@ namespace Wakiliy.Application.Features.Lawyers.DTOs
         public string FieldOfStudy { get; set; } = string.Empty;
         public string University { get; set; } = string.Empty;
         public string GraduationYear { get; set; } = string.Empty;
+        public string DocumentUrl { get; set; } = string.Empty;
     }
 
     public class CertificationDto
@@ -58,7 +59,6 @@ namespace Wakiliy.Application.Features.Lawyers.DTOs
         public bool ProfessionalLicense { get; set; }
         public string? ProfessionalLicenseUrl { get; set; }
         public bool IdentityVerification { get; set; }
-        public List<EducationCertificateDto> EducationCertificates { get; set; } = new();
     }
 
     public class EducationCertificateDto

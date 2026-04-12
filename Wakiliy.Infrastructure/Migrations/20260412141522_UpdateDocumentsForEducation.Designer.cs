@@ -12,7 +12,7 @@ using Wakiliy.Infrastructure.Data;
 namespace Wakiliy.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260412121658_UpdateDocumentsForEducation")]
+    [Migration("20260412141522_UpdateDocumentsForEducation")]
     partial class UpdateDocumentsForEducation
     {
         /// <inheritdoc />
@@ -183,6 +183,9 @@ namespace Wakiliy.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("DocumentId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("FieldOfStudy")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -199,6 +202,8 @@ namespace Wakiliy.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DocumentId");
 
                     b.HasIndex("LawyerId");
 
@@ -604,9 +609,6 @@ namespace Wakiliy.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("AcademicQualificationId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Category")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -644,8 +646,6 @@ namespace Wakiliy.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AcademicQualificationId");
 
                     b.ToTable("UploadedFiles", (string)null);
                 });
@@ -850,11 +850,17 @@ namespace Wakiliy.Infrastructure.Migrations
 
             modelBuilder.Entity("Wakiliy.Domain.Entities.AcademicQualification", b =>
                 {
+                    b.HasOne("Wakiliy.Domain.Entities.UploadedFile", "Document")
+                        .WithMany()
+                        .HasForeignKey("DocumentId");
+
                     b.HasOne("Wakiliy.Domain.Entities.Lawyer", "Lawyer")
                         .WithMany("AcademicQualifications")
                         .HasForeignKey("LawyerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Document");
 
                     b.Navigation("Lawyer");
                 });
@@ -1072,13 +1078,6 @@ namespace Wakiliy.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Wakiliy.Domain.Entities.UploadedFile", b =>
-                {
-                    b.HasOne("Wakiliy.Domain.Entities.AcademicQualification", null)
-                        .WithMany("Documents")
-                        .HasForeignKey("AcademicQualificationId");
-                });
-
             modelBuilder.Entity("Wakiliy.Domain.Entities.VerificationDocuments", b =>
                 {
                     b.HasOne("Wakiliy.Domain.Entities.UploadedFile", "File")
@@ -1124,11 +1123,6 @@ namespace Wakiliy.Infrastructure.Migrations
                         .HasForeignKey("Wakiliy.Domain.Entities.Lawyer", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Wakiliy.Domain.Entities.AcademicQualification", b =>
-                {
-                    b.Navigation("Documents");
                 });
 
             modelBuilder.Entity("Wakiliy.Domain.Entities.Client", b =>

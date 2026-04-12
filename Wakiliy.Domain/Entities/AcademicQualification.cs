@@ -11,7 +11,7 @@ public class AcademicQualification
     public string UniversityName { get; set; } = string.Empty;
     public int GraduationYear { get; set; }
 
-    public ICollection<UploadedFile> Documents { get; set; } = new List<UploadedFile>();
+    public UploadedFile? Document { get; set; }
 
     public Lawyer Lawyer { get; set; } = default!;
 }

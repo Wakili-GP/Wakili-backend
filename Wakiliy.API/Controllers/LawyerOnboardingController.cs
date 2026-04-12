@@ -7,6 +7,7 @@ using Wakiliy.Application.Features.Lawyers.Onboarding.Commands.SaveBasicInfo;
 using Wakiliy.Application.Features.Lawyers.Onboarding.Commands.SaveEducation;
 using Wakiliy.Application.Features.Lawyers.Onboarding.Commands.SaveExperience;
 using Wakiliy.Application.Features.Lawyers.Onboarding.Commands.SaveVerification;
+using Wakiliy.Application.Features.Lawyers.Onboarding.Commands.SubmitForReview;
 using Wakiliy.Application.Features.Lawyers.Queries.GetOnboardingProgress;
 using Wakiliy.Domain.Constants;
 
@@ -78,5 +79,21 @@ public class LawyerOnboardingController(IMediator mediator) : ControllerBase
         var query = new GetOnboardingProgressQuery(User.GetUserId());
         var result = await mediator.Send(query, cancellationToken);
         return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
+    }
+
+    /// <summary>
+    /// Submit onboarding for review.
+    /// </summary>
+    [HttpPost("submit-for-review")]
+    [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> SubmitForReview(CancellationToken cancellationToken)
+    {
+        var command = new SubmitForReviewCommand 
+        { 
+            UserId = User.GetUserId() 
+        };
+        var result = await mediator.Send(command, cancellationToken);
+        return result.IsSuccess ? Ok() : result.ToProblem();
     }
 }

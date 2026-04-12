@@ -21,6 +21,5 @@ public enum VerificationDocumentType
     NationalIdFront,
     NationalIdBack,
     LawyerLicense,
-    EducationalCertificate,
     ProfessionalCertificate
 }

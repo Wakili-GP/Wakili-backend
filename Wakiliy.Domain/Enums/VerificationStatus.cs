@@ -9,6 +9,7 @@ namespace Wakiliy.Domain.Enums;
 public enum VerificationStatus
 {
     Pending = 0,
-    Approved = 1,
-    Rejected = 2
+    UnderReview = 1,
+    Approved = 2,
+    Rejected = 3
 }
