@@ -10,6 +10,7 @@ using Wakiliy.Application.Features.Users.Commands.UpdateUser;
 using Wakiliy.Application.Features.Users.DTOs;
 using Wakiliy.Application.Features.Users.Queries.GetUserById;
 using Wakiliy.Application.Features.Users.Queries.GetUsers;
+using Wakiliy.Application.Features.Users.Queries.GetUserStatistics;
 using Wakiliy.Domain.Constants;
 
 namespace Wakiliy.API.Controllers
@@ -103,6 +104,23 @@ namespace Wakiliy.API.Controllers
         {
             var result = await mediator.Send(new DeleteUserCommand { Id = id });
             return result.IsSuccess ? NoContent() : result.ToProblem();
+        }
+
+        /// <summary>
+        /// Get user statistics (lawyers, clients, inactive counts)
+        /// </summary>
+        /// <remarks>
+        /// Returns total users (lawyers + clients), count of lawyers only, count of clients only,
+        /// and count of inactive users.
+        /// </remarks>
+        /// <response code="200">Statistics returned successfully</response>
+        /// <response code="401">Unauthorized</response>
+        [HttpGet("statistics")]
+        [ProducesResponseType(typeof(Wakiliy.Application.Features.Users.DTOs.UserStatisticsDto), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetUserStatistics(CancellationToken cancellationToken)
+        {
+            var result = await mediator.Send(new GetUserStatisticsQuery(), cancellationToken);
+            return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
         }
     }
 }

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Wakiliy.Application.Features.Users.DTOs;
 using Wakiliy.Domain.Common.Models;
 using Wakiliy.Domain.Constants;
 using Wakiliy.Domain.Enums;
@@ -74,8 +75,8 @@ namespace Wakiliy.Infrastructure.Repositories
             if (!string.IsNullOrWhiteSpace(name))
             {
                 var searchName = name.ToLower();
-                query = query.Where(x => 
-                    x.user.FirstName.ToLower().Contains(searchName) || 
+                query = query.Where(x =>
+                    x.user.FirstName.ToLower().Contains(searchName) ||
                     x.user.LastName.ToLower().Contains(searchName));
             }
 
@@ -112,6 +113,33 @@ namespace Wakiliy.Infrastructure.Repositories
                 .ToListAsync();
 
             return (users, totalCount);
+        }
+
+        
+        public async Task<UserStatisticsModel> GetUserStatisticsAsync(CancellationToken cancellationToken = default)
+        {
+            var totalUsers = await dbContext.Users.CountAsync(cancellationToken);
+            var totalLawyers = await (from user in dbContext.Users
+                                      join userRole in dbContext.UserRoles
+                                      on user.Id equals userRole.UserId
+                                      join role in dbContext.Roles
+                                      on userRole.RoleId equals role.Id
+                                      where role.Name == DefaultRoles.Lawyer
+                                      select user).CountAsync(cancellationToken);
+            var totalClients = await (from user in dbContext.Users
+                                      join userRole in dbContext.UserRoles
+                                      on user.Id equals userRole.UserId
+                                      join role in dbContext.Roles
+                                      on userRole.RoleId equals role.Id
+                                      where role.Name == DefaultRoles.Client
+                                      select user).CountAsync(cancellationToken);
+
+            return new UserStatisticsModel
+            {
+                TotalUsers = totalUsers,
+                TotalLawyers = totalLawyers,
+                TotalClients = totalClients
+            };
         }
     }
 }

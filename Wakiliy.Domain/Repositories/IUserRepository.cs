@@ -9,5 +9,6 @@ namespace Wakiliy.Domain.Repositories
         Task<IEnumerable<UserReadModel>> GetUsersAsync();
         Task<UserReadModel?> GetUserByIdAsync(string id);
         Task<(IEnumerable<UserReadModel> Users, int TotalCount)> GetUsersPagedAsync(int page, int pageSize, string? name, string? userType, UserStatus? status);
+        Task<UserStatisticsModel> GetUserStatisticsAsync(CancellationToken cancellationToken = default);
     }
 }
