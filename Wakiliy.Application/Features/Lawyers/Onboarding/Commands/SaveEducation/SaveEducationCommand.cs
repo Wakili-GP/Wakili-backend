@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Wakiliy.Application.Features.Lawyers.Onboarding.DTOs;
 using Wakiliy.Domain.Responses;
 

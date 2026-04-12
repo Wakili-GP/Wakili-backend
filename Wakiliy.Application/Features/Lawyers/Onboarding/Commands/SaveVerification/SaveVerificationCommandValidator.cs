@@ -14,10 +14,6 @@ public class SaveVerificationCommandValidator : AbstractValidator<SaveVerificati
              .NotNull().WithMessage("License information is required.")
              .SetValidator(new OnBoardingLawyerLicenseDtoValidator());
 
-
-        RuleForEach(x => x.EducationalCertificates)
-            .NotNull()
-            .WithMessage("Educational certificate files cannot be null");
     }
 
     public class OnBoardingLawyerLicenseDtoValidator : AbstractValidator<OnBoardingLawyerLicenseDto>

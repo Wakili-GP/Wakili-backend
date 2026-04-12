@@ -6,6 +6,14 @@ public class SaveBasicInfoCommandValidator : AbstractValidator<SaveBasicInfoComm
 {
     public SaveBasicInfoCommandValidator()
     {
+        RuleFor(x => x.FirstName)
+            .NotEmpty();
+
+        RuleFor(x => x.LastName)
+            .NotEmpty();
+
+        RuleFor(x => x.Country)
+            .NotEmpty();
         RuleFor(x => x.Country)
             .NotEmpty();
 
@@ -16,8 +24,6 @@ public class SaveBasicInfoCommandValidator : AbstractValidator<SaveBasicInfoComm
             .NotEmpty();
 
         RuleFor(x => x.SessionTypes)
-            .NotEmpty()
-            .Must(list => list.All(value => !string.IsNullOrWhiteSpace(value)))
-            .WithMessage("Session types cannot contain empty values");
+            .NotEmpty();
     }
 }

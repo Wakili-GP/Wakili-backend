@@ -15,16 +15,14 @@ namespace Wakiliy.Infrastructure.Repositories
 {
     public class LawyerRepository(ApplicationDbContext dbContext) : ILawyerRepository
     {
-        public async Task<int> CreateAsync(Lawyer lawyer, CancellationToken cancellationToken)
+        public async Task CreateAsync(Lawyer lawyer, CancellationToken cancellationToken)
         {
-            await dbContext.Lawyers.AddAsync(lawyer);
-            return await dbContext.SaveChangesAsync(cancellationToken);
+            await dbContext.Lawyers.AddAsync(lawyer,cancellationToken);
         }
 
-        public async Task<int> UpdateAsync(Lawyer lawyer, CancellationToken cancellationToken)
+        public async Task UpdateAsync(Lawyer lawyer, CancellationToken cancellationToken)
         {
             dbContext.Lawyers.Update(lawyer);
-            return await dbContext.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<Lawyer?> GetByIdAsync(string id, CancellationToken cancellationToken)
@@ -62,8 +60,9 @@ namespace Wakiliy.Infrastructure.Repositories
         public async Task<Lawyer?> GetByIdWithAllOnboardingDataAsync(string id)
         {
             return await dbContext.Lawyers
+                .Include(l=>l.ProfileImage)
                 .Include(l => l.Specializations)
-                .Include(l => l.AcademicQualifications)
+                .Include(l => l.AcademicQualifications).ThenInclude(q => q.Documents)
                 .Include(l => l.ProfessionalCertifications).ThenInclude(pc => pc.Document)
                 .Include(l => l.WorkExperiences)
                 .Include(l => l.VerificationDocuments!).ThenInclude(vd => vd.File)
@@ -104,6 +103,18 @@ namespace Wakiliy.Infrastructure.Repositories
                 .ToListAsync(cancellationToken);
 
             return result;
+        }
+
+        public async Task DeleteExperiencesByLawyerIdAsync(string lawyerId, CancellationToken cancellationToken = default)
+        {
+            var experiences = await dbContext.WorkExperiences
+                .Where(e => e.LawyerId == lawyerId)
+                .ToListAsync(cancellationToken);
+            
+            if (experiences.Any())
+            {
+                dbContext.WorkExperiences.RemoveRange(experiences);
+            }
         }
     }
 }

@@ -11,8 +11,8 @@ namespace Wakiliy.Domain.Repositories
 {
     public interface ILawyerRepository
     {
-        Task<int> CreateAsync(Lawyer lawyer, CancellationToken cancellationToken = default);
-        Task<int> UpdateAsync(Lawyer lawyer, CancellationToken cancellationToken = default);
+        Task CreateAsync(Lawyer lawyer, CancellationToken cancellationToken = default);
+        Task UpdateAsync(Lawyer lawyer, CancellationToken cancellationToken = default);
         Task<Lawyer?> GetByIdAsync(string id, CancellationToken cancellationToken=default);
         Task<Lawyer?> GetByIdWithQualificationsAndCertificationsAsync(string id, CancellationToken cancellationToken=default);
         Task<Lawyer?> GetByIdWithExperiencesAsync(string id, CancellationToken cancellationToken=default);
@@ -20,5 +20,6 @@ namespace Wakiliy.Domain.Repositories
         Task<Lawyer?> GetByIdWithAllOnboardingDataAsync(string id);
         IQueryable<Lawyer> GetVerificationRequestsQueryable();
         Task<List<LawyerVerificationModel>> GetVerificationRequestsAsync(VerificationStatus? status, CancellationToken cancellationToken = default);
+        Task DeleteExperiencesByLawyerIdAsync(string lawyerId, CancellationToken cancellationToken = default);
     }
 }

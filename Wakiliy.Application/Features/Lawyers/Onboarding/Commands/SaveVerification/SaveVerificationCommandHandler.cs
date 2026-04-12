@@ -37,16 +37,13 @@ public class SaveVerificationCommandHandler(
         documents.Add(await CreateDoc(request.NationalIdBack, request.UserId, VerificationDocumentType.NationalIdBack));
         documents.Add(await CreateDoc(request.License.LicenseFile, request.UserId, VerificationDocumentType.LawyerLicense));
 
-        // Multiple files
-        documents.AddRange(await CreateMultipleDocs(
-            request.EducationalCertificates,
-            request.UserId,
-            VerificationDocumentType.EducationalCertificate));
-
-        documents.AddRange(await CreateMultipleDocs(
-            request.ProfessionalCertificates,
-            request.UserId,
-            VerificationDocumentType.ProfessionalCertificate));
+        if (request.ProfessionalCertificates != null && request.ProfessionalCertificates.Any())
+        {
+            documents.AddRange(await CreateMultipleDocs(
+                request.ProfessionalCertificates,
+                request.UserId,
+                VerificationDocumentType.ProfessionalCertificate));
+        }
 
         lawyer.VerificationDocuments = documents;
         lawyer.LicenseNumber = request.License.LicenseNumber;
@@ -129,10 +126,6 @@ public class SaveVerificationCommandHandler(
                 LicenseYear = lawyer.LicenseYear,
                 IssuingAuthority = lawyer.IssuingAuthority
             },
-            EducationalCertificates = lawyer.VerificationDocuments
-                .Where(d => d.Type == VerificationDocumentType.EducationalCertificate)
-                .Select(d => d.File?.SystemFileUrl ?? string.Empty)
-                .ToList(),
             ProfessionalCertificates = lawyer.VerificationDocuments
                 .Where(d => d.Type == VerificationDocumentType.ProfessionalCertificate)
                 .Select(d => d.File?.SystemFileUrl ?? string.Empty)

@@ -23,11 +23,22 @@ namespace Wakiliy.Infrastructure.Repositories
             CancellationToken cancellationToken = default)
         {
             var qualifications = await _context.AcademicQualifications
+                .Include(q => q.Documents)
                 .Where(q => q.LawyerId == lawyerId)
                 .ToListAsync(cancellationToken);
 
+            
+
             if (qualifications.Count == 0)
                 return;
+
+            foreach (var qualification in qualifications)
+            {
+                if (qualification.Documents != null && qualification.Documents.Any())
+                {
+                    _context.UploadedFiles.RemoveRange(qualification.Documents);
+                }
+            }
 
             _context.AcademicQualifications.RemoveRange(qualifications);
 

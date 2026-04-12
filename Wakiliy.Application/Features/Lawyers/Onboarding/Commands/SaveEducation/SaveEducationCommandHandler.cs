@@ -35,16 +35,29 @@ public class SaveEducationCommandHandler(
 
         await unitOfWork.AcademicQualifications.DeleteByLawyerIdAsync(request.UserId, cancellationToken);
 
-        lawyer.AcademicQualifications = request.AcademicQualifications
-            .Select(q => new AcademicQualification
+        foreach (var q in request.AcademicQualifications)
+        {
+            var qualification = new AcademicQualification
             {
                 LawyerId = request.UserId,
                 DegreeType = q.DegreeType,
                 FieldOfStudy = q.FieldOfStudy,
                 UniversityName = q.UniversityName,
-                GraduationYear = ParseYear(q.GraduationYear)
-            })
-            .ToList();
+                GraduationYear = ParseYear(q.GraduationYear),
+                Documents = new List<UploadedFile>()
+            };
+
+            if (q.Documents != null && q.Documents.Any())
+            {
+                foreach (var doc in q.Documents)
+                {
+                    var uploaded = await SaveAndUploadFileAsync(doc, request.UserId, FilePurpose.Verification, FileCategory.EducationalCertificate, cancellationToken);
+                    qualification.Documents.Add(uploaded);
+                }
+            }
+
+            lawyer.AcademicQualifications.Add(qualification);
+        }
 
 
         if(request.ProfessionalCertifications != null)
@@ -55,7 +68,7 @@ public class SaveEducationCommandHandler(
             foreach (var certification in request.ProfessionalCertifications)
             {
                 var document = certification.Document != null
-                    ? await SaveAndUploadFileAsync(certification.Document, request.UserId, cancellationToken)
+                    ? await SaveAndUploadFileAsync(certification.Document, request.UserId, FilePurpose.Verification, FileCategory.ProfessionalCertificate, cancellationToken)
                     : null;
 
 
@@ -85,11 +98,20 @@ public class SaveEducationCommandHandler(
             DocumentPath = c.Document != null ? c.Document.SystemFileUrl : null
         }).ToList();
 
+        var acacdemicQualificationsResponce = lawyer.AcademicQualifications.Select(q => new AcademicQualificationResponseDto
+        {
+            DegreeType = q.DegreeType,
+            FieldOfStudy = q.FieldOfStudy,
+            UniversityName = q.UniversityName,
+            GraduationYear = q.GraduationYear.ToString(),
+            Documents = q.Documents.Select(d=>d.SystemFileUrl).ToList()
+        }).ToList();
+
 
 
         var response = LawyerOnboardingHelper.BuildResponse(lawyer, new EducationDataDto
         {
-            AcademicQualifications = request.AcademicQualifications,
+            AcademicQualifications = acacdemicQualificationsResponce,
             ProfessionalCertifications = professionalCertificationsResposne
         }, "Education info saved");
 
@@ -103,7 +125,7 @@ public class SaveEducationCommandHandler(
             : 0;
     }
 
-    private async Task<UploadedFile> SaveAndUploadFileAsync(IFormFile profileImage, string userId, CancellationToken cancellationToken)
+    private async Task<UploadedFile> SaveAndUploadFileAsync(IFormFile profileImage, string userId, FilePurpose purpose, FileCategory category, CancellationToken cancellationToken)
     {
         var uploadResult = await fileUploadService.UploadAsync(profileImage, "uploads");
 
@@ -117,8 +139,8 @@ public class SaveEducationCommandHandler(
             Size = uploadResult.Size,
             ContentType = uploadResult.ContentType,
 
-            Category = FileCategory.ProfilePicture,
-            Purpose = FilePurpose.Profile,
+            Category = category,
+            Purpose = purpose,
         };
 
         fileEntity.SystemFileUrl = $"/api/files/{fileEntity.Id}";

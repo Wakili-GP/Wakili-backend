@@ -9,7 +9,6 @@ namespace Wakiliy.Application.Features.Lawyers.Onboarding.Commands.SaveExperienc
 
 public class SaveExperienceCommand : IRequest<Result<OnboardingStepResponse<ExperienceDataDto>>>
 {
-    [BindNever]
     public string? UserId { get; set; }
 
     public List<WorkExperienceDto> WorkExperiences { get; set; } = new();

@@ -47,7 +47,7 @@ namespace Wakiliy.Application.Features.Lawyers.Onboarding.Queries.GetOnboardingP
             if (!lawyer.CompletedOnboardingSteps.Contains(2)) return null;
             return new EducationDataDto
             {
-                AcademicQualifications = lawyer.AcademicQualifications.Adapt<List<AcademicQualificationDto>>(),
+                AcademicQualifications = lawyer.AcademicQualifications.Adapt<List<AcademicQualificationResponseDto>>(),
                 ProfessionalCertifications = lawyer.ProfessionalCertifications.Adapt<List<ProfessionalCertificationResponseDto>>()
             };
         }

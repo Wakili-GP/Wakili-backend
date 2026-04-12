@@ -29,7 +29,7 @@ public class SaveBasicInfoCommandHandler(
 {
     public async Task<Result<OnboardingStepResponse<BasicInfoDataDto>>> Handle(SaveBasicInfoCommand request, CancellationToken cancellationToken)
     {
-        var lawyer = await unitOfWork.Lawyers.GetByIdAsync(request.UserId, cancellationToken);
+        var lawyer = await unitOfWork.Lawyers.GetByIdAsync(request.UserId!, cancellationToken);
 
         if (lawyer is null)
             return Result.Failure<OnboardingStepResponse<BasicInfoDataDto>>(OnboardingErrors.LawyerNotFound);

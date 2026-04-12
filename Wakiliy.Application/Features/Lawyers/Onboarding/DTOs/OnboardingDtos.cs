@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using Wakiliy.Application.Features.Specializations.DTOs;
+using Wakiliy.Domain.Enums;
 
 namespace Wakiliy.Application.Features.Lawyers.Onboarding.DTOs;
 
@@ -32,12 +33,12 @@ public class BasicInfoDataDto
     public int? YearsOfExperience { get; set; }
    
     public List<SpecializationOptionDto> PracticeAreas { get; set; } = new();
-    public List<string> SessionTypes { get; set; } = new();
+    public List<SessionType> SessionTypes { get; set; } = new();
 }
 
 public class EducationDataDto
 {
-    public List<AcademicQualificationDto> AcademicQualifications { get; set; } = new();
+    public List<AcademicQualificationResponseDto> AcademicQualifications { get; set; } = new();
     public List<ProfessionalCertificationResponseDto> ProfessionalCertifications { get; set; } = new();
 }
 
@@ -47,6 +48,7 @@ public class AcademicQualificationDto
     public string FieldOfStudy { get; set; } = string.Empty;
     public string UniversityName { get; set; } = string.Empty;
     public string GraduationYear { get; set; } = string.Empty;
+    public List<IFormFile> Documents { get; set; } = new();
 }
 
 public class ProfessionalCertificationDto
@@ -63,6 +65,15 @@ public class ProfessionalCertificationResponseDto
     public string IssuingOrganization { get; set; } = string.Empty;
     public string YearObtained { get; set; } = string.Empty;
     public string DocumentPath { get; set; } = default!;
+}
+
+public class AcademicQualificationResponseDto
+{
+    public string DegreeType { get; set; } = string.Empty;
+    public string FieldOfStudy { get; set; } = string.Empty;
+    public string UniversityName { get; set; } = string.Empty;
+    public string GraduationYear { get; set; } = string.Empty;
+    public List<string> Documents { get; set; } = new();
 }
 
 public class ExperienceDataDto
@@ -85,7 +96,6 @@ public class VerificationDocumentsDto
     public string NationalIdFront { get; set; } = string.Empty;
     public string NationalIdBack { get; set; } = string.Empty;
     public LawyerLicenseDto LawyerLicense { get; set; } = default!;
-    public List<string> EducationalCertificates { get; set; } = new();
     public List<string> ProfessionalCertificates { get; set; } = new();
 }
 

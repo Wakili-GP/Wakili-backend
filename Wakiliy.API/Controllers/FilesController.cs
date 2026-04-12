@@ -20,12 +20,12 @@ namespace Wakiliy.API.Controllers
             if (file is null)
                 return NotFound();
 
-            // if (file.OwnerId != User.GetUserId() && !User.IsInRole(DefaultRoles.Admin)) return Forbid();
-
             var cloudName = configuration["Cloudinary:CloudName"];
 
+            var extension = Path.GetExtension(file.FileName);
+
             var cloudinaryUrl =
-                $"https://res.cloudinary.com/{cloudName}/raw/upload/{file.PublicId}";
+                $"https://res.cloudinary.com/{cloudName}/image/upload/{file.PublicId}";
 
             using var httpClient = new HttpClient();
             var response = await httpClient.GetAsync(cloudinaryUrl);
@@ -34,14 +34,12 @@ namespace Wakiliy.API.Controllers
                 return NotFound();
 
             var stream = await response.Content.ReadAsStreamAsync();
-            var contentType = file.ContentType ?? "application/octet-stream";
-
 
             Response.Headers["Content-Disposition"] = $"inline; filename=\"{file.FileName}\"";
 
-            return new FileStreamResult(stream, contentType)
+            return new FileStreamResult(stream, file.ContentType)
             {
-                EnableRangeProcessing = true 
+                EnableRangeProcessing = true
             };
         }
 

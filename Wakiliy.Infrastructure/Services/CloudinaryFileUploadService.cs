@@ -28,7 +28,7 @@ namespace Wakiliy.Infrastructure.Services
 
             await using var stream = file.OpenReadStream();
 
-            var uploadParams = new RawUploadParams
+            var uploadParams = new ImageUploadParams
             {
                 File = new FileDescription(file.FileName, stream),
                 Folder = folder,

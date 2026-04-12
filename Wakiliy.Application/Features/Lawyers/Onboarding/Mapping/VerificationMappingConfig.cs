@@ -23,8 +23,6 @@ namespace Wakiliy.Application.Features.Lawyers.Onboarding.Mapping
                          LicenseNumber = src.LicenseNumber,
                          LicenseYear = src.LicenseYear
                      })
-                .Map(dest => dest.EducationalCertificates,
-                     src => src.VerificationDocuments.Where(d => d.Type == VerificationDocumentType.EducationalCertificate).Select(d => d.File.SystemFileUrl).ToList())
                 .Map(dest => dest.ProfessionalCertificates,
                      src => src.VerificationDocuments.Where(d => d.Type == VerificationDocumentType.ProfessionalCertificate).Select(d => d.File.SystemFileUrl).ToList());
         }

@@ -23,19 +23,18 @@ public class SaveExperienceCommandHandler(IUnitOfWork unitOfWork)
         if (!lawyer.CanAccessStep(LawyerOnboardingSteps.Experience))
             return Result.Failure<OnboardingStepResponse<ExperienceDataDto>>(OnboardingErrors.StepPrerequisite(LawyerOnboardingSteps.Education));
 
-        lawyer.WorkExperiences.Clear();
-        foreach (var experience in request.WorkExperiences)
+        await unitOfWork.Lawyers.DeleteExperiencesByLawyerIdAsync(request.UserId, cancellationToken);
+        
+        lawyer.WorkExperiences = request.WorkExperiences.Select(experience => new WorkExperience
         {
-            lawyer.WorkExperiences.Add(new WorkExperience
-            {
-                JobTitle = experience.JobTitle,
-                OrganizationName = experience.OrganizationName,
-                StartYear = ParseYear(experience.StartYear),
-                EndYear = string.IsNullOrWhiteSpace(experience.EndYear) ? null : ParseYear(experience.EndYear),
-                IsCurrentJob = experience.IsCurrentJob,
-                Description = experience.Description
-            });
-        }
+            LawyerId = request.UserId,
+            JobTitle = experience.JobTitle,
+            OrganizationName = experience.OrganizationName,
+            StartYear = ParseYear(experience.StartYear),
+            EndYear = string.IsNullOrWhiteSpace(experience.EndYear) ? null : ParseYear(experience.EndYear),
+            IsCurrentJob = experience.IsCurrentJob,
+            Description = experience.Description
+        }).ToList();
 
         lawyer.MarkStepCompleted(LawyerOnboardingSteps.Experience, LawyerOnboardingSteps.Verification);
 
