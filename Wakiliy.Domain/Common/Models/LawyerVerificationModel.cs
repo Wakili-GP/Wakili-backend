@@ -9,6 +9,10 @@ namespace Wakiliy.Domain.Common.Models
         public string Specializations { get; set; } = string.Empty;
         public string? ProfileImageUrl { get; set; }
         public DateTime SubmittedAt { get; set; }
+        public string? ApprovedBy { get; set; }
+        public DateTime? ApprovedAt { get; set; }
+        public string? RejectedBy { get; set; }
+        public DateTime? RejectedAt { get; set; }
         public string Status { get; set; } = string.Empty;
     }
 }

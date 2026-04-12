@@ -6,4 +6,5 @@ namespace Wakiliy.Application.Features.Lawyers.Commands.Verification.ApproveVeri
 public class ApproveVerificationCommand : IRequest<Result>
 {
     public string LawyerId { get; set; } = string.Empty;
+    public string AdminId { get; set; } = string.Empty;
 }

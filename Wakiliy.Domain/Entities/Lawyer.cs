@@ -22,6 +22,12 @@ public class Lawyer : AppUser
     public List<WorkExperience> WorkExperiences { get; set; } = new();
     public ICollection<VerificationDocuments>? VerificationDocuments { get; set; } = new List<VerificationDocuments>();
     public VerificationStatus VerificationStatus { get; set; } = VerificationStatus.Pending;
+    public string? ApprovedById { get; set; }
+    public AppUser? ApprovedBy { get; set; }
+    public DateTime? ApprovedAt { get; set; }
+    public string? RejectedById { get; set; }
+    public AppUser? RejectedBy { get; set; }
+    public DateTime? RejectedAt { get; set; }
     public int CurrentOnboardingStep { get; set; } = 1;
     public List<int> CompletedOnboardingSteps { get; set; } = new();
     public DateTime LastOnboardingUpdate { get; set; } = DateTime.UtcNow;

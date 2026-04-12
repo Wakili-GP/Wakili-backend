@@ -23,6 +23,11 @@ public class RejectVerificationCommandHandler(
             return Result.Failure(OnboardingErrors.AlreadyRejected);
 
         lawyer.VerificationStatus = VerificationStatus.Rejected;
+        lawyer.RejectedById = request.AdminId;
+        lawyer.RejectedAt = DateTime.UtcNow;
+        lawyer.ApprovedAt = null;
+        lawyer.ApprovedById = null;
+
         await unitOfWork.Lawyers.UpdateAsync(lawyer, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

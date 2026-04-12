@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -71,7 +71,7 @@ namespace Wakiliy.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> ApproveVerification(string lawyerId)
         {
-            var command = new ApproveVerificationCommand { LawyerId = lawyerId };
+            var command = new ApproveVerificationCommand { LawyerId = lawyerId, AdminId = User.GetUserId() };
             var result = await mediator.Send(command);
             return result.IsSuccess ? result.ToSuccess("Verification approved successfully") : result.ToProblem();
         }
@@ -89,7 +89,7 @@ namespace Wakiliy.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> RejectVerification(string lawyerId, [FromBody] RejectVerificationRequest request)
         {
-            var command = new RejectVerificationCommand { LawyerId = lawyerId, Note = request.Note };
+            var command = new RejectVerificationCommand { LawyerId = lawyerId, Note = request.Note, AdminId = User.GetUserId() };
             var result = await mediator.Send(command);
             return result.IsSuccess ? result.ToSuccess("Verification rejected successfully") : result.ToProblem();
         }

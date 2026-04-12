@@ -80,6 +80,8 @@ namespace Wakiliy.Infrastructure.Repositories
         {
             var query = dbContext.Lawyers
                 .Include(l => l.Specializations)
+                .Include(l=>l.ApprovedBy)
+                .Include(l=>l.RejectedBy)
                 .AsNoTracking();
 
             if (status.HasValue)
@@ -97,7 +99,11 @@ namespace Wakiliy.Infrastructure.Repositories
                     Specializations = string.Join(", ", l.Specializations.Select(s => s.Name)),
                     SubmittedAt = l.LastOnboardingUpdate,
                     ProfileImageUrl = l.ProfileImage != null ? l.ProfileImage.SystemFileUrl : "",
-                    Status = l.VerificationStatus.ToString()
+                    Status = l.VerificationStatus.ToString(),
+                    ApprovedAt = l.ApprovedAt,
+                    ApprovedBy = l.ApprovedBy != null ? $"{l.ApprovedBy.FirstName} {l.ApprovedBy.LastName}" : "",
+                    RejectedAt = l.RejectedAt,
+                    RejectedBy = l.RejectedBy != null ? $"{l.RejectedBy.FirstName} {l.RejectedBy.LastName}" : ""
                 })
                 .ToListAsync(cancellationToken);
 

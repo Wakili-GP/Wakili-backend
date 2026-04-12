@@ -9,4 +9,5 @@ public class RejectVerificationCommand : IRequest<Result>
 {
     public string LawyerId { get; set; } = string.Empty;
     public string? Note { get; set; }
+    public string AdminId { get; set; } = string.Empty;
 }

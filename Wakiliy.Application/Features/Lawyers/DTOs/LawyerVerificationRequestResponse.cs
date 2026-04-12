@@ -15,5 +15,9 @@ namespace Wakiliy.Application.Features.Lawyers.DTOs
         public string ProfileImageUrl { get; set; } = string.Empty;
         public DateTime SubmittedAt { get; set; }
         public string Status { get; set; } = string.Empty;
+        public string? ApprovedBy { get; set; }
+        public DateTime? ApprovedAt { get; set; }
+        public string? RejectedBy { get; set; }
+        public DateTime? RejectedAt { get; set; }
     }
 }
