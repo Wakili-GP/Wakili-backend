@@ -2,6 +2,7 @@ using MediatR;
 using Wakiliy.Application.Features.Lawyers.DTOs;
 using Wakiliy.Application.Features.Lawyers.Onboarding.DTOs;
 using Wakiliy.Domain.Entities;
+using Wakiliy.Domain.Enums;
 using Wakiliy.Domain.Errors;
 using Wakiliy.Domain.Repositories;
 using Wakiliy.Domain.Responses;
@@ -41,21 +42,21 @@ namespace Wakiliy.Application.Features.Lawyers.Queries.GetVerificationRequestByI
                     City = lawyer.City
                 },
                 YearsExperience = lawyer.YearsOfExperience,
-                SessionTypes = lawyer.SessionTypes,
+                SessionTypes = lawyer.SessionTypes.Select(st => Enum.TryParse<SessionType>(st, out var sessionType) ? (int)sessionType : 0).ToList(),
                 Education = lawyer.AcademicQualifications.Select(aq => new EducationDto
                 {
                     DegreeType = aq.DegreeType,
                     FieldOfStudy = aq.FieldOfStudy,
                     University = aq.UniversityName,
                     GraduationYear = aq.GraduationYear.ToString(),
-                    DocumentUrl = aq.Document?.SystemFileUrl
+                    Document = aq.Document?.SystemFileUrl
                 }).ToList(),
                 Certifications = lawyer.ProfessionalCertifications.Select(pc => new CertificationDto
                 {
                     Name = pc.CertificateName,
                     IssuingOrg = pc.IssuingOrganization,
                     YearObtained = pc.YearObtained.ToString(),
-                    DocumentUrl = pc.Document?.SystemFileUrl
+                    Document = pc.Document?.SystemFileUrl
                 }).ToList(),
                 WorkExperience = lawyer.WorkExperiences.Select(we => new WorkExperienceDto
                 {
@@ -66,32 +67,31 @@ namespace Wakiliy.Application.Features.Lawyers.Queries.GetVerificationRequestByI
                     IsCurrentJob = we.IsCurrentJob,
                     Description = we.Description
                 }).ToList(),
-                Documents = MapDocuments(lawyer.VerificationDocuments),
-                LicenseNumber = lawyer.LicenseNumber,
-                IssuingAuthority = lawyer.IssuingAuthority,
-                LicenseYear = lawyer.LicenseYear,
+                Verification = MapVerification(lawyer),
             };
 
             return Result.Success(response);
         }
 
-        private DocumentsDto MapDocuments(ICollection<VerificationDocuments>? verificationDocuments)
+        private VerificationDto MapVerification(Lawyer lawyer)
         {
-            if (verificationDocuments == null || !verificationDocuments.Any())
-                return new DocumentsDto();
+            var docs = new VerificationDto
+            {
+                LawyerLicenseNumber = lawyer.LicenseNumber,
+                LawyerLicenseIssuingAuthority = lawyer.IssuingAuthority,
+                LawyerLicenseYearOfIssue = lawyer.LicenseYear
+            };
 
-            var docs = new DocumentsDto();
+            if (lawyer.VerificationDocuments == null || !lawyer.VerificationDocuments.Any())
+                return docs;
             
-            var nationalIdFront = verificationDocuments.FirstOrDefault(d => d.Type == VerificationDocumentType.NationalIdFront);
-            var nationalIdBack = verificationDocuments.FirstOrDefault(d => d.Type == VerificationDocumentType.NationalIdBack);
-            var lawyerLicense = verificationDocuments.FirstOrDefault(d => d.Type == VerificationDocumentType.LawyerLicense);
+            var nationalIdFront = lawyer.VerificationDocuments.FirstOrDefault(d => d.Type == VerificationDocumentType.NationalIdFront);
+            var nationalIdBack = lawyer.VerificationDocuments.FirstOrDefault(d => d.Type == VerificationDocumentType.NationalIdBack);
+            var lawyerLicense = lawyer.VerificationDocuments.FirstOrDefault(d => d.Type == VerificationDocumentType.LawyerLicense);
 
-            docs.GovernmentId = nationalIdFront != null && nationalIdBack != null;
-            docs.GovernmentIdUrl = nationalIdFront?.File?.SystemFileUrl;
-            docs.ProfessionalLicense = lawyerLicense != null;
-            docs.ProfessionalLicenseUrl = lawyerLicense?.File?.SystemFileUrl;
-            docs.IdentityVerification = docs.GovernmentId && docs.ProfessionalLicense;
-
+            docs.NationalIdFront = nationalIdFront?.File?.SystemFileUrl;
+            docs.NationalIdBack = nationalIdBack?.File?.SystemFileUrl;
+            docs.LawyerLicense = lawyerLicense?.File?.SystemFileUrl;
 
             return docs;
         }

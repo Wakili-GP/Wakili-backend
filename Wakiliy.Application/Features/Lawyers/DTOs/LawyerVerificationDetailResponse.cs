@@ -19,15 +19,11 @@ namespace Wakiliy.Application.Features.Lawyers.DTOs
         public string? Bio { get; set; }
         public LocationDto Location { get; set; } = new();
         public int? YearsExperience { get; set; }
-        public List<string> SessionTypes { get; set; } = new();
+        public List<int> SessionTypes { get; set; } = new();
         public List<EducationDto> Education { get; set; } = new();
         public List<CertificationDto> Certifications { get; set; } = new();
         public List<WorkExperienceDto> WorkExperience { get; set; } = new();
-        public DocumentsDto Documents { get; set; } = new();
-        public string? LicenseNumber { get; set; }
-        public string? IssuingAuthority { get; set; }
-        public string? LicenseYear { get; set; }
-        public string? BarNumber { get; set; }
+        public VerificationDto Verification { get; set; } = new();
     }
 
     public class LocationDto
@@ -42,7 +38,7 @@ namespace Wakiliy.Application.Features.Lawyers.DTOs
         public string FieldOfStudy { get; set; } = string.Empty;
         public string University { get; set; } = string.Empty;
         public string GraduationYear { get; set; } = string.Empty;
-        public string DocumentUrl { get; set; } = string.Empty;
+        public string? Document { get; set; }
     }
 
     public class CertificationDto
@@ -50,15 +46,17 @@ namespace Wakiliy.Application.Features.Lawyers.DTOs
         public string Name { get; set; } = string.Empty;
         public string IssuingOrg { get; set; } = string.Empty;
         public string YearObtained { get; set; } = string.Empty;
-        public string? DocumentUrl { get; set; }
+        public string? Document { get; set; }
     }
-    public class DocumentsDto
+    
+    public class VerificationDto
     {
-        public bool GovernmentId { get; set; }
-        public string? GovernmentIdUrl { get; set; }
-        public bool ProfessionalLicense { get; set; }
-        public string? ProfessionalLicenseUrl { get; set; }
-        public bool IdentityVerification { get; set; }
+        public string? NationalIdFront { get; set; }
+        public string? NationalIdBack { get; set; }
+        public string? LawyerLicense { get; set; }
+        public string? LawyerLicenseNumber { get; set; }
+        public string? LawyerLicenseIssuingAuthority { get; set; }
+        public string? LawyerLicenseYearOfIssue { get; set; }
     }
 
     public class EducationCertificateDto

@@ -11,6 +11,7 @@ public class AcademicQualification
     public string UniversityName { get; set; } = string.Empty;
     public int GraduationYear { get; set; }
 
+    public Guid? DocumentId { get; set; } 
     public UploadedFile? Document { get; set; }
 
     public Lawyer Lawyer { get; set; } = default!;

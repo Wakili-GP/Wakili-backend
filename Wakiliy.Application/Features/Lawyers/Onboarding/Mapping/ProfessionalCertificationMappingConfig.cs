@@ -14,7 +14,7 @@ namespace Wakiliy.Application.Features.Lawyers.Onboarding.Mapping
         public void Register(TypeAdapterConfig config)
         {
             config.NewConfig<ProfessionalCertification, ProfessionalCertificationResponseDto>()
-                .Map(dest => dest.DocumentPath, src => src.Document != null ? src.Document.SystemFileUrl : null);
+                .Map(dest => dest.Document, src => src.Document != null ? src.Document.SystemFileUrl : null);
 
             config.NewConfig<AcademicQualification, AcademicQualificationResponseDto>()
                 .Map(dest => dest.Document, src => src.Document != null ? src.Document.SystemFileUrl : null);

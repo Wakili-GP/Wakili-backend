@@ -32,7 +32,7 @@ public class BasicInfoDataDto
     public string? Bio { get; set; }
     public int? YearsOfExperience { get; set; }
    
-    public List<SpecializationOptionDto> PracticeAreas { get; set; } = new();
+    public List<int> PracticeAreas { get; set; } = new();
     public List<SessionType> SessionTypes { get; set; } = new();
 }
 
@@ -56,7 +56,7 @@ public class ProfessionalCertificationDto
     public string CertificateName { get; set; } = string.Empty;
     public string IssuingOrganization { get; set; } = string.Empty;
     public string YearObtained { get; set; } = string.Empty;
-    public IFormFile Document { get; set; } = default!;
+    public IFormFile? Document { get; set; }
 }
 
 public class ProfessionalCertificationResponseDto
@@ -64,7 +64,7 @@ public class ProfessionalCertificationResponseDto
     public string CertificateName { get; set; } = string.Empty;
     public string IssuingOrganization { get; set; } = string.Empty;
     public string YearObtained { get; set; } = string.Empty;
-    public string DocumentPath { get; set; } = default!;
+    public string Document { get; set; } = default!;
 }
 
 public class AcademicQualificationResponseDto

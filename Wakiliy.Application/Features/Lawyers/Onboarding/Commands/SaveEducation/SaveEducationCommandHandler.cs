@@ -90,7 +90,7 @@ public class SaveEducationCommandHandler(
             CertificateName = c.CertificateName,
             IssuingOrganization = c.IssuingOrganization,
             YearObtained = c.YearObtained.ToString(),
-            DocumentPath = c.Document != null ? c.Document.SystemFileUrl : null
+            Document = c.Document != null ? c.Document.SystemFileUrl : null
         }).ToList();
 
         var acacdemicQualificationsResponce = lawyer.AcademicQualifications.Select(q => new AcademicQualificationResponseDto

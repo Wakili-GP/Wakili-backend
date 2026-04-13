@@ -15,7 +15,7 @@ namespace Wakiliy.Application.Features.Lawyers.Onboarding.Mapping
         public void Register(TypeAdapterConfig config)
         {
             config.NewConfig<Lawyer, BasicInfoDataDto>()
-                .Map(dest => dest.PracticeAreas, src => src.Specializations.Adapt<List<SpecializationOptionDto>>())
+                .Map(dest => dest.PracticeAreas, src => src.Specializations.Select(s=>s.Id).ToList())
                 .Map(dest => dest.ProfileImage, src => src.ProfileImage.SystemFileUrl);
         }
     }

@@ -60,7 +60,7 @@ public class SaveBasicInfoCommandHandler(
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         responseData = lawyer.Adapt<BasicInfoDataDto>();
-        responseData.PracticeAreas = lawyer.Specializations.Adapt<List<SpecializationOptionDto>>();
+        responseData.PracticeAreas = lawyer.Specializations.Select(s => s.Id).ToList();
         responseData.ProfileImage = lawyer.ProfileImage?.SystemFileUrl;
 
 

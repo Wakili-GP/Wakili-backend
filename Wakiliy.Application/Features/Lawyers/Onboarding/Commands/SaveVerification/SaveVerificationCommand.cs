@@ -15,5 +15,4 @@ public class SaveVerificationCommand : IRequest<Result<OnboardingStepResponse<Ve
     public IFormFile NationalIdFront { get; set; } = default!;
     public IFormFile NationalIdBack { get; set; } = default!;
     public OnBoardingLawyerLicenseDto License { get; set; } = default!;
-    public List<IFormFile>? ProfessionalCertificates { get; set; } = new();
 }

@@ -13,6 +13,7 @@ namespace Wakiliy.Application.Features.Lawyers.DTOs
         public string? Email { get; set; }
         public string Specializations { get; set; } = string.Empty;
         public string ProfileImageUrl { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
         public DateTime SubmittedAt { get; set; }
         public string Status { get; set; } = string.Empty;
         public string? ApprovedBy { get; set; }

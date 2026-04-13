@@ -25,7 +25,7 @@ namespace Wakiliy.API.Controllers
             var extension = Path.GetExtension(file.FileName);
 
             var cloudinaryUrl =
-                $"https://res.cloudinary.com/{cloudName}/image/upload/{file.PublicId}";
+                $"https://res.cloudinary.com/{cloudName}/image/upload/{file.PublicId}{extension}";
 
             using var httpClient = new HttpClient();
             var response = await httpClient.GetAsync(cloudinaryUrl);

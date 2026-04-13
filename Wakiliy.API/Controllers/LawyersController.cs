@@ -30,16 +30,16 @@ namespace Wakiliy.API.Controllers
     public class LawyersController(IMediator mediator) : ControllerBase
     {
         /// <summary>
-        /// Get lawyer verification requests with optional status filters.
+        /// Get lawyer verification requests with pagination, filtering and sorting.
         /// </summary>
         /// <param name="status">Verification status filter.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns>List of verification requests.</returns>
         [HttpGet("lawyer-verification")]
         [ProducesResponseType(typeof(List<LawyerVerificationRequestResponse>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetLawyerVerificationRequests([FromQuery] VerificationStatus? status, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetLawyerVerificationRequests([FromQuery] GetLawyerVerificationRequestsQuery query, CancellationToken cancellationToken)
         {
-            var result = await mediator.Send(new GetLawyerVerificationRequestsQuery(status), cancellationToken);
+            var result = await mediator.Send(query, cancellationToken);
             return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
         }
 
