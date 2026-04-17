@@ -28,7 +28,7 @@ public class SubmitForReviewCommandHandler(IUnitOfWork unitOfWork)
             return Result.Failure(
                 new Error("Onboarding.Incomplete", "All steps must be completed before submitting for review.", 400));
 
-        lawyer.MarkStepCompleted(LawyerOnboardingSteps.Completed, -1);
+        lawyer.MarkStepCompleted(LawyerOnboardingSteps.PendingReview, -1);
         lawyer.CurrentOnboardingStep = -1;
 
         lawyer.VerificationStatus = VerificationStatus.UnderReview;

@@ -1,6 +1,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Wakiliy.Application.Features.Lawyers.Onboarding.Common;
 using Wakiliy.Application.Helpers;
+using Wakiliy.Domain.Constants;
 using Wakiliy.Domain.Enums;
 using Wakiliy.Domain.Errors;
 using Wakiliy.Domain.Repositories;
@@ -27,6 +29,10 @@ public class RejectVerificationCommandHandler(
         lawyer.RejectedAt = DateTime.UtcNow;
         lawyer.ApprovedAt = null;
         lawyer.ApprovedById = null;
+
+        lawyer.MarkStepCompleted(
+            LawyerOnboardingSteps.Verification,
+            LawyerOnboardingSteps.PendingReview);
 
         await unitOfWork.Lawyers.UpdateAsync(lawyer, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);

@@ -6,6 +6,7 @@ using Wakiliy.Application.Features.Auth.DTOs;
 using Wakiliy.Application.Interfaces.Services;
 using Wakiliy.Domain.Constants;
 using Wakiliy.Domain.Entities;
+using Wakiliy.Domain.Enums;
 using Wakiliy.Domain.Errors;
 using Wakiliy.Domain.Repositories;
 using Wakiliy.Domain.Responses;
@@ -23,6 +24,9 @@ public class AdminLoginCommandHandler(
 
         if (user is null)
             return Result.Failure<LoginResponse>(UserErrors.InvalidCredentials);
+
+        if (user.Status == UserStatus.Inactive)
+            return Result.Failure<LoginResponse>(UserErrors.InactiveUser);
 
         var isAdmin = await userManager.IsInRoleAsync(user, DefaultRoles.Admin);
         var isSuperAdmin = await userManager.IsInRoleAsync(user, DefaultRoles.SuperAdmin);

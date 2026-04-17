@@ -19,6 +19,8 @@ namespace Wakiliy.Application.Features.Lawyers.Queries.GetVerificationRequests
                 request.PageSize,
                 request.SearchTerm,
                 request.Status,
+                request.SortDescending,
+                request.DateFilter,
                 cancellationToken);
 
             var dtoItems = requests.Adapt<List<LawyerVerificationRequestResponse>>();

@@ -40,14 +40,15 @@ public class LoginCommandHandler(UserManager<AppUser> userManager,
             var userDto = user.Adapt<UserDto>();
             userDto.UserType = userRoles.FirstOrDefault() ?? DefaultRoles.Client;
             
-            if (user is Lawyer lawyer)
+             if (user is Lawyer lawyer)
             {
-                if (lawyer.CurrentOnboardingStep < LawyerOnboardingSteps.Completed)
-                    userDto.Status = LawyerOnboardingStatus.Unfinished.ToString();
-                else if (lawyer.VerificationStatus != VerificationStatus.Approved)
+                if(lawyer.CurrentOnboardingStep == -1 && lawyer.VerificationStatus == VerificationStatus.Approved)
+                    userDto.Status = LawyerOnboardingStatus.SubmittedAndApproved.ToString();
+                else if (lawyer.CurrentOnboardingStep == -1 && lawyer.VerificationStatus == VerificationStatus.Rejected)
                     userDto.Status = LawyerOnboardingStatus.SubmittedAndNotApproved.ToString();
                 else
-                    userDto.Status = LawyerOnboardingStatus.SubmittedAndApproved.ToString();
+                    userDto.Status = LawyerOnboardingStatus.Unfinished.ToString();
+                
             }
 
             userDto.profileImage = user.ProfileImage?.SystemFileUrl;

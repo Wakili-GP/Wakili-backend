@@ -12,5 +12,7 @@ namespace Wakiliy.Application.Features.Lawyers.Queries.GetVerificationRequests
         public int PageSize { get; set; } = 10;
         public string? SearchTerm { get; set; }
         public VerificationStatus? Status { get; set; }
+        public bool SortDescending { get; set; } = true;
+        public DateFilterType? DateFilter { get; set; } = DateFilterType.None;
     }
 }

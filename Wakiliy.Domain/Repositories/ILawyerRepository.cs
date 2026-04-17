@@ -20,7 +20,14 @@ namespace Wakiliy.Domain.Repositories
         Task<Lawyer?> GetByIdWithAllOnboardingDataAsync(string id);
         IQueryable<Lawyer> GetVerificationRequestsQueryable();
         Task<List<LawyerVerificationModel>> GetVerificationRequestsAsync(VerificationStatus? status, CancellationToken cancellationToken = default);
-        Task<(IEnumerable<LawyerVerificationModel> Requests, int TotalCount, LawyerVerificationStats Stats)> GetVerificationRequestsPagedAsync(int page, int pageSize, string? search, VerificationStatus? status, CancellationToken cancellationToken = default);
+        Task<(IEnumerable<LawyerVerificationModel> Requests, int TotalCount, LawyerVerificationStats Stats)> GetVerificationRequestsPagedAsync(
+            int page,
+            int pageSize,
+            string? search,
+            VerificationStatus? status,
+            bool sortDescending,
+            DateFilterType? dateFilter,
+            CancellationToken cancellationToken = default);
         Task DeleteExperiencesByLawyerIdAsync(string lawyerId, CancellationToken cancellationToken = default);
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Wakiliy.Application.Features.Account.DTOs;
+using Wakiliy.Application.Features.Auth.DTOs;
 using Wakiliy.Domain.Constants;
 using Wakiliy.Domain.Entities;
 using Wakiliy.Domain.Enums;
@@ -29,19 +30,17 @@ namespace Wakiliy.Application.Features.Account.Queries.GetInfo
             response.IsEmailVerified = user.EmailConfirmed;
             response.profileImage = user.ProfileImage?.SystemFileUrl;
 
-            if(user.Status == UserStatus.Inactive)
-                response.Status = UserStatus.Inactive.ToString();
-            else if (user.Status == UserStatus.Active && userType == DefaultRoles.Client)
+            if (user.Status == UserStatus.Active && userType == DefaultRoles.Client)
                 response.Status = UserStatus.Active.ToString();
             
-             if (user is Lawyer lawyer)
+            if (user is Lawyer lawyer)
             {
-                if (lawyer.CurrentOnboardingStep < LawyerOnboardingSteps.Completed)
-                    response.Status = LawyerOnboardingStatus.Unfinished.ToString();
-                else if (lawyer.VerificationStatus != VerificationStatus.Approved)
+                if (lawyer.CurrentOnboardingStep == -1 && lawyer.VerificationStatus == VerificationStatus.Approved)
+                    response.Status = LawyerOnboardingStatus.SubmittedAndApproved.ToString();
+                else if (lawyer.CurrentOnboardingStep == -1 && lawyer.VerificationStatus == VerificationStatus.Rejected)
                     response.Status = LawyerOnboardingStatus.SubmittedAndNotApproved.ToString();
                 else
-                    response.Status = LawyerOnboardingStatus.SubmittedAndApproved.ToString();
+                    response.Status = LawyerOnboardingStatus.Unfinished.ToString();
             }
 
             return Result.Success(response);

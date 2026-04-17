@@ -44,7 +44,7 @@ public class SaveVerificationCommandHandler(
 
         lawyer.MarkStepCompleted(
             LawyerOnboardingSteps.Verification,
-            LawyerOnboardingSteps.Completed);
+            LawyerOnboardingSteps.PendingReview);
 
         await unitOfWork.Lawyers.UpdateAsync(lawyer, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
