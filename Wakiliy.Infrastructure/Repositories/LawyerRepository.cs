@@ -246,5 +246,83 @@ namespace Wakiliy.Infrastructure.Repositories
                 dbContext.WorkExperiences.RemoveRange(experiences);
             }
         }
+        public IQueryable<Lawyer> GetApprovedLawyersQuery(
+            string? searchQuery,
+            int? specializationId,
+            string? city,
+            decimal? minPrice,
+            decimal? maxPrice,
+            double? minRating,
+            List<int>? sessionTypes,
+            string? sortBy,
+            string? sortOrder)
+        {
+            IQueryable<Lawyer> query = dbContext.Lawyers
+                .Where(l => l.VerificationStatus == VerificationStatus.Approved && l.IsActive)
+                .AsNoTracking();
+
+            if (!string.IsNullOrWhiteSpace(searchQuery))
+            {
+                var search = searchQuery.ToLower();
+                query = query.Where(l => l.FirstName.ToLower().Contains(search) || 
+                                         l.LastName.ToLower().Contains(search) ||
+                                         l.Specializations.Any(s => s.Name.ToLower().Contains(search)));
+            }
+
+            if (specializationId.HasValue)
+                query = query.Where(l => l.Specializations.Any(s => s.Id == specializationId.Value));
+
+            if (!string.IsNullOrWhiteSpace(city))
+                query = query.Where(l => l.City != null && l.City.ToLower() == city.ToLower());
+
+            if (minPrice.HasValue)
+            {
+                query = query.Where(l => 
+                    (l.PhoneSessionPrice != null && l.PhoneSessionPrice >= minPrice.Value) ||
+                    (l.InOfficeSessionPrice != null && l.InOfficeSessionPrice >= minPrice.Value));
+            }
+
+            if (maxPrice.HasValue)
+            {
+                query = query.Where(l => 
+                    (l.PhoneSessionPrice != null && l.PhoneSessionPrice <= maxPrice.Value) ||
+                    (l.InOfficeSessionPrice != null && l.InOfficeSessionPrice <= maxPrice.Value));
+            }
+
+            if (minRating.HasValue)
+            {
+                query = query.Where(l => l.Reviews.Any() 
+                    ? l.Reviews.Where(r => !r.AiAnalysis.IsFlagged).Select(r => r.Rating).Average() >= minRating.Value 
+                    : false);
+            }
+
+            if (sessionTypes != null && sessionTypes.Any())
+            {
+                var stringSessionTypes = sessionTypes.Select(st => st == 0 ? "InOffice" : "Phone").ToList();
+                query = query.Where(l => l.SessionTypes.Any(st => stringSessionTypes.Contains(st)));
+            }
+
+            var isAsc = sortOrder?.ToLower() == "asc";
+            
+            if (sortBy?.ToLower() == "rating")
+            {
+                query = isAsc 
+                    ? query.OrderBy(l => l.Reviews.Any() ? l.Reviews.Where(r => !r.AiAnalysis.IsFlagged).Select(r => r.Rating).Average() : 0)
+                    : query.OrderByDescending(l => l.Reviews.Any() ? l.Reviews.Where(r => !r.AiAnalysis.IsFlagged).Select(r => r.Rating).Average() : 0);
+            }
+            else if (sortBy?.ToLower() == "price")
+            {
+                query = isAsc
+                    ? query.OrderBy(l => l.PhoneSessionPrice).ThenBy(l => l.InOfficeSessionPrice)
+                    : query.OrderByDescending(l => l.PhoneSessionPrice).ThenByDescending(l => l.InOfficeSessionPrice);
+            }
+            else 
+            {
+                query = query.OrderBy(l => l.JoinedDate);
+            }
+            
+            return query;
+        }
+
     }
 }

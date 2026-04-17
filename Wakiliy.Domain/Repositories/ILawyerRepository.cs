@@ -28,6 +28,17 @@ namespace Wakiliy.Domain.Repositories
             bool sortDescending,
             DateFilterType? dateFilter,
             CancellationToken cancellationToken = default);
+
+        IQueryable<Lawyer> GetApprovedLawyersQuery(
+            string? searchQuery,
+            int? specializationId,
+            string? city,
+            decimal? minPrice,
+            decimal? maxPrice,
+            double? minRating,
+            List<int>? sessionTypes,
+            string? sortBy,
+            string? sortOrder);
         Task DeleteExperiencesByLawyerIdAsync(string lawyerId, CancellationToken cancellationToken = default);
     }
 }

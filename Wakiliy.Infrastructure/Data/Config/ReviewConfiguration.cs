@@ -38,7 +38,7 @@ internal class ReviewConfiguration : IEntityTypeConfiguration<Review>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(r => r.Lawyer)
-            .WithMany()
+            .WithMany(l=>l.Reviews)
             .HasForeignKey(r => r.LawyerId)
             .OnDelete(DeleteBehavior.Restrict);
     }

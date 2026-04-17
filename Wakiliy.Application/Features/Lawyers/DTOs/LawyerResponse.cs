@@ -8,6 +8,7 @@ namespace Wakiliy.Application.Features.Lawyers.DTOs
     public class LawyerResponse
     {
         public string Id { get; set; } = string.Empty;
+        public string? ProfileImage { get; set; }
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string? Email { get; set; }
@@ -16,10 +17,12 @@ namespace Wakiliy.Application.Features.Lawyers.DTOs
         public string City { get; set; } = string.Empty;
         public string LicenseNumber { get; set; } = string.Empty;
         public int? YearsOfExperience { get; set; }
-        public List<SpecializationOptionDto> Specializations { get; set; } = new();
-        public List<string> SessionTypes { get; set; } = new();
+        public List<string> Specializations { get; set; } = new();
+        public List<int> SessionTypes { get; set; } = new();
         public DateTime JoinedDate { get; set; }
         public decimal? PhoneSessionPrice { get; set; }
         public decimal? InOfficeSessionPrice { get; set; }
+        public double AverageRating { get; set; }
+        public int NumberOfRatings { get; set; }
     }
 }
