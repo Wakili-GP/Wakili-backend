@@ -15,6 +15,7 @@ public class Lawyer : AppUser
     public string? LicenseYear { get; set; } = string.Empty;
 
     public ICollection<Specialization> Specializations { get; set; } = new List<Specialization>();
+    public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
     public ICollection<AppointmentSlot> AppointmentSlots { get; set; } = new List<AppointmentSlot>();
     public ICollection<Review> Reviews { get; set; } = new List<Review>();
     public List<string> SessionTypes { get; set; } = new();

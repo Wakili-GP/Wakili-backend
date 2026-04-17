@@ -21,7 +21,7 @@ internal class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(a => a.Lawyer)
-            .WithMany()
+            .WithMany(l => l.Appointments)
             .HasForeignKey(a => a.LawyerId)
             .OnDelete(DeleteBehavior.Restrict);
     }

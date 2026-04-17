@@ -18,6 +18,7 @@ using Wakiliy.Application.Features.Lawyers.Queries.GetVerificationRequestById;
 using Wakiliy.Application.Features.Lawyers.Queries.GetVerificationRequests;
 using Wakiliy.Domain.Constants;
 using Wakiliy.Domain.Enums;
+using Wakiliy.Application.Features.Lawyers.Queries.GetPublicProfileById;
 
 namespace Wakiliy.API.Controllers
 {
@@ -106,6 +107,22 @@ namespace Wakiliy.API.Controllers
         public async Task<IActionResult> GetApprovedLawyers([FromQuery] GetApprovedLawyersQuery request, CancellationToken cancellationToken)
         {
             var result = await mediator.Send(request, cancellationToken);
+            return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
+        }
+
+        /// <summary>
+        /// Get a lawyer's public profile by Id
+        /// </summary>
+        /// <param name="id">The ID of the lawyer.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>Public details about the lawyer.</returns>
+        [HttpGet("public/{id}")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(PublicLawyerProfileResponseDto), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetPublicLawyerProfileById(string id, CancellationToken cancellationToken)
+        {
+            var query = new GetPublicLawyerProfileByIdQuery(id);
+            var result = await mediator.Send(query, cancellationToken);
             return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
         }
     }

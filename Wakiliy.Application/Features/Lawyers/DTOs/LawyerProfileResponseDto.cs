@@ -1,0 +1,27 @@
+using System;
+using System.Collections.Generic;
+
+namespace Wakiliy.Application.Features.Lawyers.DTOs
+{
+    public class LawyerProfileResponseDto
+    {
+        public string Id { get; set; } = string.Empty;
+        public string? ProfileImage { get; set; }
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string? Email { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string Bio { get; set; } = string.Empty;
+        public string City { get; set; } = string.Empty;
+        public string Country { get; set; } = string.Empty;
+        public string LicenseNumber { get; set; } = string.Empty;
+        public int? YearsOfExperience { get; set; }
+        public List<string> Specializations { get; set; } = new();
+        public List<int> SessionTypes { get; set; } = new();
+        public DateTime JoinedDate { get; set; }
+        public decimal? PhoneSessionPrice { get; set; }
+        public decimal? InOfficeSessionPrice { get; set; }
+        public double AverageRating { get; set; }
+        public int NumberOfRatings { get; set; }
+    }
+}
