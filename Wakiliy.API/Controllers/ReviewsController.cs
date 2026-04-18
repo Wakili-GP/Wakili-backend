@@ -7,7 +7,9 @@ using Wakiliy.Application.Features.Reviews.Commands.Create;
 using Wakiliy.Application.Features.Reviews.DTOs;
 using Wakiliy.Application.Features.Reviews.Queries.GetAll;
 using Wakiliy.Application.Features.Reviews.Queries.GetAllSystemReviews;
+using Wakiliy.Application.Common.Models;
 using Wakiliy.Application.Features.Reviews.Queries.GetByLawyer;
+using Wakiliy.Application.Features.Reviews.Queries.GetStatsByLawyer;
 using Wakiliy.Domain.Constants;
 
 namespace Wakiliy.API.Controllers;
@@ -77,13 +79,32 @@ public class ReviewsController : ControllerBase
     /// Get all reviews for a specific lawyer (without flagged AI reviews).
     /// </summary>
     /// <param name="lawyerId">The lawyer's ID</param>
+    /// <param name="query">Review filters.</param>
     /// <response code="200">List of reviews for the lawyer</response>
     [HttpGet("lawyer/{lawyerId}")]
-    [ProducesResponseType(typeof(List<ReviewResponseDto>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetByLawyerId(string lawyerId)
+    [ProducesResponseType(typeof(PaginatedResult<ReviewResponseDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetByLawyerId(string lawyerId, [FromQuery] GetReviewsByLawyerIdQuery query)
     {
-        var query = new GetReviewsByLawyerIdQuery { LawyerId = lawyerId };
+        query.LawyerId = lawyerId;
         var result = await _mediator.Send(query);
         return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
     }
+
+    /// <summary>
+    /// Get aggregated review stats for a specific lawyer.
+    /// </summary>
+    /// <param name="lawyerId">The lawyer's ID</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <response code="200">Aggregated review stats for the lawyer</response>
+    [HttpGet("lawyer/{lawyerId}/stats")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(LawyerReviewStatsDto), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetLawyerReviewStats(string lawyerId, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new GetLawyerReviewStatsQuery { LawyerId = lawyerId }, cancellationToken);
+        return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
+    }
 }
+
+
+
