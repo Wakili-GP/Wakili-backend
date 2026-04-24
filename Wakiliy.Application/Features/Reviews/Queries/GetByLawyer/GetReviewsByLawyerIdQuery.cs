@@ -9,6 +9,8 @@ public class GetReviewsByLawyerIdQuery : IRequest<Result<PaginatedResult<ReviewR
 {
     public string LawyerId { get; set; } = string.Empty;
     public double? Stars { get; set; }
+    public string? SearchQuery { get; set; }
     public int PageNumber { get; set; } = 1;
     public int PageSize { get; set; } = 10;
+    public bool SortDescending { get; set; } = true;
 }

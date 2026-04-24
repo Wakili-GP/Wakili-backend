@@ -59,6 +59,21 @@ namespace Wakiliy.Application.Features.Lawyers.DTOs
         public string YearObtained { get; set; } = string.Empty;
     }
 
+    public class LawyerProfileReviewClientDto
+    {
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string? ProfileImageUrl { get; set; }
+    }
+
+    public class LawyerProfileReviewDto
+    {
+        public double Rating { get; set; }
+        public string Comment { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
+        public LawyerProfileReviewClientDto Client { get; set; } = new();
+    }
+
     public class PublicLawyerProfileResponseDto
     {
         public LawyerProfileCoreDto Profile { get; set; } = new();
@@ -66,5 +81,6 @@ namespace Wakiliy.Application.Features.Lawyers.DTOs
         public List<LawyerWorkExperienceDto> WorkHistory { get; set; } = new();
         public List<LawyerEducationDto> Education { get; set; } = new();
         public List<LawyerCertificationDto> Certifications { get; set; } = new();
+        public List<LawyerProfileReviewDto> TopReviews { get; set; } = new();
     }
 }

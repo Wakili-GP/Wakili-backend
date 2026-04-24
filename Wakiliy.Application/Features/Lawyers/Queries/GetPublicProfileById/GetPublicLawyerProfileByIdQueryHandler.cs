@@ -1,10 +1,10 @@
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Wakiliy.Application.Features.Lawyers.DTOs;
 using Wakiliy.Domain.Entities;
+using Wakiliy.Domain.Repositories;
 using Wakiliy.Domain.Responses;
 using System.Linq;
 using System.Threading;
@@ -12,13 +12,11 @@ using System.Threading.Tasks;
 
 namespace Wakiliy.Application.Features.Lawyers.Queries.GetPublicProfileById
 {
-    public class GetPublicLawyerProfileByIdQueryHandler(UserManager<AppUser> userManager) : IRequestHandler<GetPublicLawyerProfileByIdQuery, Result<PublicLawyerProfileResponseDto>>
+    public class GetPublicLawyerProfileByIdQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetPublicLawyerProfileByIdQuery, Result<PublicLawyerProfileResponseDto>>
     {
         public async Task<Result<PublicLawyerProfileResponseDto>> Handle(GetPublicLawyerProfileByIdQuery request, CancellationToken cancellationToken)
         {
-            var dto = await userManager.Users
-                .OfType<Lawyer>()
-                .AsNoTracking()
+            var dto = await unitOfWork.Lawyers.GetLawyersQueryable()
                 .Where(l => l.Id == request.Id)
                 .ProjectToType<PublicLawyerProfileResponseDto>()
                 .FirstOrDefaultAsync(cancellationToken);

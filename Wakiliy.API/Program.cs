@@ -50,6 +50,8 @@ using (var scope = app.Services.CreateScope())
 } 
 #endregion
 
+app.UseExceptionHandler();
+
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{

@@ -40,7 +40,13 @@ namespace Wakiliy.Application.Features.Lawyers.Mapping
                 .Map(dest => dest.Pricing.AvailableSessionTypes, src => src.SessionTypes.Select(st => st == "InOffice" ? 0 : 1).ToList())
                 .Map(dest => dest.WorkHistory, src => src.WorkExperiences)
                 .Map(dest => dest.Education, src => src.AcademicQualifications)
-                .Map(dest => dest.Certifications, src => src.ProfessionalCertifications);
+                .Map(dest => dest.Certifications, src => src.ProfessionalCertifications)
+                .Map(dest => dest.TopReviews, src => src.Reviews.Where(r => !r.AiAnalysis.IsFlagged).OrderByDescending(r => r.Rating).ThenByDescending(r => r.CreatedAt).Take(2));
+
+            config.NewConfig<Review, LawyerProfileReviewDto>()
+                .Map(dest => dest.Client.FirstName, src => src.User != null ? src.User.FirstName : string.Empty)
+                .Map(dest => dest.Client.LastName, src => src.User != null ? src.User.LastName : string.Empty)
+                .Map(dest => dest.Client.ProfileImageUrl, src => src.User != null && src.User.ProfileImage != null ? src.User.ProfileImage.SystemFileUrl : null);
         }
     }
 }

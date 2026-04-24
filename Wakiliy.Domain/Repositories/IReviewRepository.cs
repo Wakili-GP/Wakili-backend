@@ -14,6 +14,8 @@ public interface IReviewRepository
         int page,
         int pageSize,
         double? stars = null,
+        string? searchQuery = null,
+        bool sortDescending = true,
         CancellationToken cancellationToken = default);
     Task<LawyerReviewStatsModel> GetLawyerReviewStatsAsync(string lawyerId, CancellationToken cancellationToken = default);
 }

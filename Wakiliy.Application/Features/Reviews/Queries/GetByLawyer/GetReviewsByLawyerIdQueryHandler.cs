@@ -2,6 +2,7 @@ using Mapster;
 using MediatR;
 using Wakiliy.Application.Common.Models;
 using Wakiliy.Application.Features.Reviews.DTOs;
+using Wakiliy.Domain.Entities;
 using Wakiliy.Domain.Repositories;
 using Wakiliy.Domain.Responses;
 
@@ -17,6 +18,8 @@ public class GetReviewsByLawyerIdQueryHandler(IUnitOfWork unitOfWork)
             request.PageNumber,
             request.PageSize,
             request.Stars,
+            request.SearchQuery,
+            request.SortDescending,
             cancellationToken);
 
         var reviewDtos = reviews.Adapt<List<ReviewResponseDto>>();

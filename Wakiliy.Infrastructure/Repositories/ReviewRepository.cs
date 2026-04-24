@@ -49,15 +49,28 @@ internal class ReviewRepository(ApplicationDbContext dbContext) : IReviewReposit
         int page,
         int pageSize,
         double? stars = null,
+        string? searchQuery = null,
+        bool sortDescending = true,
         CancellationToken cancellationToken = default)
     {
         var query = dbContext.Reviews
             .AsNoTracking()
             .Include(r => r.User)
+            .ThenInclude(u => u.ProfileImage)
             .Include(r => r.Appointment)
             .Where(r => r.LawyerId == lawyerId &&
                         !r.AiAnalysis.IsFlagged &&
                         (!stars.HasValue || r.Rating >= stars.Value));
+
+        if (!string.IsNullOrWhiteSpace(searchQuery))
+        {
+            query = query.Where(r => 
+                r.User.FirstName.Contains(searchQuery) ||
+                r.User.LastName.Contains(searchQuery) ||
+                r.Comment.Contains(searchQuery));
+        }
+
+        query = sortDescending ? query.OrderByDescending(r => r.CreatedAt) : query.OrderBy(r => r.CreatedAt);
 
         var totalCount = await query.CountAsync(cancellationToken);
 

@@ -324,5 +324,10 @@ namespace Wakiliy.Infrastructure.Repositories
             return query;
         }
 
+
+        public IQueryable<Lawyer> GetLawyersQueryable()
+        {
+            return dbContext.Lawyers.AsNoTracking();
+        }
     }
 }

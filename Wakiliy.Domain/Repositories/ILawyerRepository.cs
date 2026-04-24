@@ -40,5 +40,6 @@ namespace Wakiliy.Domain.Repositories
             string? sortBy,
             string? sortOrder);
         Task DeleteExperiencesByLawyerIdAsync(string lawyerId, CancellationToken cancellationToken = default);
+        IQueryable<Lawyer> GetLawyersQueryable();
     }
 }

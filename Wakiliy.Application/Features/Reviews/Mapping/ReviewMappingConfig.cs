@@ -10,7 +10,13 @@ public class ReviewMappingConfig : IRegister
     public void Register(TypeAdapterConfig config)
     {
         config.NewConfig<Review, ReviewResponseDto>()
-            .Map(dest => dest.AiAnalysis, src => src.AiAnalysis);
+            .Map(dest => dest.Client, src => new ReviewClientDto 
+            {
+                FirstName = src.User != null ? src.User.FirstName : string.Empty,
+                LastName = src.User != null ? src.User.LastName : string.Empty,
+                ProfileImageUrl = src.User != null && src.User.ProfileImage != null ? src.User.ProfileImage.SystemFileUrl : null,
+                Bio = src.User != null ? src.User.Bio : null
+            });
 
         config.NewConfig<SystemReview, SystemReviewResponseDto>()
             .Map(dest => dest.AiAnalysis, src => src.AiAnalysis);

@@ -49,6 +49,7 @@ public static class WebApplicationBuilderExtensions
         services.AddAuthConfigurations(configuration);
 
         services.AddExceptionHandler<GlobalExceptionHandler>();
+        services.AddProblemDetails();
 
         return services;
     }
