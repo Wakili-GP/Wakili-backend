@@ -10,5 +10,4 @@ public class CreateAppointmentCommand : IRequest<Result<AppointmentDto>>
     public string ClientId { get; set; } = string.Empty;
     public string LawyerId { get; set; } = string.Empty;
     public int SlotId { get; set; }
-    public SessionType SessionType { get; set; }
 }

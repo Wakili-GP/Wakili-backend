@@ -21,7 +21,8 @@ public class AdminLoginCommandHandler(
     public async Task<Result<LoginResponse>> Handle(AdminLoginCommand request, CancellationToken cancellationToken)
     {
         var user = await userManager.FindByEmailAsync(request.Email);
-
+        logger.LogInformation("Admin login attempt for email: {Email}", request.Email);
+        logger.LogInformation("User found: {UserFound}", user != null);
         if (user is null)
             return Result.Failure<LoginResponse>(UserErrors.InvalidCredentials);
 

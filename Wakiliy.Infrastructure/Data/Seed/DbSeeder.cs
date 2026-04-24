@@ -46,13 +46,13 @@ public class DbSeeder
 
         // Ensure admin, lawyer and superadmin users exists
         var superAdminEmail = configuration["SuperAdminUser:Email"];
-        var superAdminUserName = configuration["SuperAdminUser:UserName"];
+        var superAdminUserName = configuration["SuperAdminUser:Email"];
         var superAdminPassword = configuration["SuperAdminUser:Password"];
         var adminEmail = configuration["AdminUser:Email"];
-        var adminUserName = configuration["AdminUser:UserName"];
+        var adminUserName = configuration["AdminUser:Email"];
         var adminPassword = configuration["AdminUser:Password"];
         var lawyerEmail = configuration["LawyerUser:Email"];
-        var lawyerUserName = configuration["LawyerUser:UserName"];
+        var lawyerUserName = configuration["LawyerUser:Email"];
         var lawyerPassword = configuration["LawyerUser:Password"];
 
 
@@ -67,7 +67,14 @@ public class DbSeeder
 
         if (superAdminUser == null)
         {
-            superAdminUser = new AppUser { UserName = superAdminUserName, Email = superAdminEmail, EmailConfirmed = true, FirstName="SuperAdmin",LastName="User" };
+            superAdminUser = new AppUser { 
+                UserName = superAdminUserName,
+                NormalizedUserName = superAdminUserName.ToUpper(),
+                Email = superAdminEmail,
+                EmailConfirmed = true,
+                FirstName="SuperAdmin",
+                LastName="User" 
+             };
             try
             {
                 var result = await userManager.CreateAsync(superAdminUser, superAdminPassword);
@@ -103,7 +110,7 @@ public class DbSeeder
 
         if (adminUser == null)
         {
-            adminUser = new AppUser { UserName = adminUserName, Email = adminEmail,EmailConfirmed = true,FirstName="Admin",LastName="User" };
+            adminUser = new AppUser { UserName = adminUserName, NormalizedUserName = adminUserName.ToUpper(), Email = adminEmail, EmailConfirmed = true, FirstName="Admin", LastName="User" };
             try
             {
                 var result = await userManager.CreateAsync(adminUser, adminPassword);
@@ -140,7 +147,7 @@ public class DbSeeder
 
         if (lawyerUser == null)
         {
-            lawyerUser = new AppUser { UserName = lawyerUserName, Email = lawyerEmail ,EmailConfirmed = true,FirstName="Lawyer",LastName="User" };
+            lawyerUser = new AppUser { UserName = lawyerUserName, NormalizedUserName = lawyerUserName.ToUpper(), Email = lawyerEmail ,EmailConfirmed = true,FirstName="Lawyer",LastName="User" };
             try
             {
                 var result = await userManager.CreateAsync(lawyerUser, lawyerPassword);
@@ -158,9 +165,9 @@ public class DbSeeder
         else
         {
             // Ensure lawyer is always in the "Lawyer" role
-            if (!await userManager.IsInRoleAsync(adminUser, DefaultRoles.Lawyer))
+            if (!await userManager.IsInRoleAsync(lawyerUser, DefaultRoles.Lawyer))
             {
-                await userManager.AddToRoleAsync(adminUser, DefaultRoles.Lawyer);
+                await userManager.AddToRoleAsync(lawyerUser, DefaultRoles.Lawyer);
             }
         }
 

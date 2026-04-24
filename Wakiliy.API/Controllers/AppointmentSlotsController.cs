@@ -13,23 +13,23 @@ namespace Wakiliy.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AppointmentSlotsController : ControllerBase
+    public class TimeSlotsController : ControllerBase
     {
         private protected readonly IMediator Mediator;
 
-        public AppointmentSlotsController(IMediator mediator)
+        public TimeSlotsController(IMediator mediator)
         {
             Mediator = mediator;
         }
 
         /// <summary>
-        /// Get all appointment slots for a lawyer
+        /// Get all time slots for a lawyer
         /// </summary>
-        /// <response code="200">List of appointment slots returned</response>
+        /// <response code="200">List of time slots returned</response>
         /// <response code="404">Lawyer not found</response>
         [HttpGet("lawyer/{lawyerId}")]
         [ProducesResponseType(typeof(List<AppointmentSlotDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetLawyerAppointmentSlots(string lawyerId, [FromQuery] DateOnly? date)
+        public async Task<IActionResult> GetLawyerTimeSlots(string lawyerId, [FromQuery] DateOnly? date)
         {
             var query = new GetAppointmentSlotsByLawyerQuery { LawyerId = lawyerId, Date = date };
             var result = await Mediator.Send(query);
@@ -38,13 +38,13 @@ namespace Wakiliy.API.Controllers
 
 
         /// <summary>
-        /// Get all my appointment slots for a lawyer
+        /// Get all my time slots for a lawyer
         /// </summary>
-        /// <response code="200">List of appointment slots returned</response>
+        /// <response code="200">List of time slots returned</response>
         [HttpGet()]
         [Authorize(Roles = $"{DefaultRoles.Lawyer}")]
         [ProducesResponseType(typeof(List<AppointmentSlotDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetMyAppointmentSlots([FromQuery] DateOnly date)
+        public async Task<IActionResult> GetMyTimeSlots([FromQuery] DateOnly date)
         {
             var query = new GetAppointmentSlotsByLawyerQuery { LawyerId = User.GetUserId(), Date = date };
             var result = await Mediator.Send(query);
@@ -52,10 +52,10 @@ namespace Wakiliy.API.Controllers
         }
 
         /// <summary>
-        /// Create a new appointment slot for the current lawyer
+        /// Create a new time slot for the current lawyer
         /// </summary>
         /// <param name="dto">The creation payload</param>
-        /// <response code="200">Appointment slot created</response>
+        /// <response code="200">Time slot created</response>
         /// <response code="401">Unauthorized</response>
         /// <response code="409">Slot overlaps with an existing slot</response>
         [HttpPost]
@@ -76,11 +76,11 @@ namespace Wakiliy.API.Controllers
         }
 
         /// <summary>
-        /// Update an existing appointment slot
+        /// Update an existing time slot
         /// </summary>
         /// <param name="id">The slot ID</param>
         /// <param name="dto">The update payload</param>
-        /// <response code="200">Appointment slot updated</response>
+        /// <response code="200">Time slot updated</response>
         /// <response code="401">Unauthorized</response>
         /// <response code="404">Slot not found</response>
         /// <response code="409">Slot overlaps with an existing slot</response>
@@ -104,10 +104,10 @@ namespace Wakiliy.API.Controllers
         }
 
         /// <summary>
-        /// Delete an appointment slot
+        /// Delete an time slot
         /// </summary>
         /// <param name="id">The slot ID</param>
-        /// <response code="204">Appointment slot deleted</response>
+        /// <response code="204">Time slot deleted</response>
         /// <response code="401">Unauthorized</response>
         /// <response code="404">Slot not found</response>
         [HttpDelete("{id}")]

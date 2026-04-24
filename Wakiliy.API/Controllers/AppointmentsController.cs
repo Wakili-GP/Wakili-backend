@@ -44,7 +44,6 @@ namespace Wakiliy.API.Controllers
                 ClientId = User.GetUserId(),
                 LawyerId = dto.LawyerId,
                 SlotId = dto.SlotId,
-                SessionType = dto.SessionType
             };
 
             var result = await Mediator.Send(command);
@@ -72,9 +71,9 @@ namespace Wakiliy.API.Controllers
         [HttpGet("received")]
         [Authorize(Roles = DefaultRoles.Lawyer)]
         [ProducesResponseType(typeof(List<LawyerReceivedAppointmentDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetReceivedAppointments()
+        public async Task<IActionResult> GetReceivedAppointments([FromQuery]GetAppointmentsByLawyerQuery query)
         {
-            var query = new GetAppointmentsByLawyerQuery { LawyerId = User.GetUserId() };
+            query.LawyerId = User.GetUserId();
             var result = await Mediator.Send(query);
             return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
         }
