@@ -24,31 +24,12 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateLawyerInfo
                 return Result.Failure<UserInfoResponse>(new Error("Lawyer.NotFound", "Lawyer profile not found or user is not a lawyer", StatusCodes.Status404NotFound));
             }
 
-            if (request.SpecializationIds is not null)
-            {
-                var ids = request.SpecializationIds.Distinct().ToList();
-                var specializations = await unitOfWork.Specializations.GetByIdsAsync(ids, cancellationToken);
-                if (specializations.Count != ids.Count)
-                {
-                    return Result.Failure<UserInfoResponse>(SpecializationErrors.InvalidSelection);
-                }
-
-                lawyer.Specializations.Clear();
-                foreach (var specialization in specializations)
-                {
-                    lawyer.Specializations.Add(specialization);
-                }
-            }
-
             
-            lawyer.FirstName = request.FirstName ?? lawyer.FirstName;
-            lawyer.LastName = request.LastName ?? lawyer.LastName;
             lawyer.PhoneNumber = request.PhoneNumber ?? lawyer.PhoneNumber;
             lawyer.City = request.City ?? lawyer.City;
             lawyer.Country = request.Country ?? lawyer.Country;
-            lawyer.Gender = request.Gender ?? lawyer.Gender;
-            lawyer.LicenseNumber = request.LicenseNumber ?? lawyer.LicenseNumber;
-            lawyer.YearsOfExperience = request.YearsOfExperience ?? lawyer.YearsOfExperience;
+            lawyer.Bio = request.Bio ?? lawyer.Bio;
+            lawyer.Summary = request.Summary ?? lawyer.Summary;
             lawyer.PhoneSessionPrice = request.PhoneSessionPrice ?? lawyer.PhoneSessionPrice;
             lawyer.InOfficeSessionPrice = request.InOfficeSessionPrice ?? lawyer.InOfficeSessionPrice;
 

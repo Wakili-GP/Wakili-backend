@@ -10,14 +10,6 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateLawyerInfo
                 .MaximumLength(20)
                 .When(x => !string.IsNullOrWhiteSpace(x.PhoneNumber));
 
-            RuleFor(x => x.FirstName)
-                .MaximumLength(200)
-                .When(x => !string.IsNullOrWhiteSpace(x.FirstName));
-
-            RuleFor(x => x.LastName)
-                .MaximumLength(200)
-                .When(x => !string.IsNullOrWhiteSpace(x.LastName));
-
             RuleFor(x => x.City)
                 .MaximumLength(150)
                 .When(x => !string.IsNullOrWhiteSpace(x.City));
@@ -26,17 +18,13 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateLawyerInfo
                 .MaximumLength(150)
                 .When(x => !string.IsNullOrWhiteSpace(x.Country));
 
-            RuleFor(x => x.LicenseNumber)
-                .MaximumLength(100)
-                .When(x => !string.IsNullOrWhiteSpace(x.LicenseNumber));
-
-            RuleFor(x => x.SpecializationIds)
-                .Must(list => list == null || list.All(id => id > 0))
-                .WithMessage("Specialization ids must be positive numbers");
-
-            RuleFor(x => x.YearsOfExperience)
-                .GreaterThanOrEqualTo(0)
-                .When(x => x.YearsOfExperience.HasValue);
+            RuleFor(x => x.Summary)
+                .MaximumLength(200)
+                .When(x => !string.IsNullOrWhiteSpace(x.Summary));
+                
+            RuleFor(x => x.Bio)
+                .MaximumLength(600)
+                .When(x => !string.IsNullOrWhiteSpace(x.Bio));
 
             RuleFor(x => x.PhoneSessionPrice)
                 .GreaterThanOrEqualTo(0)

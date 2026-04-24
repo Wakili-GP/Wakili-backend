@@ -8,6 +8,7 @@ public class Lawyer : AppUser
 {
     public DateTime JoinedDate { get; set; }
     public string? Bio { get; set; }
+    public string? Summary { get; set; }
     public int? YearsOfExperience { get; set; }
 
     public string? LicenseNumber { get; set; } = string.Empty;

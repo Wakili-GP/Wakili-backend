@@ -7,17 +7,12 @@ using Wakiliy.Domain.Responses;
 namespace Wakiliy.Application.Features.Account.Commands.UpdateLawyerInfo
 {
     public class UpdateLawyerInfoDto {
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
         public string? PhoneNumber { get; set; }
         public IFormFile? ProfileImage { get; set; }
-        public string? Gender { get; set; }
         public string? City { get; set; }
         public string? Country { get; set; }
-
-        public string? LicenseNumber { get; set; }
-        public List<int>? SpecializationIds { get; set; }
-        public int? YearsOfExperience { get; set; }
+        public string? Bio { get; set; }
+        public string? Summary { get; set; }
         public decimal? PhoneSessionPrice { get; set; }
         public decimal? InOfficeSessionPrice { get; set; }
     }
@@ -25,18 +20,12 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateLawyerInfo
     {
         [JsonIgnore]
         public string Id { get; set; } = string.Empty;
-
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
         public string? PhoneNumber { get; set; }
         public IFormFile? ProfileImage { get; set; }
-        public string? Gender { get; set; }
         public string? City { get; set; }
         public string? Country { get; set; }
-
-        public string? LicenseNumber { get; set; }
-        public List<int>? SpecializationIds { get; set; }
-        public int? YearsOfExperience { get; set; }
+        public string? Bio { get; set; }
+        public string? Summary { get; set; }
         public decimal? PhoneSessionPrice { get; set; }
         public decimal? InOfficeSessionPrice { get; set; }
     }

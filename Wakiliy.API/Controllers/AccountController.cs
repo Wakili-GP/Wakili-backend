@@ -7,6 +7,7 @@ using Wakiliy.Application.Features.Account.Commands.ChangePassword;
 using Wakiliy.Application.Features.Account.Commands.UpdateClientInfo;
 using Wakiliy.Application.Features.Account.Commands.UpdateLawyerInfo;
 using Wakiliy.Application.Features.Account.Queries.GetClientData;
+using Wakiliy.Application.Features.Account.Queries.GetLawyerData;
 using Wakiliy.Domain.Constants;
 using Wakiliy.Application.Features.Account.DTOs;
 using Wakiliy.Application.Features.Account.Queries.GetInfo;
@@ -31,6 +32,21 @@ namespace Wakiliy.API.Controllers
         public async Task<IActionResult> GetClientData(CancellationToken cancellationToken)
         {
             var result = await mediator.Send(new GetClientDataQuery(User.GetUserId()), cancellationToken);
+            return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
+        }
+
+        /// <summary>
+        /// Get the current lawyer's data.
+        /// </summary>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>Lawyer data details.</returns>
+        [HttpGet("lawyer-info")]
+        [Authorize(Roles = DefaultRoles.Lawyer)]
+        [ProducesResponseType(typeof(LawyerDataDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetLawyerData(CancellationToken cancellationToken)
+        {
+            var result = await mediator.Send(new GetLawyerDataQuery(User.GetUserId()), cancellationToken);
             return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
         }
 
@@ -98,16 +114,12 @@ namespace Wakiliy.API.Controllers
             var command = new UpdateLawyerInfoCommand
             {
                 Id = User.GetUserId(),
-                FirstName = request.FirstName,
-                LastName = request.LastName,
                 PhoneNumber = request.PhoneNumber,
                 ProfileImage = request.ProfileImage,
-                Gender = request.Gender,
                 City = request.City,
                 Country = request.Country,
-                LicenseNumber = request.LicenseNumber,
-                SpecializationIds = request.SpecializationIds,
-                YearsOfExperience = request.YearsOfExperience,
+                Bio = request.Bio,
+                Summary = request.Summary,
                 PhoneSessionPrice = request.PhoneSessionPrice,
                 InOfficeSessionPrice = request.InOfficeSessionPrice
             };
