@@ -24,6 +24,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Appointment> Appointments { get; set; } = default!;
     public DbSet<Review> Reviews { get; set; } = default!;
     public DbSet<SystemReview> SystemReviews { get; set; } = default!;
+    public DbSet<BookingIntent> BookingIntents { get; set; } = default!;
+    public DbSet<PaymentTransaction> PaymentTransactions { get; set; } = default!;
 
     public override int SaveChanges()
     {

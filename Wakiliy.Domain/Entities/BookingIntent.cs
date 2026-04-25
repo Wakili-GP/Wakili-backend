@@ -5,7 +5,7 @@ namespace Wakiliy.Domain.Entities;
 public class BookingIntent
 {
     public Guid Id { get; set; }
-    public Guid SlotId { get; set; }
+    public int SlotId { get; set; }
     public string ClientId { get; set; } = string.Empty;
     public string LawyerId { get; set; } = string.Empty;
     public decimal Amount { get; set; }

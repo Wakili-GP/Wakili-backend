@@ -18,6 +18,8 @@ public interface IUnitOfWork
     IAdminRepository Admins { get; }
     IFavoriteLawyerRepository FavoriteLawyers { get; }
     IUserRepository Users { get; }
+    IBookingIntentRepository BookingIntents { get; }
+    IPaymentTransactionRepository PaymentTransactions { get; }
     IReviewRepository Reviews { get; }
     ISystemReviewRepository SystemReviews { get; }
 

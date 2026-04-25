@@ -44,6 +44,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAppointmentRepository, AppointmentRepository>();
         services.AddScoped<IReviewRepository, ReviewRepository>();
         services.AddScoped<ISystemReviewRepository, SystemReviewRepository>();
+        services.AddScoped<IBookingIntentRepository, BookingIntentRepository>();
+        services.AddScoped<IPaymentTransactionRepository, PaymentTransactionRepository>();
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -52,6 +54,13 @@ public static class ServiceCollectionExtensions
         // Register Services
         services.AddScoped<IEmailSender, EmailService>();
         services.AddScoped<IJwtProvider, JwtProvider>();
+        
+        // Paymob setup
+        services.Configure<PaymobSettings>(configuration.GetSection(nameof(PaymobSettings)));
+        services.AddHttpClient<IPaymobService, PaymobService>(client =>
+        {
+            client.BaseAddress = new Uri("https://accept.paymob.com/api/");
+        });
 
 
         services.Configure<MailSettings>(configuration.GetSection(nameof(MailSettings)));
