@@ -19,7 +19,7 @@ namespace Wakiliy.Application.Features.Account.Queries.GetLawyerData
             }
 
             var resultDto = lawyer.Adapt<LawyerDataDto>();
-            resultDto.MemberSince = lawyer.ApprovedAt;
+            resultDto.ProfileImage = lawyer.ProfileImage != null ? lawyer.ProfileImage.SystemFileUrl : "";
             return Result.Success(resultDto);
         }
     }

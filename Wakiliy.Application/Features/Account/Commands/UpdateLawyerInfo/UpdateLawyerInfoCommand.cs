@@ -16,7 +16,7 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateLawyerInfo
         public decimal? PhoneSessionPrice { get; set; }
         public decimal? InOfficeSessionPrice { get; set; }
     }
-    public class UpdateLawyerInfoCommand : IRequest<Result<UserInfoResponse>>
+    public class UpdateLawyerInfoCommand : IRequest<Result<LawyerDataDto>>
     {
         [JsonIgnore]
         public string Id { get; set; } = string.Empty;

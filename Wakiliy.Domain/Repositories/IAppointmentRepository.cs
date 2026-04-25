@@ -19,4 +19,5 @@ public interface IAppointmentRepository
     Task<bool> IsSlotBookedAsync(int slotId, CancellationToken cancellationToken = default);
     Task AddAsync(Appointment appointment, CancellationToken cancellationToken = default);
     Task UpdateAsync(Appointment appointment, CancellationToken cancellationToken = default);
+    Task<List<ApprovedAppointmentModel>> GetApprovedAppointmentsAsync(string lawyerId, DateTime? startDate, DateTime? endDate, CancellationToken cancellationToken = default);
 }

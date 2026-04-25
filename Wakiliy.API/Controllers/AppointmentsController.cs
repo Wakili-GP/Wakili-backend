@@ -9,7 +9,9 @@ using Wakiliy.Application.Features.Appointments.Commands.Reject;
 using Wakiliy.Application.Features.Appointments.DTOs;
 using Wakiliy.Application.Features.Appointments.Queries.GetByClient;
 using Wakiliy.Application.Features.Appointments.Queries.GetByLawyer;
+using Wakiliy.Application.Features.Appointments.Queries.GetApprovedAppointments;
 using Wakiliy.Domain.Constants;
+using Wakiliy.Domain.Enums;
 
 namespace Wakiliy.API.Controllers
 {
@@ -25,30 +27,30 @@ namespace Wakiliy.API.Controllers
             Mediator = mediator;
         }
 
-        /// <summary>
-        /// Create a new appointment By Client.
-        /// </summary>
-        /// <param name="dto">The appointment creation payload</param>
-        /// <response code="200">Appointment created successfully</response>
-        /// <response code="404">Lawyer or slot not found</response>
-        /// <response code="409">Slot is already booked</response>
-        [HttpPost]
-        [Authorize(Roles = DefaultRoles.Client)]
-        [ProducesResponseType(typeof(AppointmentDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Create([FromBody] CreateAppointmentDto dto)
-        {
-            var command = new CreateAppointmentCommand
-            {
-                ClientId = User.GetUserId(),
-                LawyerId = dto.LawyerId,
-                SlotId = dto.SlotId,
-            };
+        ///// <summary>
+        ///// Create a new appointment By Client.
+        ///// </summary>
+        ///// <param name="dto">The appointment creation payload</param>
+        ///// <response code="200">Appointment created successfully</response>
+        ///// <response code="404">Lawyer or slot not found</response>
+        ///// <response code="409">Slot is already booked</response>
+        //[HttpPost]
+        //[Authorize(Roles = DefaultRoles.Client)]
+        //[ProducesResponseType(typeof(AppointmentDto), StatusCodes.Status200OK)]
+        //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+        //public async Task<IActionResult> Create([FromBody] CreateAppointmentDto dto)
+        //{
+        //    var command = new CreateAppointmentCommand
+        //    {
+        //        ClientId = User.GetUserId(),
+        //        LawyerId = dto.LawyerId,
+        //        SlotId = dto.SlotId,
+        //    };
 
-            var result = await Mediator.Send(command);
-            return result.IsSuccess ? result.ToSuccess("Appointment created successfully") : result.ToProblem();
-        }
+        //    var result = await Mediator.Send(command);
+        //    return result.IsSuccess ? result.ToSuccess("Appointment created successfully") : result.ToProblem();
+        //}
 
         /// <summary>
         /// Get all appointments for the current client.
@@ -151,6 +153,25 @@ namespace Wakiliy.API.Controllers
 
             var result = await Mediator.Send(command);
             return result.IsSuccess ? result.ToSuccess("Appointment completed successfully") : result.ToProblem();
+        }
+
+        /// <summary>
+        /// Get approved appointments for calendar.
+        /// </summary>
+        /// <response code="200">List of lawyer's approved appointments for calendar view</response>
+        [HttpGet("approved")]
+        [Authorize(Roles = DefaultRoles.Lawyer)]
+        [ProducesResponseType(typeof(List<ApprovedAppointmentDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetApprovedAppointments([FromQuery] CalendarViewType viewType)
+        {
+            var query = new GetApprovedAppointmentsQuery
+            { 
+                LawyerId = User.GetUserId(),
+                ViewType = viewType,
+            };
+            
+            var result = await Mediator.Send(query);
+            return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
         }
     }
 }

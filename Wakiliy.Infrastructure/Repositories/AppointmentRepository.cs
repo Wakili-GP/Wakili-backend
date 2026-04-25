@@ -128,4 +128,45 @@ internal class AppointmentRepository(ApplicationDbContext dbContext) : IAppointm
         dbContext.Appointments.Update(appointment);
         await dbContext.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<List<ApprovedAppointmentModel>> GetApprovedAppointmentsAsync (
+        string lawyerId, 
+        DateTime? startDate, 
+        DateTime? endDate, 
+        CancellationToken cancellationToken = default)
+    {
+        var query = dbContext.Appointments
+            .AsNoTracking()
+            .Include(a => a.Slot)
+            .Include(a => a.Client)
+                .ThenInclude(c => c.ProfileImage)
+            .Include(a=>a.Lawyer)
+            .Where(a => a.LawyerId == lawyerId && a.Status == AppointmentStatus.Confirmed);
+            
+        if (startDate.HasValue)
+            query = query.Where(a => a.Slot.Date >= DateOnly.FromDateTime(startDate.Value.Date));
+            
+        if (endDate.HasValue)
+            query = query.Where(a => a.Slot.Date <= DateOnly.FromDateTime(endDate.Value.Date));
+
+        var rawAppointments = await query
+            .OrderBy(a => a.Slot.Date)
+            .ThenBy(a => a.Slot.StartTime)
+            .ToListAsync(cancellationToken);
+
+        var appointments = rawAppointments.Select(a => new ApprovedAppointmentModel
+        {
+            AppointmentId = a.Id,
+            StartDate = a.Slot.Date.ToDateTime(TimeOnly.FromTimeSpan(a.Slot.StartTime)).ToString("O"),
+            EndDate = a.Slot.Date.ToDateTime(TimeOnly.FromTimeSpan(a.Slot.EndTime)).ToString("O"),
+            ClientFirstName = a.Client?.FirstName ?? "",
+            ClientLastName = a.Client?.LastName ?? "",
+            ClientPhoneNumber = a.Client?.PhoneNumber ?? "",
+            ClientProfileImage = a.Client?.ProfileImage?.SystemFileUrl,
+            AppointmentType = (int)a.Slot.SessionType,
+            SessionPrice = a.Slot.SessionType == SessionType.Phone ? a.Lawyer.PhoneSessionPrice ?? 0 : a.Lawyer.InOfficeSessionPrice ?? 0,
+        }).ToList();
+
+        return appointments;
+    }
 }

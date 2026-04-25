@@ -65,7 +65,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-Console.WriteLine("JWT KEY = " + builder.Configuration["Jwt:Key"]);
-
 
 app.Run();

@@ -13,15 +13,15 @@ using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.Account.Commands.UpdateLawyerInfo
 {
-    public class UpdateLawyerInfoCommandHandler(IUnitOfWork unitOfWork, ILogger<UpdateLawyerInfoCommandHandler> logger, IFileUploadService fileUploadService) : IRequestHandler<UpdateLawyerInfoCommand, Result<UserInfoResponse>>
+    public class UpdateLawyerInfoCommandHandler(IUnitOfWork unitOfWork, ILogger<UpdateLawyerInfoCommandHandler> logger, IFileUploadService fileUploadService) : IRequestHandler<UpdateLawyerInfoCommand, Result<LawyerDataDto>>
     {
-        public async Task<Result<UserInfoResponse>> Handle(UpdateLawyerInfoCommand request, CancellationToken cancellationToken)
+        public async Task<Result<LawyerDataDto>> Handle(UpdateLawyerInfoCommand request, CancellationToken cancellationToken)
         {
             logger.LogInformation("UpdateLawyerInfoCommandHandler: {Id}", request.Id);
             var lawyer = await unitOfWork.Lawyers.GetByIdAsync(request.Id, cancellationToken);
             if (lawyer is null)
             {
-                return Result.Failure<UserInfoResponse>(new Error("Lawyer.NotFound", "Lawyer profile not found or user is not a lawyer", StatusCodes.Status404NotFound));
+                return Result.Failure<LawyerDataDto>(new Error("Lawyer.NotFound", "Lawyer profile not found or user is not a lawyer", StatusCodes.Status404NotFound));
             }
 
             
@@ -33,8 +33,7 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateLawyerInfo
             lawyer.PhoneSessionPrice = request.PhoneSessionPrice ?? lawyer.PhoneSessionPrice;
             lawyer.InOfficeSessionPrice = request.InOfficeSessionPrice ?? lawyer.InOfficeSessionPrice;
 
-            var response = lawyer.Adapt<UserInfoResponse>();
-            response.UserType = DefaultRoles.Lawyer;
+            var response = lawyer.Adapt<LawyerDataDto>();
 
             if (request.ProfileImage is not null)
             {
@@ -60,7 +59,7 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateLawyerInfo
                 };
 
                 file.SystemFileUrl = $"/api/files/{file.Id}";
-                response.profileImage = file.SystemFileUrl;
+                response.ProfileImage = file.SystemFileUrl;
                 lawyer.ProfileImage = file;
                 await unitOfWork.UploadedFiles.AddAsync(file, cancellationToken);
                 

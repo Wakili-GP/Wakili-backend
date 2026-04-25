@@ -12,7 +12,6 @@ namespace Wakiliy.Application.Features.Account.DTOs
         public decimal? PhoneSessionPrice { get; set; }
         public decimal? InOfficeSessionPrice { get; set; }
         public string ProfileImage { get; set; } = string.Empty;
-        public DateTime? MemberSince { get; set; }
         public string Email { get; set; } = string.Empty;
     }
 }
