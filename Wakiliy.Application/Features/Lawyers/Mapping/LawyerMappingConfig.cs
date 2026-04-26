@@ -26,7 +26,7 @@ namespace Wakiliy.Application.Features.Lawyers.Mapping
                 .Map(dest => dest.Profile.FirstName, src => src.FirstName)
                 .Map(dest => dest.Profile.LastName, src => src.LastName)
                 .Map(dest => dest.Profile.Bio, src => src.Bio ?? string.Empty)
-                .Map(dest => dest.Profile.Summary, src => string.Empty) // Adjust if there is a summary field
+                .Map(dest => dest.Profile.Summary, src => src.Summary)
                 .Map(dest => dest.Profile.City, src => src.City)
                 .Map(dest => dest.Profile.Country, src => src.Country)
                 .Map(dest => dest.Profile.PracticeAreas, src => src.Specializations.Select(s => s.Name).ToList())

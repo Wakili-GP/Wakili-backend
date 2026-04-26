@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Wakiliy.Domain.Entities;
+using Wakiliy.Domain.Enums;
 using Wakiliy.Domain.Repositories;
 using Wakiliy.Infrastructure.Data;
 
@@ -17,14 +18,21 @@ internal class AppointmentSlotRepository(ApplicationDbContext dbContext) : IAppo
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
-    public IQueryable<AppointmentSlot> GetByLawyerIdQuery(string lawyerId, DateOnly date)
+    public IQueryable<AppointmentSlot> GetByLawyerIdQuery(string lawyerId, DateOnly date,SessionType? sessionType)
     {
-        return dbContext.AppointmentSlots
+        var query = dbContext.AppointmentSlots
             .AsNoTracking()
             .Where(x => x.LawyerId == lawyerId && x.Date == date)
             .OrderBy(x => x.Date)
             .ThenBy(x => x.StartTime)
             .AsQueryable();
+
+        if (sessionType.HasValue)
+        {
+            query = query.Where(x => x.SessionType == sessionType.Value);
+        }
+
+        return query;
     }
 
     public async Task AddAsync(AppointmentSlot appointmentSlot, CancellationToken cancellationToken = default)

@@ -19,11 +19,11 @@ namespace Wakiliy.Application.Features.Account.Commands.UpdateLawyerInfo
                 .When(x => !string.IsNullOrWhiteSpace(x.Country));
 
             RuleFor(x => x.Summary)
-                .MaximumLength(200)
+                .MaximumLength(600)
                 .When(x => !string.IsNullOrWhiteSpace(x.Summary));
                 
             RuleFor(x => x.Bio)
-                .MaximumLength(600)
+                .MaximumLength(200)
                 .When(x => !string.IsNullOrWhiteSpace(x.Bio));
 
             RuleFor(x => x.PhoneSessionPrice)

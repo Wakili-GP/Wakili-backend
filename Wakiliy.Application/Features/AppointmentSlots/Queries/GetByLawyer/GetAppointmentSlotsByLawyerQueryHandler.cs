@@ -11,7 +11,8 @@ public class GetAppointmentSlotsByLawyerQueryHandler(IUnitOfWork unitOfWork)
 {
     public async Task<Result<List<AppointmentSlotDto>>> Handle(GetAppointmentSlotsByLawyerQuery request, CancellationToken cancellationToken)
     {
-        var query = unitOfWork.AppointmentSlots.GetByLawyerIdQuery(request.LawyerId, request.Date!.Value);
+        var query = unitOfWork.AppointmentSlots.GetByLawyerIdQuery(request.LawyerId, request.Date!.Value,request.SessionType);
+
         var items = query.Adapt<IEnumerable<AppointmentSlotDto>>().ToList();
         return Result.Success(items);
     }

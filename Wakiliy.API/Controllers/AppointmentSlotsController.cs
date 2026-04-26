@@ -8,6 +8,7 @@ using Wakiliy.Application.Features.AppointmentSlots.Queries.GetByLawyer;
 using Wakiliy.API.Extensions;
 using Wakiliy.Application.Features.AppointmentSlots.DTOs;
 using Wakiliy.Domain.Constants;
+using Wakiliy.Domain.Enums;
 
 namespace Wakiliy.API.Controllers
 {
@@ -29,13 +30,12 @@ namespace Wakiliy.API.Controllers
         /// <response code="404">Lawyer not found</response>
         [HttpGet("lawyer/{lawyerId}")]
         [ProducesResponseType(typeof(List<AppointmentSlotDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetLawyerTimeSlots(string lawyerId, [FromQuery] DateOnly? date)
+        public async Task<IActionResult> GetLawyerTimeSlots(string lawyerId, [FromQuery] DateOnly? date, [FromQuery] SessionType? sessionType)
         {
-            var query = new GetAppointmentSlotsByLawyerQuery { LawyerId = lawyerId, Date = date };
+            var query = new GetAppointmentSlotsByLawyerQuery { LawyerId = lawyerId, Date = date, SessionType = sessionType };
             var result = await Mediator.Send(query);
             return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
         }
-
 
         /// <summary>
         /// Get all my time slots for a lawyer
