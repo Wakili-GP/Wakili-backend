@@ -22,7 +22,8 @@ internal class AppointmentSlotRepository(ApplicationDbContext dbContext) : IAppo
     {
         var query = dbContext.AppointmentSlots
             .AsNoTracking()
-            .Where(x => x.LawyerId == lawyerId && x.Date == date)
+            .Where(x => x.LawyerId == lawyerId && x.Date == date && 
+                        !dbContext.Appointments.Any(a => a.SlotId == x.Id && a.Status != AppointmentStatus.Cancelled))
             .OrderBy(x => x.Date)
             .ThenBy(x => x.StartTime)
             .AsQueryable();

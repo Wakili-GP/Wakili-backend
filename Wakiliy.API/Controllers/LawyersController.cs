@@ -106,6 +106,9 @@ namespace Wakiliy.API.Controllers
         [ProducesResponseType(typeof(PaginatedResult<LawyerResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetApprovedLawyers([FromQuery] GetApprovedLawyersQuery request, CancellationToken cancellationToken)
         {
+            if(User.IsInRole(DefaultRoles.Client))
+                request.UserId = User.Identity!.IsAuthenticated ? User.GetUserId() : string.Empty;
+            
             var result = await mediator.Send(request, cancellationToken);
             return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
         }

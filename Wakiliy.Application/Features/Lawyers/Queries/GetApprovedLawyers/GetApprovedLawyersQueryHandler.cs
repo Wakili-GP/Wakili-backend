@@ -32,11 +32,18 @@ public class GetApprovedLawyersQueryHandler(IUnitOfWork unitOfWork)
         // Pagination 
         var totalCount = await query.CountAsync(cancellationToken);
 
+
         var items = await query
             .Skip((request.Page - 1) * request.PageSize)
             .Take(request.PageSize)
             .ProjectToType<LawyerResponse>()
             .ToListAsync(cancellationToken);
+
+        if(request.UserId != null)
+        {
+            var favorites = await unitOfWork.FavoriteLawyers.GetFavoriteLawyersAsync(request.UserId, cancellationToken);
+            items.ForEach(l=> l.IsFavorite = favorites.Any(f=>f.Id == l.Id));
+        }
 
         var result = new PaginatedResult<LawyerResponse>
         {

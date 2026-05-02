@@ -19,6 +19,7 @@ public class Lawyer : AppUser
     public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
     public ICollection<AppointmentSlot> AppointmentSlots { get; set; } = new List<AppointmentSlot>();
     public ICollection<Review> Reviews { get; set; } = new List<Review>();
+    public ICollection<FavoriteLawyer> Favorites { get; set; } = new List<FavoriteLawyer>();
     public List<string> SessionTypes { get; set; } = new();
     public List<AcademicQualification> AcademicQualifications { get; set; } = new();
     public List<ProfessionalCertification> ProfessionalCertifications { get; set; } = new();

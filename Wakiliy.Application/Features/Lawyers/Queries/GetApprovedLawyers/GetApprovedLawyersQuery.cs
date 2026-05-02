@@ -36,4 +36,5 @@ public class GetApprovedLawyersQuery
     public LawyerSortBy? SortBy { get; set; }
      /// <summary>Sort order: "asc" or "desc". Null means no sorting.</summary>
     public string? SortOrder { get; set; } // "asc" or "desc"
+    public string? UserId { get; set; } = string.Empty;
 }

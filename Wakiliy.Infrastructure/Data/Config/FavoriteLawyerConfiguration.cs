@@ -16,7 +16,7 @@ internal class FavoriteLawyerConfiguration : IEntityTypeConfiguration<FavoriteLa
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(fl => fl.Lawyer)
-            .WithMany()
+            .WithMany(l => l.Favorites)
             .HasForeignKey(fl => fl.LawyerId)
             .OnDelete(DeleteBehavior.Restrict);
     }

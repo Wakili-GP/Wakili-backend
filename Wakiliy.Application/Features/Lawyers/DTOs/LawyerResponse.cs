@@ -24,5 +24,6 @@ namespace Wakiliy.Application.Features.Lawyers.DTOs
         public decimal? InOfficeSessionPrice { get; set; }
         public double AverageRating { get; set; }
         public int NumberOfRatings { get; set; }
+        public bool IsFavorite { get; set; }
     }
 }
