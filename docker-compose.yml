@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   wakiliy.api:
     image: wakiliy.api
@@ -8,15 +6,39 @@ services:
       dockerfile: Wakiliy.API/Dockerfile
     ports:
       - "8080:8080"
-    env_file:
-      - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT
+      - ASPNETCORE_HTTP_PORTS
+      - ConnectionStrings__DefaultConnection
+      - Jwt__Key
+      - Jwt__Issuer
+      - Jwt__Audience
+      - Jwt__ExpiryInMinutes
+      - MailSettings__Email
+      - MailSettings__DisplayName
+      - MailSettings__Password
+      - MailSettings__Host
+      - MailSettings__Port
+      - AdminUser__Email
+      - AdminUser__UserName
+      - AdminUser__Password
+      - LawyerUser__Email
+      - LawyerUser__UserName
+      - LawyerUser__Password
+      - SuperAdminUser__Email
+      - SuperAdminUser__UserName
+      - SuperAdminUser__Password
+      - CloudinarySettings__CloudName
+      - CloudinarySettings__ApiKey
+      - CloudinarySettings__ApiSecret
     depends_on:
       - sqlserver
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
-    env_file:
-      - .env
+    environment:
+      - SA_PASSWORD
+      - ACCEPT_EULA
     ports:
       - "1433:1433"
     volumes:

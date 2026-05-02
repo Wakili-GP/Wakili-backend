@@ -38,6 +38,33 @@ jobs:
     
     - name: Build images
       run: docker compose build
+      env:
+        ASPNETCORE_ENVIRONMENT: ${{ secrets.ASPNETCORE_ENVIRONMENT }}
+        ASPNETCORE_HTTP_PORTS: ${{ secrets.ASPNETCORE_HTTP_PORTS }}
+        ConnectionStrings__DefaultConnection: ${{ secrets.CONNECTIONSTRINGS__DEFAULTCONNECTION }}
+        Jwt__Key: ${{ secrets.JWT__KEY }}
+        Jwt__Issuer: ${{ secrets.JWT__ISSUER }}
+        Jwt__Audience: ${{ secrets.JWT__AUDIENCE }}
+        Jwt__ExpiryInMinutes: ${{ secrets.JWT__EXPIRYINMINUTES }}
+        MailSettings__Email: ${{ secrets.MAILSETTINGS__EMAIL }}
+        MailSettings__DisplayName: ${{ secrets.MAILSETTINGS__DISPLAYNAME }}
+        MailSettings__Password: ${{ secrets.MAILSETTINGS__PASSWORD }}
+        MailSettings__Host: ${{ secrets.MAILSETTINGS__HOST }}
+        MailSettings__Port: ${{ secrets.MAILSETTINGS__PORT }}
+        AdminUser__Email: ${{ secrets.ADMINUSER__EMAIL }}
+        AdminUser__UserName: ${{ secrets.ADMINUSER__USERNAME }}
+        AdminUser__Password: ${{ secrets.ADMINUSER__PASSWORD }}
+        LawyerUser__Email: ${{ secrets.LAWYERUSER__EMAIL }}
+        LawyerUser__UserName: ${{ secrets.LAWYERUSER__USERNAME }}
+        LawyerUser__Password: ${{ secrets.LAWYERUSER__PASSWORD }}
+        SuperAdminUser__Email: ${{ secrets.SUPERADMINUSER__EMAIL }}
+        SuperAdminUser__UserName: ${{ secrets.SUPERADMINUSER__USERNAME }}
+        SuperAdminUser__Password: ${{ secrets.SUPERADMINUSER__PASSWORD }}
+        CloudinarySettings__CloudName: ${{ secrets.CLOUDINARYSETTINGS__CLOUDNAME }}
+        CloudinarySettings__ApiKey: ${{ secrets.CLOUDINARYSETTINGS__APIKEY }}
+        CloudinarySettings__ApiSecret: ${{ secrets.CLOUDINARYSETTINGS__APISECRET }}
+        SA_PASSWORD: ${{ secrets.SA_PASSWORD }}
+        ACCEPT_EULA: ${{ secrets.ACCEPT_EULA }}
 
     # - name: Tag image
     #   run: docker tag wakiliy.api ${{ secrets.DOCKER_USERNAME }}/wakiliy.api:latest
