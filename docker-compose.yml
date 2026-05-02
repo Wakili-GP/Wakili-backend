@@ -1,6 +1,6 @@
 services:
   wakiliy.api:
-    image: wakiliy.api
+    image: anasawaad/wakiliy.api:latest
     build:
       context: .
       dockerfile: Wakiliy.API/Dockerfile
