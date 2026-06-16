@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36408.4 d17.14
@@ -7,13 +7,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{7D6EB7CD-11C6-41AF-A758-2522DD11080A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wakiliy.API", "Wakiliy.API\Wakiliy.API.csproj", "{7A5F36AB-4548-4098-8FAF-2B5A2D09CFAC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wakiliy.API", "src\Wakiliy.API\Wakiliy.API.csproj", "{7A5F36AB-4548-4098-8FAF-2B5A2D09CFAC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wakiliy.Application", "Wakiliy.Application\Wakiliy.Application.csproj", "{6C8AB128-F432-402B-A155-20CC6089CBCD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wakiliy.Application", "src\Wakiliy.Application\Wakiliy.Application.csproj", "{6C8AB128-F432-402B-A155-20CC6089CBCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wakiliy.Domain", "Wakiliy.Domain\Wakiliy.Domain.csproj", "{046A0856-82FC-4C42-89BE-6B3C7128F278}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wakiliy.Domain", "src\Wakiliy.Domain\Wakiliy.Domain.csproj", "{046A0856-82FC-4C42-89BE-6B3C7128F278}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wakiliy.Infrastructure", "Wakiliy.Infrastructure\Wakiliy.Infrastructure.csproj", "{961650C2-1C27-4E3D-8C9B-5303BCA6ADCF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wakiliy.Infrastructure", "src\Wakiliy.Infrastructure\Wakiliy.Infrastructure.csproj", "{961650C2-1C27-4E3D-8C9B-5303BCA6ADCF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wakiliy.Application.Tests", "tests\Wakiliy.Application.Tests\Wakiliy.Application.Tests.csproj", "{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +39,10 @@ Global
 		{961650C2-1C27-4E3D-8C9B-5303BCA6ADCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{961650C2-1C27-4E3D-8C9B-5303BCA6ADCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{961650C2-1C27-4E3D-8C9B-5303BCA6ADCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,8 +52,9 @@ Global
 		{6C8AB128-F432-402B-A155-20CC6089CBCD} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{046A0856-82FC-4C42-89BE-6B3C7128F278} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{961650C2-1C27-4E3D-8C9B-5303BCA6ADCF} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567890} = {7D6EB7CD-11C6-41AF-A758-2522DD11080A}
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
+	GlobalSection(ExtensibilityGlobals) = preSolution
 		SolutionGuid = {0277342C-FE88-4138-8750-DFF9F3A52901}
 	EndGlobalSection
 EndGlobal
