@@ -16,7 +16,9 @@ public class AppointmentMappingConfig : IRegister
             .Map(dest => dest.LawyerId, src => src.Lawyer != null ? src.Lawyer.Id : null)
             .Map(dest => dest.LawyerFirstName, src => src.Lawyer != null ? src.Lawyer.FirstName : null)
             .Map(dest => dest.LawyerLastName, src => src.Lawyer != null ? src.Lawyer.LastName : null)
-            .Map(dest => dest.LawyerProfileImage, src => src.Lawyer != null && src.Lawyer.ProfileImage != null ? src.Lawyer.ProfileImage.SystemFileUrl : null);
+            .Map(dest => dest.LawyerProfileImage, src => src.Lawyer != null && src.Lawyer.ProfileImage != null ? src.Lawyer.ProfileImage.SystemFileUrl : null)
+            .Map(dest => dest.IsReviewed, src => src.Review != null);
+
 
         config.NewConfig<Appointment, LawyerReceivedAppointmentDto>()
             .Map(dest => dest.SessionDate, src => src.Slot.Date)
@@ -28,6 +30,7 @@ public class AppointmentMappingConfig : IRegister
             .Map(dest => dest.ClientLastName, src => src.Client != null ? src.Client.LastName : null)
             .Map(dest => dest.ClientProfileImage, src => src.Client != null && src.Client.ProfileImage != null ? src.Client.ProfileImage.SystemFileUrl : null)
             .Map(dest => dest.ClientPhone, src => src.Client != null ? src.Client.PhoneNumber : null);
+
     }
 }
 

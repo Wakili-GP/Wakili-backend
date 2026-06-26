@@ -11,6 +11,7 @@ using Wakiliy.Application.Common.Models;
 using Wakiliy.Application.Features.Reviews.Queries.GetByLawyer;
 using Wakiliy.Application.Features.Reviews.Queries.GetStatsByLawyer;
 using Wakiliy.Domain.Constants;
+using Wakiliy.Application.Features.Reviews.Queries.GetByAppointment;
 
 namespace Wakiliy.API.Controllers;
 
@@ -72,6 +73,20 @@ public class ReviewsController : ControllerBase
     public async Task<IActionResult> GetAllSystemReviews()
     {
         var result = await _mediator.Send(new GetAllSystemReviewsQuery());
+        return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
+    }
+
+    /// <summary>
+    /// Get review by appointment id.
+    /// </summary>
+    /// <param name="appointmentId">The appointment's ID</param>
+    [HttpGet("appointment/{appointmentId}")]
+    [Authorize]
+    [ProducesResponseType(typeof(ReviewResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetByAppointmentId(Guid appointmentId)
+    {
+        var result = await _mediator.Send(new GetReviewByAppointmentIdQuery { AppointmentId = appointmentId });
         return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
     }
 

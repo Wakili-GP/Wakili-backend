@@ -16,7 +16,7 @@ namespace Wakiliy.Application.Features.Lawyers.Mapping
                 .Map(dest=>dest.JoinedDate, src=>src.ApprovedAt)
                 .Map(dest => dest.Specializations, src => src.Specializations.Select(s => s.Name).ToList())
                 .Map(dest => dest.SessionTypes, src => src.SessionTypes.Select(st => st == "InOffice" ? 0 : 1).ToList())
-                .Map(dest => dest.AverageRating, src => src.Reviews.Where(r => !r.AiAnalysis.IsFlagged).Any() ? src.Reviews.Where(r => !r.AiAnalysis.IsFlagged).Average(r => r.Rating) : 0)
+                .Map(dest => dest.AverageRating, src => src.Reviews.Where(r => !r.AiAnalysis.IsFlagged).Any() ? Math.Round(src.Reviews.Where(r => !r.AiAnalysis.IsFlagged).Average(r => r.Rating), 2) : 0)
                 .Map(dest => dest.NumberOfRatings, src => src.Reviews.Count(r => !r.AiAnalysis.IsFlagged));
 
 
@@ -33,7 +33,7 @@ namespace Wakiliy.Application.Features.Lawyers.Mapping
                 .Map(dest => dest.Profile.Stats.NumOfAppointmentsCompleted, src => src.Appointments.Count(a => a.Status == AppointmentStatus.Completed))
                 .Map(dest => dest.Profile.Stats.YearsOfExperience, src => src.YearsOfExperience ?? 0)
                 .Map(dest => dest.Profile.Stats.ArticlesPublishedCount, src => 0) // Placeholder
-                .Map(dest => dest.Profile.Stats.ClientRatingAverage, src => src.Reviews.Where(r => !r.AiAnalysis.IsFlagged).Any() ? src.Reviews.Where(r => !r.AiAnalysis.IsFlagged).Average(r => r.Rating) : 0)
+                .Map(dest => dest.Profile.Stats.ClientRatingAverage, src => src.Reviews.Where(r => !r.AiAnalysis.IsFlagged).Any() ? Math.Round(src.Reviews.Where(r => !r.AiAnalysis.IsFlagged).Average(r => r.Rating), 2) : 0)
                 .Map(dest => dest.Profile.Stats.ReviewsTotal, src => src.Reviews.Count(r => !r.AiAnalysis.IsFlagged))
                 .Map(dest => dest.Pricing.PhonePrice, src => src.PhoneSessionPrice ?? 0)
                 .Map(dest => dest.Pricing.OfficePrice, src => src.InOfficeSessionPrice ?? 0)

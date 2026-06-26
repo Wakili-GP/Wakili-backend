@@ -7,6 +7,7 @@ using Wakiliy.Domain.Enums;
 using Wakiliy.Domain.Errors;
 using Wakiliy.Domain.Repositories;
 using Wakiliy.Domain.Responses;
+using Wakiliy.Domain.Entities;
 
 namespace Wakiliy.Application.Features.Appointments.Commands.Complete;
 

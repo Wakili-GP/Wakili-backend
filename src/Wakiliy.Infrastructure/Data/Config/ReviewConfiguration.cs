@@ -28,8 +28,8 @@ internal class ReviewConfiguration : IEntityTypeConfiguration<Review>
         });
 
         builder.HasOne(r => r.Appointment)
-            .WithMany()
-            .HasForeignKey(r => r.AppointmentId)
+            .WithOne(a => a.Review)
+            .HasForeignKey<Review>(r => r.AppointmentId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(r => r.User)

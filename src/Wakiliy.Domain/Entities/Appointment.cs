@@ -24,4 +24,5 @@ public class Appointment
     public Guid? PaymentTransactionId { get; set; }
     public PaymentTransaction? PaymentTransaction { get; set; }
     public LawyerEarning? LawyerEarning { get; set; }
+    public Review? Review { get; set; }
 }

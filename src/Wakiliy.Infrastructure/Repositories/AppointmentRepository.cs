@@ -24,6 +24,7 @@ internal class AppointmentRepository(ApplicationDbContext dbContext) : IAppointm
         return await dbContext.Appointments
             .AsNoTracking()
             .Include(a => a.Slot)
+            .Include(a => a.Review)
             .Include(a => a.Lawyer)
                 .ThenInclude(l=>l.ProfileImage)
             .Where(a => a.ClientId == clientId)

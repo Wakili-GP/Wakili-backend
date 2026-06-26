@@ -18,5 +18,6 @@ public class AppointmentDto
     public string? LawyerLastName { get; set; }
     public string? LawyerProfileImage { get; set; }
     public string? LawyerId { get; set; }
+    public bool? IsReviewed { get; set; }
 }
 

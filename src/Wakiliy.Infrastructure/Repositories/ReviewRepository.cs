@@ -105,4 +105,12 @@ internal class ReviewRepository(ApplicationDbContext dbContext) : IReviewReposit
 
         return stats ?? new LawyerReviewStatsModel();
     }
+
+
+    public async Task<Review?> GetByAppointmentIdAsync(Guid appointmentId, CancellationToken cancellationToken = default)
+    {
+        return await dbContext.Reviews
+            .AsNoTracking()
+            .FirstOrDefaultAsync(r => r.AppointmentId == appointmentId, cancellationToken);
+    }
 }

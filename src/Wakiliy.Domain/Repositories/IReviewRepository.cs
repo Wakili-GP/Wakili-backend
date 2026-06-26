@@ -18,4 +18,5 @@ public interface IReviewRepository
         bool sortDescending = true,
         CancellationToken cancellationToken = default);
     Task<LawyerReviewStatsModel> GetLawyerReviewStatsAsync(string lawyerId, CancellationToken cancellationToken = default);
+    Task<Review?> GetByAppointmentIdAsync(Guid appointmentId, CancellationToken cancellationToken = default);
 }
