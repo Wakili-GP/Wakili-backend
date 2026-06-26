@@ -23,7 +23,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<AppointmentSlot> AppointmentSlots { get; set; } = default!;
     public DbSet<Appointment> Appointments { get; set; } = default!;
     public DbSet<Review> Reviews { get; set; } = default!;
-    public DbSet<SystemReview> SystemReviews { get; set; } = default!;
     public DbSet<BookingIntent> BookingIntents { get; set; } = default!;
     public DbSet<PaymentTransaction> PaymentTransactions { get; set; } = default!;
     public DbSet<Notification> Notifications { get; set; } = default!;
@@ -68,7 +67,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
         var cascadeFKs = modelBuilder.Model.GetEntityTypes()

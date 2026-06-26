@@ -6,13 +6,13 @@ using Wakiliy.API.Extensions;
 using Wakiliy.Application.Features.Reviews.Commands.Create;
 using Wakiliy.Application.Features.Reviews.DTOs;
 using Wakiliy.Application.Features.Reviews.Queries.GetAll;
-using Wakiliy.Application.Features.Reviews.Queries.GetAllSystemReviews;
+
 using Wakiliy.Application.Common.Models;
 using Wakiliy.Application.Features.Reviews.Queries.GetByLawyer;
 using Wakiliy.Application.Features.Reviews.Queries.GetStatsByLawyer;
 using Wakiliy.Domain.Constants;
 using Wakiliy.Application.Features.Reviews.Queries.GetByAppointment;
-
+using Wakiliy.Application.Features.Reviews.Commands.Moderate;
 namespace Wakiliy.API.Controllers;
 
 [Route("api/reviews")]
@@ -63,17 +63,56 @@ public class ReviewsController : ControllerBase
         return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
     }
 
+
     /// <summary>
-    /// Get all system/platform reviews (Admin only).
+    /// Retry AI moderation for a review (Admin only).
     /// </summary>
-    /// <response code="200">List of all system reviews</response>
-    [HttpGet("system-reviews/admin")]
+    [HttpPost("{id}/retry-moderation")]
     [Authorize(Roles = $"{DefaultRoles.Admin},{DefaultRoles.SuperAdmin}")]
-    [ProducesResponseType(typeof(List<SystemReviewResponseDto>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAllSystemReviews()
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> RetryModeration(Guid id)
     {
-        var result = await _mediator.Send(new GetAllSystemReviewsQuery());
-        return result.IsSuccess ? result.ToSuccess() : result.ToProblem();
+        var result = await _mediator.Send(new ModerateReviewCommand 
+        { 
+            ReviewId = id, 
+            Action = ReviewModerationAction.RetryModeration 
+        });
+        return result.IsSuccess ? result.ToSuccess("Moderation retried successfully.") : result.ToProblem();
+    }
+
+    /// <summary>
+    /// Force approve a review to make it visible (Admin only).
+    /// </summary>
+    [HttpPost("{id}/approve")]
+    [Authorize(Roles = $"{DefaultRoles.Admin},{DefaultRoles.SuperAdmin}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ApproveReview(Guid id)
+    {
+        var result = await _mediator.Send(new ModerateReviewCommand 
+        { 
+            ReviewId = id, 
+            Action = ReviewModerationAction.Approve 
+        });
+        return result.IsSuccess ? result.ToSuccess("Review approved successfully.") : result.ToProblem();
+    }
+
+    /// <summary>
+    /// Force hide a review (Admin only).
+    /// </summary>
+    [HttpPost("{id}/hide")]
+    [Authorize(Roles = $"{DefaultRoles.Admin},{DefaultRoles.SuperAdmin}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> HideReview(Guid id)
+    {
+        var result = await _mediator.Send(new ModerateReviewCommand 
+        { 
+            ReviewId = id, 
+            Action = ReviewModerationAction.Hide 
+        });
+        return result.IsSuccess ? result.ToSuccess("Review hidden successfully.") : result.ToProblem();
     }
 
     /// <summary>

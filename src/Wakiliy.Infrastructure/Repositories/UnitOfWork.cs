@@ -20,7 +20,6 @@ internal class UnitOfWork(
     IFavoriteLawyerRepository favoriteLawyers,
     IUserRepository users,
     IReviewRepository reviews,
-    ISystemReviewRepository systemReviews,
     IBookingIntentRepository bookingIntents,
     IPaymentTransactionRepository paymentTransactions,
     ILawyerEarningRepository lawyerEarnings,
@@ -40,7 +39,6 @@ internal class UnitOfWork(
     public IFavoriteLawyerRepository FavoriteLawyers => favoriteLawyers;
     public IUserRepository Users => users;
     public IReviewRepository Reviews => reviews;
-    public ISystemReviewRepository SystemReviews => systemReviews;
     public IBookingIntentRepository BookingIntents => bookingIntents;
     public IPaymentTransactionRepository PaymentTransactions => paymentTransactions;
     public ILawyerEarningRepository LawyerEarnings => lawyerEarnings;

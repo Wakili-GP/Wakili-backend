@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +10,7 @@ using Wakiliy.Domain.Entities;
 using Wakiliy.Domain.Enums;
 using Wakiliy.Domain.Repositories;
 using Wakiliy.Infrastructure.Data;
+using Wakiliy.Domain.Enums;
 
 namespace Wakiliy.Infrastructure.Repositories
 {
@@ -292,7 +293,7 @@ namespace Wakiliy.Infrastructure.Repositories
             if (minRating.HasValue)
             {
                 query = query.Where(l => l.Reviews.Any() 
-                    ? l.Reviews.Where(r => !r.AiAnalysis.IsFlagged).Select(r => r.Rating).Average() >= minRating.Value 
+                    ? l.Reviews.Where(r => r.Visibility == ReviewVisibility.Visible).Select(r => r.Rating).Average() >= minRating.Value 
                     : false);
             }
 
@@ -307,8 +308,8 @@ namespace Wakiliy.Infrastructure.Repositories
             if (sortBy?.ToLower() == "rating")
             {
                 query = isAsc 
-                    ? query.OrderBy(l => l.Reviews.Any() ? l.Reviews.Where(r => !r.AiAnalysis.IsFlagged).Select(r => r.Rating).Average() : 0)
-                    : query.OrderByDescending(l => l.Reviews.Any() ? l.Reviews.Where(r => !r.AiAnalysis.IsFlagged).Select(r => r.Rating).Average() : 0);
+                    ? query.OrderBy(l => l.Reviews.Any() ? l.Reviews.Where(r => r.Visibility == ReviewVisibility.Visible).Select(r => r.Rating).Average() : 0)
+                    : query.OrderByDescending(l => l.Reviews.Any() ? l.Reviews.Where(r => r.Visibility == ReviewVisibility.Visible).Select(r => r.Rating).Average() : 0);
             }
             else if (sortBy?.ToLower() == "price")
             {

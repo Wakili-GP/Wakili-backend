@@ -19,4 +19,6 @@ public interface IReviewRepository
         CancellationToken cancellationToken = default);
     Task<LawyerReviewStatsModel> GetLawyerReviewStatsAsync(string lawyerId, CancellationToken cancellationToken = default);
     Task<Review?> GetByAppointmentIdAsync(Guid appointmentId, CancellationToken cancellationToken = default);
+    Task<Review?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task UpdateAsync(Review review, CancellationToken cancellationToken = default);
 }

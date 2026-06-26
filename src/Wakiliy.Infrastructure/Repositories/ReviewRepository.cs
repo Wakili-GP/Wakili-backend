@@ -3,6 +3,7 @@ using Wakiliy.Domain.Common.Models;
 using Wakiliy.Domain.Entities;
 using Wakiliy.Domain.Repositories;
 using Wakiliy.Infrastructure.Data;
+using Wakiliy.Domain.Enums;
 
 namespace Wakiliy.Infrastructure.Repositories;
 
@@ -25,7 +26,9 @@ internal class ReviewRepository(ApplicationDbContext dbContext) : IReviewReposit
         return await dbContext.Reviews
             .AsNoTracking()
             .Include(r => r.User)
+                .ThenInclude(u => u.ProfileImage)
             .Include(r => r.Lawyer)
+                .ThenInclude(l => l.ProfileImage)
             .Include(r => r.Appointment)
             .OrderByDescending(r => r.CreatedAt)
             .ToListAsync(cancellationToken);
@@ -38,7 +41,7 @@ internal class ReviewRepository(ApplicationDbContext dbContext) : IReviewReposit
             .Include(r => r.User)
             .Include(r => r.Appointment)
             .Where(r => r.LawyerId == lawyerId &&
-                        !r.AiAnalysis.IsFlagged &&
+                        r.Visibility == ReviewVisibility.Visible &&
                         (!stars.HasValue || r.Rating >= stars.Value))
             .OrderByDescending(r => r.CreatedAt)
             .ToListAsync(cancellationToken);
@@ -59,7 +62,7 @@ internal class ReviewRepository(ApplicationDbContext dbContext) : IReviewReposit
             .ThenInclude(u => u.ProfileImage)
             .Include(r => r.Appointment)
             .Where(r => r.LawyerId == lawyerId &&
-                        !r.AiAnalysis.IsFlagged &&
+                        r.Visibility == ReviewVisibility.Visible &&
                         (!stars.HasValue || r.Rating >= stars.Value));
 
         if (!string.IsNullOrWhiteSpace(searchQuery))
@@ -87,7 +90,7 @@ internal class ReviewRepository(ApplicationDbContext dbContext) : IReviewReposit
     {
         var query = dbContext.Reviews
             .AsNoTracking()
-            .Where(r => r.LawyerId == lawyerId && !r.AiAnalysis.IsFlagged);
+            .Where(r => r.LawyerId == lawyerId && r.Visibility == ReviewVisibility.Visible);
 
         var stats = await query
             .GroupBy(_ => 1)
@@ -112,5 +115,17 @@ internal class ReviewRepository(ApplicationDbContext dbContext) : IReviewReposit
         return await dbContext.Reviews
             .AsNoTracking()
             .FirstOrDefaultAsync(r => r.AppointmentId == appointmentId, cancellationToken);
+    }
+
+    public async Task<Review?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await dbContext.Reviews
+            .FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
+    }
+
+    public async Task UpdateAsync(Review review, CancellationToken cancellationToken = default)
+    {
+        dbContext.Reviews.Update(review);
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 }

@@ -19,13 +19,7 @@ internal class ReviewConfiguration : IEntityTypeConfiguration<Review>
         builder.HasIndex(r => r.AppointmentId)
             .IsUnique();
 
-        // Configure AiAnalysis as an owned entity 
-        builder.OwnsOne(r => r.AiAnalysis, ai =>
-        {
-            ai.Property(a => a.IsFlagged).HasColumnName("AiAnalysis_IsFlagged");
-            ai.Property(a => a.Confidence).HasColumnName("AiAnalysis_Confidence");
-            ai.Property(a => a.Summary).HasColumnName("AiAnalysis_Summary").HasMaxLength(1000);
-        });
+        builder.Property(r => r.AiComment).HasMaxLength(1000);
 
         builder.HasOne(r => r.Appointment)
             .WithOne(a => a.Review)

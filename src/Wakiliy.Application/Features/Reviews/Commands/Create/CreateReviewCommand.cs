@@ -9,5 +9,4 @@ public class CreateReviewCommand : IRequest<Result<ReviewResponseDto>>
     public string UserId { get; set; } = string.Empty;
     public Guid AppointmentId { get; set; }
     public LawyerReviewDto LawyerReview { get; set; } = new();
-    public SystemReviewDto? SystemReview { get; set; }
 }

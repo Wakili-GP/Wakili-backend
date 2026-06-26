@@ -29,16 +29,6 @@ public class CreateReviewCommandValidator : AbstractValidator<CreateReviewComman
                 .MaximumLength(500).WithMessage("Comment must not exceed 500 characters.");
         });
 
-        // System review validation (only if provided)
-        When(x => x.SystemReview is not null, () =>
-        {
-            RuleFor(x => x.SystemReview!.Rating)
-                .Must(r => ValidRatings.Contains(r))
-                .WithMessage("System review rating must be between 1 and 5, in 0.5 increments.");
 
-            RuleFor(x => x.SystemReview!.Comment)
-                .NotEmpty().WithMessage("System review comment is required.")
-                .MaximumLength(500).WithMessage("System review comment must not exceed 500 characters.");
-        });
     }
 }

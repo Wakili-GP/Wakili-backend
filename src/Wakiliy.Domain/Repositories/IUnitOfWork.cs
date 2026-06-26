@@ -21,7 +21,6 @@ public interface IUnitOfWork
     IBookingIntentRepository BookingIntents { get; }
     IPaymentTransactionRepository PaymentTransactions { get; }
     IReviewRepository Reviews { get; }
-    ISystemReviewRepository SystemReviews { get; }
     ILawyerEarningRepository LawyerEarnings { get; }
     IPayrollRepository Payrolls { get; }
 

@@ -1,6 +1,8 @@
+using Hangfire;
 using Mapster;
 using MediatR;
 using Wakiliy.Application.Features.Reviews.DTOs;
+using Wakiliy.Application.Features.Reviews.Jobs;
 using Wakiliy.Application.Interfaces.Services;
 using Wakiliy.Domain.Entities;
 using Wakiliy.Domain.Enums;
@@ -12,7 +14,8 @@ namespace Wakiliy.Application.Features.Reviews.Commands.Create;
 
 public class CreateReviewCommandHandler(
     IUnitOfWork unitOfWork,
-    INotificationService notificationService)
+    INotificationService notificationService,
+    IBackgroundJobClient backgroundJobClient)
     : IRequestHandler<CreateReviewCommand, Result<ReviewResponseDto>>
 {
     public async Task<Result<ReviewResponseDto>> Handle(CreateReviewCommand request, CancellationToken cancellationToken)
@@ -37,38 +40,15 @@ public class CreateReviewCommandHandler(
             Rating = request.LawyerReview.Rating,
             Comment = request.LawyerReview.Comment,
             CreatedAt = DateTime.UtcNow,
-            AiAnalysis = new AiAnalysis
-            {
-                IsFlagged = request.LawyerReview.AiReview.IsFlagged,
-                Confidence = request.LawyerReview.AiReview.Confidence,
-                Summary = request.LawyerReview.AiReview.Summary
-            }
+            AiStatus = ReviewAiStatus.Pending,
+            Visibility = ReviewVisibility.Pending
         };
 
         await unitOfWork.Reviews.AddAsync(review, cancellationToken);
-
-        var isFirstReview = await unitOfWork.SystemReviews.IsFirstReviewForUserAsync(request.UserId, cancellationToken);
-        if (isFirstReview && request.SystemReview is not null)
-        {
-            var systemReview = new SystemReview
-            {
-                Id = Guid.NewGuid(),
-                UserId = request.UserId,
-                Rating = request.SystemReview.Rating,
-                Comment = request.SystemReview.Comment,
-                CreatedAt = DateTime.UtcNow,
-                AiAnalysis = new AiAnalysis
-                {
-                    IsFlagged = request.SystemReview.AiReview.IsFlagged,
-                    Confidence = request.SystemReview.AiReview.Confidence,
-                    Summary = request.SystemReview.AiReview.Summary
-                }
-            };
-
-            await unitOfWork.SystemReviews.AddAsync(systemReview, cancellationToken);
-        }
-
         await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        // Enqueue background job for AI review moderation
+        backgroundJobClient.Enqueue<ReviewModerationJob>(x => x.ProcessReviewAsync(review.Id));
 
         await notificationService.SendNotificationAsync(
             userId: appointment.LawyerId,
@@ -81,4 +61,3 @@ public class CreateReviewCommandHandler(
         return Result.Success(review.Adapt<ReviewResponseDto>());
     }
 }
-
