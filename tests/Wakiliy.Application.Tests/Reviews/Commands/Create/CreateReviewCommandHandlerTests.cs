@@ -2,6 +2,7 @@ using FluentAssertions;
 using Moq;
 using Wakiliy.Application.Features.Reviews.Commands.Create;
 using Wakiliy.Application.Features.Reviews.DTOs;
+using Wakiliy.Application.Interfaces.Services;
 using Wakiliy.Domain.Entities;
 using Wakiliy.Domain.Enums;
 using Wakiliy.Domain.Errors;
@@ -15,6 +16,7 @@ public class CreateReviewCommandHandlerTests
     private readonly Mock<IAppointmentRepository> _appointmentRepoMock;
     private readonly Mock<IReviewRepository> _reviewRepoMock;
     private readonly Mock<ISystemReviewRepository> _systemReviewRepoMock;
+    private readonly Mock<INotificationService> _notificationServiceMock;
     private readonly CreateReviewCommandHandler _handler;
 
     public CreateReviewCommandHandlerTests()
@@ -23,6 +25,7 @@ public class CreateReviewCommandHandlerTests
         _appointmentRepoMock = new Mock<IAppointmentRepository>();
         _reviewRepoMock = new Mock<IReviewRepository>();
         _systemReviewRepoMock = new Mock<ISystemReviewRepository>();
+        _notificationServiceMock = new Mock<INotificationService>();
 
         _unitOfWorkMock.Setup(u => u.Appointments).Returns(_appointmentRepoMock.Object);
         _unitOfWorkMock.Setup(u => u.Reviews).Returns(_reviewRepoMock.Object);
@@ -37,7 +40,13 @@ public class CreateReviewCommandHandlerTests
             .Setup(r => r.AddAsync(It.IsAny<SystemReview>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
-        _handler = new CreateReviewCommandHandler(_unitOfWorkMock.Object);
+        _notificationServiceMock
+            .Setup(n => n.SendNotificationAsync(
+                It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
+                It.IsAny<Wakiliy.Domain.Enums.NotificationType>(), It.IsAny<string?>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        _handler = new CreateReviewCommandHandler(_unitOfWorkMock.Object, _notificationServiceMock.Object);
     }
 
     // ─────────────────────────────────────────────

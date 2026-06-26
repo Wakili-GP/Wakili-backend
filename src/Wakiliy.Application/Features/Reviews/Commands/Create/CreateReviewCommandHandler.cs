@@ -1,6 +1,7 @@
 using Mapster;
 using MediatR;
 using Wakiliy.Application.Features.Reviews.DTOs;
+using Wakiliy.Application.Interfaces.Services;
 using Wakiliy.Domain.Entities;
 using Wakiliy.Domain.Enums;
 using Wakiliy.Domain.Errors;
@@ -10,7 +11,8 @@ using Wakiliy.Domain.Responses;
 namespace Wakiliy.Application.Features.Reviews.Commands.Create;
 
 public class CreateReviewCommandHandler(
-    IUnitOfWork unitOfWork)
+    IUnitOfWork unitOfWork,
+    INotificationService notificationService)
     : IRequestHandler<CreateReviewCommand, Result<ReviewResponseDto>>
 {
     public async Task<Result<ReviewResponseDto>> Handle(CreateReviewCommand request, CancellationToken cancellationToken)
@@ -68,6 +70,15 @@ public class CreateReviewCommandHandler(
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
+        await notificationService.SendNotificationAsync(
+            userId: appointment.LawyerId,
+            title: "تقييم جديد",
+            message: "حصلت على تقييم جديد من أحد عملائك.",
+            type: NotificationType.NewReview,
+            referenceId: review.Id.ToString(),
+            cancellationToken: cancellationToken);
+
         return Result.Success(review.Adapt<ReviewResponseDto>());
     }
 }
+

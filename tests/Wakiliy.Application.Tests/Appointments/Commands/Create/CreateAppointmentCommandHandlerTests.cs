@@ -1,6 +1,7 @@
 using FluentAssertions;
 using Moq;
 using Wakiliy.Application.Features.Appointments.Commands.Create;
+using Wakiliy.Application.Interfaces.Services;
 using Wakiliy.Domain.Entities;
 using Wakiliy.Domain.Errors;
 using Wakiliy.Domain.Repositories;
@@ -13,6 +14,7 @@ public class CreateAppointmentCommandHandlerTests
     private readonly Mock<ILawyerRepository> _lawyerRepoMock;
     private readonly Mock<IAppointmentSlotRepository> _slotRepoMock;
     private readonly Mock<IAppointmentRepository> _appointmentRepoMock;
+    private readonly Mock<INotificationService> _notificationServiceMock;
     private readonly CreateAppointmentCommandHandler _handler;
 
     public CreateAppointmentCommandHandlerTests()
@@ -21,13 +23,20 @@ public class CreateAppointmentCommandHandlerTests
         _lawyerRepoMock = new Mock<ILawyerRepository>();
         _slotRepoMock = new Mock<IAppointmentSlotRepository>();
         _appointmentRepoMock = new Mock<IAppointmentRepository>();
+        _notificationServiceMock = new Mock<INotificationService>();
 
         _unitOfWorkMock.Setup(u => u.Lawyers).Returns(_lawyerRepoMock.Object);
         _unitOfWorkMock.Setup(u => u.AppointmentSlots).Returns(_slotRepoMock.Object);
         _unitOfWorkMock.Setup(u => u.Appointments).Returns(_appointmentRepoMock.Object);
         _unitOfWorkMock.Setup(u => u.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
-        _handler = new CreateAppointmentCommandHandler(_unitOfWorkMock.Object);
+        _notificationServiceMock
+            .Setup(n => n.SendNotificationAsync(
+                It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
+                It.IsAny<Wakiliy.Domain.Enums.NotificationType>(), It.IsAny<string?>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        _handler = new CreateAppointmentCommandHandler(_unitOfWorkMock.Object, _notificationServiceMock.Object);
     }
 
     // ─────────────────────────────────────────────

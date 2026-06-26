@@ -51,6 +51,7 @@ namespace Wakiliy.API.Controllers
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns>The detailed verification request.</returns>
         [HttpGet("lawyer-verification/{id}")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(LawyerVerificationDetailResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetLawyerVerificationRequestById(string id, CancellationToken cancellationToken)

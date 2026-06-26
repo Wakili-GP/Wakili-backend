@@ -1,4 +1,4 @@
-﻿using CloudinaryDotNet;
+using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -28,14 +28,32 @@ namespace Wakiliy.Infrastructure.Services
 
             await using var stream = file.OpenReadStream();
 
-            var uploadParams = new ImageUploadParams
+            var isPdf = file.ContentType.Equals("application/pdf", StringComparison.OrdinalIgnoreCase) ||
+                        file.FileName.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
+
+            RawUploadParams uploadParams;
+            if (isPdf)
             {
-                File = new FileDescription(file.FileName, stream),
-                Folder = folder,
-                UseFilename = false,
-                UniqueFilename = true,
-                Overwrite = false
-            };
+                uploadParams = new RawUploadParams
+                {
+                    File = new FileDescription(file.FileName, stream),
+                    Folder = folder,
+                    UseFilename = false,
+                    UniqueFilename = true,
+                    Overwrite = false
+                };
+            }
+            else
+            {
+                uploadParams = new ImageUploadParams
+                {
+                    File = new FileDescription(file.FileName, stream),
+                    Folder = folder,
+                    UseFilename = false,
+                    UniqueFilename = true,
+                    Overwrite = false
+                };
+            }
 
             var result = await _cloudinary.UploadAsync(uploadParams);
 

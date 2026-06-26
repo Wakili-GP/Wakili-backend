@@ -1,4 +1,5 @@
 using MediatR;
+using Wakiliy.Application.Interfaces.Services;
 using Wakiliy.Domain.Enums;
 using Wakiliy.Domain.Errors;
 using Wakiliy.Domain.Repositories;
@@ -6,7 +7,7 @@ using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.Appointments.Commands.Reject;
 
-public class RejectAppointmentCommandHandler(IUnitOfWork unitOfWork)
+public class RejectAppointmentCommandHandler(IUnitOfWork unitOfWork, INotificationService notificationService)
     : IRequestHandler<RejectAppointmentCommand, Result>
 {
     public async Task<Result> Handle(RejectAppointmentCommand request, CancellationToken cancellationToken)
@@ -28,6 +29,15 @@ public class RejectAppointmentCommandHandler(IUnitOfWork unitOfWork)
         await unitOfWork.Appointments.UpdateAsync(appointment, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
+        await notificationService.SendNotificationAsync(
+            userId: appointment.ClientId,
+            title: "تم رفض موعدك",
+            message: "للأسف تم رفض طلب موعدك من قِبل المحامي.",
+            type: NotificationType.AppointmentRejected,
+            referenceId: appointment.Id.ToString(),
+            cancellationToken: cancellationToken);
+
         return Result.Success();
     }
 }
+

@@ -2,6 +2,7 @@ using Wakiliy.API.Extensions;
 using Wakiliy.Application.Extensions;
 using Wakiliy.Infrastructure.Data.Seed;
 using Wakiliy.Infrastructure.Extensions;
+using Wakiliy.Infrastructure.Hubs;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 
@@ -61,9 +62,12 @@ app.UseExceptionHandler();
 
 app.UseHttpsRedirection();
 
+app.UseCors("AllowFrontend");
+
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<NotificationHub>("/hubs/notifications");
 
 
 app.Run();

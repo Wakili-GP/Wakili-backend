@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Wakiliy.API.Extensions;
 using Wakiliy.Application.Repositories;
@@ -23,12 +23,36 @@ namespace Wakiliy.API.Controllers
             var cloudName = configuration["Cloudinary:CloudName"];
 
             var extension = Path.GetExtension(file.FileName);
+            var publicIdWithExtension = file.PublicId;
+            if (!string.IsNullOrEmpty(extension) && !publicIdWithExtension.EndsWith(extension, StringComparison.OrdinalIgnoreCase))
+            {
+                publicIdWithExtension += extension;
+            }
 
-            var cloudinaryUrl =
-                $"https://res.cloudinary.com/{cloudName}/image/upload/{file.PublicId}{extension}";
+            var isPdf = file.ContentType.Equals("application/pdf", StringComparison.OrdinalIgnoreCase) ||
+                        file.FileName.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
 
             using var httpClient = new HttpClient();
-            var response = await httpClient.GetAsync(cloudinaryUrl);
+            HttpResponseMessage response;
+
+            if (isPdf)
+            {
+                // Try fetching as raw first (newly uploaded PDFs)
+                var rawUrl = $"https://res.cloudinary.com/{cloudName}/raw/upload/{publicIdWithExtension}";
+                response = await httpClient.GetAsync(rawUrl);
+
+                // Fallback to image/upload if raw/upload returns 404 (backward compatibility for old PDFs)
+                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    var imageUrl = $"https://res.cloudinary.com/{cloudName}/image/upload/{publicIdWithExtension}";
+                    response = await httpClient.GetAsync(imageUrl);
+                }
+            }
+            else
+            {
+                var imageUrl = $"https://res.cloudinary.com/{cloudName}/image/upload/{publicIdWithExtension}";
+                response = await httpClient.GetAsync(imageUrl);
+            }
 
             if (!response.IsSuccessStatusCode)
                 return NotFound();

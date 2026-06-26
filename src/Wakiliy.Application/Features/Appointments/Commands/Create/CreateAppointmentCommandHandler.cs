@@ -1,14 +1,16 @@
 using Mapster;
 using MediatR;
 using Wakiliy.Application.Features.Appointments.DTOs;
+using Wakiliy.Application.Interfaces.Services;
 using Wakiliy.Domain.Entities;
+using Wakiliy.Domain.Enums;
 using Wakiliy.Domain.Errors;
 using Wakiliy.Domain.Repositories;
 using Wakiliy.Domain.Responses;
 
 namespace Wakiliy.Application.Features.Appointments.Commands.Create;
 
-public class CreateAppointmentCommandHandler(IUnitOfWork unitOfWork)
+public class CreateAppointmentCommandHandler(IUnitOfWork unitOfWork, INotificationService notificationService)
     : IRequestHandler<CreateAppointmentCommand, Result<AppointmentDto>>
 {
     public async Task<Result<AppointmentDto>> Handle(CreateAppointmentCommand request, CancellationToken cancellationToken)
@@ -41,6 +43,15 @@ public class CreateAppointmentCommandHandler(IUnitOfWork unitOfWork)
         await unitOfWork.Appointments.AddAsync(appointment, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
+        await notificationService.SendNotificationAsync(
+            userId: request.LawyerId,
+            title: "طلب موعد جديد",
+            message: "لديك طلب حجز موعد جديد يرجى مراجعته.",
+            type: NotificationType.AppointmentBooked,
+            referenceId: appointment.Id.ToString(),
+            cancellationToken: cancellationToken);
+
         return Result.Success(appointment.Adapt<AppointmentDto>());
     }
 }
+

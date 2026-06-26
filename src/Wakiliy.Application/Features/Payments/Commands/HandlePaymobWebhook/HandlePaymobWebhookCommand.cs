@@ -19,6 +19,7 @@ public class HandlePaymobWebhookCommand : IRequest<Result>
 public class HandlePaymobWebhookCommandHandler(
     IUnitOfWork unitOfWork,
     IPaymobService paymobService,
+    INotificationService notificationService,
     ILogger<HandlePaymobWebhookCommandHandler> logger)
     : IRequestHandler<HandlePaymobWebhookCommand, Result>
 {
@@ -94,6 +95,14 @@ public class HandlePaymobWebhookCommandHandler(
             await unitOfWork.Appointments.AddAsync(appointment, cancellationToken);
 
             logger.LogInformation("Payment SUCCESS for {OrderId}", intentId);
+
+            await notificationService.SendNotificationToManyAsync(
+                userIds: [intent.ClientId, intent.LawyerId],
+                title: "تم تأكيد الدفع",
+                message: "تمت عملية الدفع بنجاح وتم تسجيل الموعد.",
+                type: NotificationType.PaymentSuccess,
+                referenceId: appointment.Id.ToString(),
+                cancellationToken: cancellationToken);
         }
         else
         {

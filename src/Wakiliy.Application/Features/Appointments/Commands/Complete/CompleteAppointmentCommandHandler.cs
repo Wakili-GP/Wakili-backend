@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Wakiliy.Application.Helpers;
+using Wakiliy.Application.Interfaces.Services;
 using Wakiliy.Domain.Enums;
 using Wakiliy.Domain.Errors;
 using Wakiliy.Domain.Repositories;
@@ -12,7 +13,8 @@ namespace Wakiliy.Application.Features.Appointments.Commands.Complete;
 public class CompleteAppointmentCommandHandler(
     IUnitOfWork unitOfWork,
     IEmailSender emailSender,
-    IHttpContextAccessor httpContextAccessor)
+    IHttpContextAccessor httpContextAccessor,
+    INotificationService notificationService)
     : IRequestHandler<CompleteAppointmentCommand, Result>
 {
     public async Task<Result> Handle(CompleteAppointmentCommand request, CancellationToken cancellationToken)
@@ -41,6 +43,14 @@ public class CompleteAppointmentCommandHandler(
             appointment.Lawyer.FirstName + " " + appointment.Lawyer.LastName,
             appointment.Id);
 
+        await notificationService.SendNotificationAsync(
+            userId: appointment.ClientId,
+            title: "اكتمل موعدك",
+            message: "تم إتمام جلستك بنجاح. شاركنا تقييمك للمحامي.",
+            type: NotificationType.AppointmentCompleted,
+            referenceId: appointment.Id.ToString(),
+            cancellationToken: cancellationToken);
+
         return Result.Success();
     }
 
@@ -60,3 +70,4 @@ public class CompleteAppointmentCommandHandler(
         await emailSender.SendEmailAsync(clientEmail, "قيّم تجربتك مع المحامي ⭐", emailBody);
     }
 }
+

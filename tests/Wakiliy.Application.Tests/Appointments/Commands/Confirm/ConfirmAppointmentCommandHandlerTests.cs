@@ -1,6 +1,7 @@
 using FluentAssertions;
 using Moq;
 using Wakiliy.Application.Features.Appointments.Commands.Confirm;
+using Wakiliy.Application.Interfaces.Services;
 using Wakiliy.Domain.Entities;
 using Wakiliy.Domain.Enums;
 using Wakiliy.Domain.Errors;
@@ -12,17 +13,25 @@ public class ConfirmAppointmentCommandHandlerTests
 {
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly Mock<IAppointmentRepository> _appointmentRepoMock;
+    private readonly Mock<INotificationService> _notificationServiceMock;
     private readonly ConfirmAppointmentCommandHandler _handler;
 
     public ConfirmAppointmentCommandHandlerTests()
     {
         _unitOfWorkMock = new Mock<IUnitOfWork>();
         _appointmentRepoMock = new Mock<IAppointmentRepository>();
+        _notificationServiceMock = new Mock<INotificationService>();
 
         _unitOfWorkMock.Setup(u => u.Appointments).Returns(_appointmentRepoMock.Object);
         _unitOfWorkMock.Setup(u => u.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
-        _handler = new ConfirmAppointmentCommandHandler(_unitOfWorkMock.Object);
+        _notificationServiceMock
+            .Setup(n => n.SendNotificationAsync(
+                It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
+                It.IsAny<Wakiliy.Domain.Enums.NotificationType>(), It.IsAny<string?>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        _handler = new ConfirmAppointmentCommandHandler(_unitOfWorkMock.Object, _notificationServiceMock.Object);
     }
 
     // ─────────────────────────────────────────────

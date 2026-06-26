@@ -54,6 +54,7 @@ public static class ServiceCollectionExtensions
         // Register Services
         services.AddScoped<IEmailSender, EmailService>();
         services.AddScoped<IJwtProvider, JwtProvider>();
+        services.AddScoped<INotificationService, NotificationService>();
         
         // Paymob setup
         services.Configure<PaymobSettings>(configuration.GetSection(nameof(PaymobSettings)));

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Wakiliy.Domain.Enums;
 
 namespace Wakiliy.Domain.Entities;
@@ -14,4 +14,7 @@ public class AppUser : IdentityUser
     public UserStatus Status { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
+
+    // Navigation
+    public ICollection<Notification> Notifications { get; set; } = [];
 }
