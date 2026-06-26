@@ -46,6 +46,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ISystemReviewRepository, SystemReviewRepository>();
         services.AddScoped<IBookingIntentRepository, BookingIntentRepository>();
         services.AddScoped<IPaymentTransactionRepository, PaymentTransactionRepository>();
+        services.AddScoped<ILawyerEarningRepository, LawyerEarningRepository>();
+        services.AddScoped<IPayrollRepository, PayrollRepository>();
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 

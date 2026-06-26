@@ -12,4 +12,5 @@ public class PaymentTransaction
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public BookingIntent BookingIntent { get; set; } = default!;
+    public Appointment? Appointment { get; set; }
 }

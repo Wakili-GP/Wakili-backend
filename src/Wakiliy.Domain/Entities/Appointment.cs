@@ -20,4 +20,8 @@ public class Appointment
 
     public Client Client { get; set; } = default!;
     public Lawyer Lawyer { get; set; } = default!;
+
+    public Guid? PaymentTransactionId { get; set; }
+    public PaymentTransaction? PaymentTransaction { get; set; }
+    public LawyerEarning? LawyerEarning { get; set; }
 }

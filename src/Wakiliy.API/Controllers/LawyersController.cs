@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Wakiliy.API.Extensions;
 using Wakiliy.Application.Features.Lawyers.Commands.Create;
 using Wakiliy.Application.Features.Lawyers.Commands.Delete;
@@ -19,7 +20,7 @@ using Wakiliy.Application.Features.Lawyers.Queries.GetVerificationRequests;
 using Wakiliy.Domain.Constants;
 using Wakiliy.Domain.Enums;
 using Wakiliy.Application.Features.Lawyers.Queries.GetPublicProfileById;
-
+using Wakiliy.Application.Features.Earnings.Queries.GetLawyerEarnings;
 namespace Wakiliy.API.Controllers
 {
     /// <summary>
@@ -30,6 +31,14 @@ namespace Wakiliy.API.Controllers
     [Authorize(Roles = $"{DefaultRoles.Admin},{DefaultRoles.SuperAdmin}")]
     public class LawyersController(IMediator mediator) : ControllerBase
     {
+        [HttpGet("me/earnings")]
+        [AllowAnonymous] // Assuming Role "Lawyer"
+        public async Task<IActionResult> GetMyEarnings()
+        {
+            var lawyerId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            var result = await mediator.Send(new GetLawyerEarningsQuery { LawyerId = lawyerId });
+            return result.IsSuccess ?  result.ToSuccess() : result.ToProblem();
+        }
         /// <summary>
         /// Get lawyer verification requests with pagination, filtering and sorting.
         /// </summary>

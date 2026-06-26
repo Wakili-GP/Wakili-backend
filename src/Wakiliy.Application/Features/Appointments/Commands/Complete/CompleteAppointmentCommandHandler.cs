@@ -33,6 +33,22 @@ public class CompleteAppointmentCommandHandler(
         appointment.Status = AppointmentStatus.Completed;
         appointment.CompletedAt = DateTime.UtcNow;
 
+        var grossAmount = appointment.PaymentTransaction?.Amount ?? 0;
+        var platformFee = grossAmount * 0.20m;
+        var netAmount = grossAmount - platformFee;
+
+        var earning = new LawyerEarning
+        {
+            AppointmentId = appointment.Id,
+            LawyerId = appointment.LawyerId,
+            GrossAmount = grossAmount,
+            PlatformFee = platformFee,
+            NetAmount = netAmount,
+            Status = LawyerEarningStatus.Pending,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        await unitOfWork.LawyerEarnings.AddAsync(earning, cancellationToken);
         await unitOfWork.Appointments.UpdateAsync(appointment, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

@@ -28,6 +28,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<PaymentTransaction> PaymentTransactions { get; set; } = default!;
     public DbSet<Notification> Notifications { get; set; } = default!;
     public DbSet<NotificationConnectionSession> NotificationConnectionSessions { get; set; } = default!;
+    public DbSet<LawyerEarning> LawyerEarnings { get; set; } = default!;
+    public DbSet<Payroll> Payrolls { get; set; } = default!;
 
     public override int SaveChanges()
     {

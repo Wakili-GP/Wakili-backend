@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Wakiliy.Domain.Enums;
 
@@ -39,4 +39,7 @@ public class Lawyer : AppUser
     public bool IsActive { get; set; } = true;
     public decimal? PhoneSessionPrice { get; set; }
     public decimal? InOfficeSessionPrice { get; set; }
+
+    public ICollection<LawyerEarning> Earnings { get; set; } = new List<LawyerEarning>();
+    public ICollection<Payroll> Payrolls { get; set; } = new List<Payroll>();
 }

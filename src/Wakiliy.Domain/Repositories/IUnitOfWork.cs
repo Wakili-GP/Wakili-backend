@@ -22,6 +22,8 @@ public interface IUnitOfWork
     IPaymentTransactionRepository PaymentTransactions { get; }
     IReviewRepository Reviews { get; }
     ISystemReviewRepository SystemReviews { get; }
+    ILawyerEarningRepository LawyerEarnings { get; }
+    IPayrollRepository Payrolls { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

@@ -24,5 +24,15 @@ internal class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
             .WithMany(l => l.Appointments)
             .HasForeignKey(a => a.LawyerId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(a => a.PaymentTransaction)
+            .WithOne(p => p.Appointment)
+            .HasForeignKey<Appointment>(a => a.PaymentTransactionId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(a => a.LawyerEarning)
+            .WithOne(e => e.Appointment)
+            .HasForeignKey<LawyerEarning>(e => e.AppointmentId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

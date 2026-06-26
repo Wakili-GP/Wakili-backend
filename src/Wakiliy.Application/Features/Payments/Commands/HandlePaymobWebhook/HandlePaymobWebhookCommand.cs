@@ -89,7 +89,8 @@ public class HandlePaymobWebhookCommandHandler(
                 ClientId = intent.ClientId,
                 LawyerId = intent.LawyerId,
                 Status = AppointmentStatus.Pending,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                PaymentTransactionId = transaction.Id
             };
 
             await unitOfWork.Appointments.AddAsync(appointment, cancellationToken);

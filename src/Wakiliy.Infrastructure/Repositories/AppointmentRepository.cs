@@ -15,6 +15,7 @@ internal class AppointmentRepository(ApplicationDbContext dbContext) : IAppointm
             .Include(a => a.Slot)
             .Include(a => a.Client)
             .Include(a => a.Lawyer)
+            .Include(a => a.PaymentTransaction)
             .FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
     }
 
