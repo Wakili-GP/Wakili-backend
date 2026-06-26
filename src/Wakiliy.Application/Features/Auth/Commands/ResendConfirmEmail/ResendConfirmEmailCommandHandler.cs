@@ -79,8 +79,8 @@ namespace Wakiliy.Application.Features.Auth.Commands.ResendConfirmEmail
 
             var emailBody = EmailBodyBuilder.GenerateEmailBody("EmailConfirmation", tokens);
 
-            await emailSender.SendEmailAsync(user.Email!, "Your verification code", emailBody);
-            //BackgroundJob.Enqueue(() => emailSender.SendEmailAsync(user.Email!, "Confirm your email", emailBody));
+            // await emailSender.SendEmailAsync(user.Email!, "Your verification code", emailBody);
+            BackgroundJob.Enqueue(() => emailSender.SendEmailAsync(user.Email!, "Your verification code", emailBody));
 
             await Task.CompletedTask;
         }

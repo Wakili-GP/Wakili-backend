@@ -1,3 +1,4 @@
+using Hangfire;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -60,7 +61,8 @@ namespace Wakiliy.Application.Features.Auth.Commands.ForgotPassword
 
             var emailBody = EmailBodyBuilder.GenerateEmailBody("ResetPasswordOtp",tokens);
 
-            await emailSender.SendEmailAsync(user.Email!,"Reset your password",emailBody);
+            // await emailSender.SendEmailAsync(user.Email!,"Reset your password",emailBody);
+            BackgroundJob.Enqueue(() => emailSender.SendEmailAsync(user.Email!,"Reset your password",emailBody));
         }
 
     }

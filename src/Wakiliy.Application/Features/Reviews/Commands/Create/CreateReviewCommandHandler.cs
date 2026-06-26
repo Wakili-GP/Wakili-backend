@@ -2,7 +2,7 @@ using Hangfire;
 using Mapster;
 using MediatR;
 using Wakiliy.Application.Features.Reviews.DTOs;
-using Wakiliy.Application.Features.Reviews.Jobs;
+using Wakiliy.Application.BackgroundJobs;
 using Wakiliy.Application.Interfaces.Services;
 using Wakiliy.Domain.Entities;
 using Wakiliy.Domain.Enums;

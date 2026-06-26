@@ -104,6 +104,51 @@ public static class ServiceCollectionExtensions
                         logger.LogInformation("Circuit Half-Open - Testing next request.");
                     });
         });
+
+        services.AddHttpClient<IAiLawyerVerificationService, AiLawyerVerificationService>(client =>
+        {
+            client.BaseAddress = new Uri("https://nouraelkashif83--wakili-lawyer-verification-fastapi-app.modal.run/");
+            client.Timeout = TimeSpan.FromSeconds(30);
+            client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+        })
+        .AddPolicyHandler((sp, request) =>
+        {
+            var logger = sp.GetRequiredService<ILogger<AiLawyerVerificationService>>();
+            return HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .Or<TaskCanceledException>()
+                .WaitAndRetryAsync(
+                    retryCount: 3,
+                    sleepDurationProvider: retryAttempt => TimeSpan.FromMilliseconds(Math.Pow(2, retryAttempt) * 100),
+                    onRetry: (outcome, timespan, retryAttempt, context) =>
+                    {
+                        var msg = outcome.Exception?.Message ?? $"Status Code: {outcome.Result?.StatusCode}";
+                        logger.LogWarning("Delaying for {Delay}ms, then making retry {Retry}. Reason: {Reason}", timespan.TotalMilliseconds, retryAttempt, msg);
+                    });
+        })
+        .AddPolicyHandler((sp, request) =>
+        {
+            var logger = sp.GetRequiredService<ILogger<AiLawyerVerificationService>>();
+            return HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .Or<TaskCanceledException>()
+                .CircuitBreakerAsync(
+                    handledEventsAllowedBeforeBreaking: 5,
+                    durationOfBreak: TimeSpan.FromMinutes(1),
+                    onBreak: (outcome, state, timespan, context) =>
+                    {
+                        var msg = outcome.Exception?.Message ?? $"Status Code: {outcome.Result?.StatusCode}";
+                        logger.LogWarning("Circuit Opened for {Duration} minutes. Reason: {Reason}", timespan.TotalMinutes, msg);
+                    },
+                    onReset: (context) =>
+                    {
+                        logger.LogInformation("Circuit Closed - Requests are flowing normally.");
+                    },
+                    onHalfOpen: () =>
+                    {
+                        logger.LogInformation("Circuit Half-Open - Testing next request.");
+                    });
+        });
         
         // Paymob setup
         services.Configure<PaymobSettings>(configuration.GetSection(nameof(PaymobSettings)));

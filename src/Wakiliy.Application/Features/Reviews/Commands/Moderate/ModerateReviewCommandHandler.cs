@@ -3,7 +3,7 @@ using MediatR;
 using Wakiliy.Domain.Responses;
 using Wakiliy.Domain.Enums;
 using Wakiliy.Domain.Repositories;
-using Wakiliy.Application.Features.Reviews.Jobs;
+using Wakiliy.Application.BackgroundJobs;
 
 namespace Wakiliy.Application.Features.Reviews.Commands.Moderate;
 

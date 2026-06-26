@@ -4,7 +4,7 @@ using Wakiliy.Application.Common.Interfaces;
 using Wakiliy.Domain.Enums;
 using Wakiliy.Domain.Repositories;
 
-namespace Wakiliy.Application.Features.Reviews.Jobs;
+namespace Wakiliy.Application.BackgroundJobs;
 
 public class ReviewModerationJob
 {
