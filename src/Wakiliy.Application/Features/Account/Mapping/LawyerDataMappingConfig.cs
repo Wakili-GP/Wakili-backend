@@ -4,14 +4,13 @@ using Wakiliy.Domain.Entities;
 
 namespace Wakiliy.Application.Features.Account.Mapping
 {
-    public class ClientDataMappingConfig : IRegister
+    public class LawyerDataMappingConfig : IRegister
     {
         public void Register(TypeAdapterConfig config)
         {
-            config.NewConfig<Client, ClientDataDto>()
+            config.NewConfig<Lawyer, LawyerDataDto>()
                 .Map(dest => dest.ProfileImage, src => src.ProfileImage != null ? src.ProfileImage.SystemFileUrl : string.Empty)
-                .Map(dest => dest.Email, src => src.Email)
-                .Map(dest => dest.MemberSince, src => src.CreatedAt);
+                .Map(dest => dest.Email, src => src.Email);
         }
     }
 }

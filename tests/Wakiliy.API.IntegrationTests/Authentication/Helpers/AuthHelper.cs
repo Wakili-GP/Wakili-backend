@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Wakiliy.API.Common;
 using Wakiliy.Application.Features.Auth.DTOs;
 using Wakiliy.Domain.Responses;
+using Microsoft.AspNetCore.Identity;
+using Wakiliy.Domain.Constants;
 
 namespace Wakiliy.API.IntegrationTests.Authentication.Helpers;
 
