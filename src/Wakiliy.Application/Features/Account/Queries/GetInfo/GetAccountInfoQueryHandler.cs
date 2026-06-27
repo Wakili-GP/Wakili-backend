@@ -23,7 +23,9 @@ namespace Wakiliy.Application.Features.Account.Queries.GetInfo
                 return Result.Failure<UserInfoResponse>(new Error("User.NotFound", "User not found",StatusCodes.Status404NotFound));
 
             var roles = await userManager.GetRolesAsync(user);
-            var userType = roles.Contains(DefaultRoles.Lawyer) ? "Lawyer" : "Client";
+            var userType = roles.Contains(DefaultRoles.Lawyer) ? "Lawyer" : 
+                roles.Contains(DefaultRoles.Client) ? "Client" : 
+                roles.Contains(DefaultRoles.Admin) ? "Admin" : "User";
 
             var response = user.Adapt<UserInfoResponse>();
             response.UserType = userType;

@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Wakiliy.API.Extensions;
 using Wakiliy.Application.Features.Account.DTOs;
 using Wakiliy.Application.Features.Account.Queries.GetInfo;
@@ -136,6 +137,7 @@ public class AuthController(IMediator mediator) : ControllerBase
     /// </summary>
     /// <returns>User profile info.</returns>
     [HttpGet("me")]
+    [Authorize]
     [ProducesResponseType(typeof(UserInfoResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetInfo(CancellationToken cancellationToken)

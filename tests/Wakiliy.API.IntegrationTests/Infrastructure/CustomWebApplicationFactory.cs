@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -51,7 +54,10 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyn
                 { "AdminUser:UserName", "admin@test.com" },
                 { "LawyerUser:Email", "lawyer@test.com" },
                 { "LawyerUser:Password", "StrongPassword123!" },
-                { "LawyerUser:UserName", "lawyer@test.com" }
+                { "LawyerUser:UserName", "lawyer@test.com" },
+                { "ClientUser:Email", "client@test.com" },
+                { "ClientUser:Password", "StrongPassword123!" },
+                { "ClientUser:UserName", "client@test.com" }
             };
 
             configBuilder.AddInMemoryCollection(testConfig);
@@ -61,6 +67,13 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyn
         {
             GlobalConfiguration.Configuration.UseMemoryStorage();
             services.AddHangfire(config => config.UseMemoryStorage());
+
+            services.PostConfigure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
+            {
+                options.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SuperSecretKeyForIntegrationTesting1234567890!"));
+                options.TokenValidationParameters.ValidIssuer = "TestIssuer";
+                options.TokenValidationParameters.ValidAudience = "TestAudience";
+            });
 
             var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
             if (descriptor != null)

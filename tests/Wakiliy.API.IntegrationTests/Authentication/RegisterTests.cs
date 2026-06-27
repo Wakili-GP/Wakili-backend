@@ -184,4 +184,37 @@ public class RegisterTests : BaseIntegrationTest
         var userInDb = await DbContext.Users.FirstOrDefaultAsync(u => u.Email == command.Email);
         userInDb.Should().BeNull("User should not be saved with an invalid user type");
     }
+
+    [Theory]
+    [InlineData("", "Doe", "test@test.com", "Password123!", "Client")]
+    [InlineData("John", "", "test@test.com", "Password123!", "Client")]
+    [InlineData("John", "Doe", "", "Password123!", "Client")]
+    [InlineData("John", "Doe", "invalid-email", "Password123!", "Client")]
+    [InlineData("John", "Doe", "test@test.com", "", "Client")]
+    public async Task Register_ShouldReturnBadRequest_WhenValidationFails(
+        string firstName, string lastName, string email, string password, string userType)
+    {
+        // Arrange
+        var command = new RegisterCommand
+        {
+            FirstName = firstName,
+            LastName = lastName,
+            Email = email,
+            Password = password,
+            UserType = userType,
+            AcceptTerms = true
+        };
+
+        // Act
+        var response = await Client.PostAsJsonAsync("/api/auth/register", command);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        
+        if (!string.IsNullOrEmpty(email) && email.Contains('@'))
+        {
+            var userInDb = await DbContext.Users.FirstOrDefaultAsync(u => u.Email == command.Email);
+            userInDb.Should().BeNull("User should not be saved when validation fails");
+        }
+    }
 }
