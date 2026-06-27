@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Wakiliy.API.Extensions;
@@ -34,7 +34,7 @@ public class AuthController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> Register([FromBody] RegisterCommand command, CancellationToken cancellationToken)
     {
         var result = await mediator.Send(command, cancellationToken);
-        return result.IsSuccess ? Created() : result.ToProblem();
+        return result.IsSuccess ? StatusCode(StatusCodes.Status201Created) : result.ToProblem();
     }
 
     /// <summary>

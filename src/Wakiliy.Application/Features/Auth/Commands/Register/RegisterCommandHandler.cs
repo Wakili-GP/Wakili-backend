@@ -84,7 +84,6 @@ public class RegisterCommandHandler(UserManager<AppUser> userManager,
         await SendConfirmationEmail(user, code);
 
         return Result.Success();
-
     }
     private string GenerateRandomNumber()
     {

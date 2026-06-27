@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Wakiliy.API.Common;
 using Wakiliy.Domain.Responses;
 
@@ -38,7 +38,9 @@ public static class ResultExtensions
             result.Error.statusCode
         };
 
-
-        return new ObjectResult(errorResponse);
+        return new ObjectResult(errorResponse)
+        {
+            StatusCode = result.Error.statusCode
+        };
     }
 }

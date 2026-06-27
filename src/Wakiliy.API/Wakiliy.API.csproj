@@ -26,6 +26,7 @@
     <ItemGroup>
 	    <Content Include="Templates\**\*">
 		    <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+		    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	    </Content>
     </ItemGroup>
 
