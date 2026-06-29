@@ -23,7 +23,8 @@ internal class UnitOfWork(
     IBookingIntentRepository bookingIntents,
     IPaymentTransactionRepository paymentTransactions,
     ILawyerEarningRepository lawyerEarnings,
-    IPayrollRepository payrolls) : IUnitOfWork
+    IPayrollRepository payrolls,
+    IForumRepository forums) : IUnitOfWork
 {
     public IAppointmentRepository Appointments => appointments;
     public IAppointmentSlotRepository AppointmentSlots => appointmentSlots;
@@ -43,6 +44,7 @@ internal class UnitOfWork(
     public IPaymentTransactionRepository PaymentTransactions => paymentTransactions;
     public ILawyerEarningRepository LawyerEarnings => lawyerEarnings;
     public IPayrollRepository Payrolls => payrolls;
+    public IForumRepository Forums => forums;
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         => await dbContext.SaveChangesAsync(cancellationToken);

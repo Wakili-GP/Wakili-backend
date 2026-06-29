@@ -51,7 +51,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPaymentTransactionRepository, PaymentTransactionRepository>();
         services.AddScoped<ILawyerEarningRepository, LawyerEarningRepository>();
         services.AddScoped<IPayrollRepository, PayrollRepository>();
-
+        services.AddScoped<IForumRepository, ForumRepository>();
+        
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 

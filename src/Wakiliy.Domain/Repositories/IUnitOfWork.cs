@@ -23,6 +23,7 @@ public interface IUnitOfWork
     IReviewRepository Reviews { get; }
     ILawyerEarningRepository LawyerEarnings { get; }
     IPayrollRepository Payrolls { get; }
+    IForumRepository Forums { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

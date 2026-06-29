@@ -29,6 +29,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<NotificationConnectionSession> NotificationConnectionSessions { get; set; } = default!;
     public DbSet<LawyerEarning> LawyerEarnings { get; set; } = default!;
     public DbSet<Payroll> Payrolls { get; set; } = default!;
+    
+    // Forum
+    public DbSet<ForumPost> ForumPosts { get; set; } = default!;
+    public DbSet<ForumComment> ForumComments { get; set; } = default!;
+    public DbSet<ForumPostTag> ForumPostTags { get; set; } = default!;
 
     public override int SaveChanges()
     {
