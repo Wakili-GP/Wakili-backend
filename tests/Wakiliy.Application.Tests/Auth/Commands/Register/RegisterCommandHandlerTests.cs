@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Hangfire;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -23,6 +24,7 @@ public class RegisterCommandHandlerTests
     private readonly Mock<IHttpContextAccessor> _httpContextAccessorMock;
     private readonly Mock<IEmailSender> _emailSenderMock;
     private readonly Mock<IEmailOtpRepository> _emailOtpRepoMock;
+    private readonly Mock<IBackgroundJobClient> _backgroundJobClientMock;
     private readonly RegisterCommandHandler _handler;
 
     public RegisterCommandHandlerTests()
@@ -33,6 +35,7 @@ public class RegisterCommandHandlerTests
         _httpContextAccessorMock = new Mock<IHttpContextAccessor>();
         _emailSenderMock = new Mock<IEmailSender>();
         _emailOtpRepoMock = new Mock<IEmailOtpRepository>();
+        _backgroundJobClientMock = new Mock<IBackgroundJobClient>();
 
         // Default IHttpContextAccessor setup
         var httpContext = new DefaultHttpContext();
@@ -53,7 +56,8 @@ public class RegisterCommandHandlerTests
             _unitOfWorkMock.Object,
             _loggerMock.Object,
             _httpContextAccessorMock.Object,
-            _emailSenderMock.Object);
+            _emailSenderMock.Object,
+            _backgroundJobClientMock.Object);
     }
 
     // ─────────────────────────────────────────────
@@ -160,8 +164,9 @@ public class RegisterCommandHandlerTests
             u.SaveChangesAsync(It.IsAny<CancellationToken>()),
             Times.Once);
 
-        _emailSenderMock.Verify(e =>
-            e.SendEmailAsync(command.Email, It.IsAny<string>(), It.IsAny<string>()),
+        _backgroundJobClientMock.Verify(x => x.Create(
+            It.Is<Hangfire.Common.Job>(job => job.Method.Name == nameof(IEmailSender.SendEmailAsync)),
+            It.IsAny<Hangfire.States.EnqueuedState>()),
             Times.Once);
     }
 

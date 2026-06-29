@@ -24,7 +24,8 @@ public class RegisterCommandHandler(UserManager<AppUser> userManager,
     IUnitOfWork unitOfWork,
     ILogger<RegisterCommandHandler> logger,
     IHttpContextAccessor httpContextAccessor,
-    IEmailSender emailSender) : IRequestHandler<RegisterCommand,Result>
+    IEmailSender emailSender,
+    IBackgroundJobClient backgroundJobClient) : IRequestHandler<RegisterCommand,Result>
 {
     public async Task<Result> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
@@ -104,7 +105,7 @@ public class RegisterCommandHandler(UserManager<AppUser> userManager,
         var emailBody = EmailBodyBuilder.GenerateEmailBody("EmailConfirmation",tokens);
 
         // await emailSender.SendEmailAsync(user.Email!, "Your verification code", emailBody);
-        BackgroundJob.Enqueue(() => emailSender.SendEmailAsync(user.Email!, "Your verification code", emailBody));
+        backgroundJobClient.Enqueue(() => emailSender.SendEmailAsync(user.Email!, "Your verification code", emailBody));
 
         await Task.CompletedTask;
     }
